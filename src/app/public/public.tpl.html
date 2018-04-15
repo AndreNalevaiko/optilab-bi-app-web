@@ -1,0 +1,17 @@
+<div flex layout="column" class="gorillascode-public">
+  <md-toolbar ng-if="!hideToolbar">
+    <div class="md-toolbar-tools">
+      <h1>{{pageTitle}}</h1>
+    </div>
+  </md-toolbar>
+
+  <md-content flex layout="column">
+    <md-toolbar ng-if="!hideToolbar" class="gorillascode-content-background"></md-toolbar>
+
+    <div ui-view>
+      <div layout="column" layout-align="center center" flex>
+        <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
+      </div>
+    </div>
+  </md-content>
+</div>

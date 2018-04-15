@@ -1,0 +1,30 @@
+<md-dialog class="gorillascode-location-autocomplete" aria-label="Onde você está?">
+  <form flex name="managerForm">
+    <md-dialog-content class="md-dialog-content">
+      <h2 class="md-title">Onde você está?</h2>
+
+      <p>Encontre os melhores profissionais da sua região</p>
+
+      <md-input-container class="md-block">
+        <md-icon md-font-icon="material-icons">place</md-icon>
+        <input type="text" ng-autocomplete name="location"
+               ng-model="locationAutocompleteCtrl.locationFormattedAddress"
+               options="{ types: '(cities)', country: 'br' }"
+               details="locationAutocompleteCtrl.locationDetails" md-autofocus required
+               ng-change="locationAutocompleteCtrl.changeLocation2()"
+               md-select-on-focus aria-label="Digite um local">
+
+        <div ng-messages="managerForm.location.$error">
+          <div ng-message="required">Campo obrigatório</div>
+        </div>
+      </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions>
+      <md-button ng-click="locationAutocompleteCtrl.cancel()" class="md-primary">Voltar</md-button>
+
+      <md-button ng-click="locationAutocompleteCtrl.changeLocation()" class="md-raised md-primary"
+                 ng-disabled="managerForm.$invalid">Alterar
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

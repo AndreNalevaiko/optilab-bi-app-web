@@ -1,0 +1,67 @@
+<div class="gorillascode-content gorillasauth-user-management">
+    <md-toolbar class="md-table-toolbar md-default">
+        <md-input-container class="md-block input_search">
+            <label>Procurar usuário</label>
+            <input name="clientEmail" ng-model="name"/>
+        </md-input-container>
+        <div class="md-toolbar-tools">
+            <span flex>{{userManagementCtrl.toolbarTitle}}</span>
+            <md-button ng-show="userManagementCtrl.selecteds.length"
+                       ng-click="userManagementCtrl.deleteSelectedsConfirmation($event)" class="md-icon-button">
+                <md-tooltip>
+                    Excluir
+                </md-tooltip>
+                <md-icon class="material-icons">delete</md-icon>
+            </md-button>
+
+            <md-button ng-show="!userManagementCtrl.selecteds.length" ng-click="userManagementCtrl.newUser($event)"
+                       style="color: rgb(96,125,139);">
+                Novo Usuario
+            </md-button>
+
+        </div>
+    </md-toolbar>
+
+    <md-table-container flex>
+        <table md-table md-row-select multiple ng-model="userManagementCtrl.selecteds">
+            <thead md-head>
+            <tr md-row>
+                <th md-column>Nome</th>
+                <th hide-xs md-column>E-mail</th>
+                <th md-column></th>
+            </tr>
+            </thead>
+
+            <tbody md-body>
+            <tr md-row md-select="user" md-select-id="id" md-auto-select
+                ng-repeat="user in userManagementCtrl.users | filter: name">
+                <td md-cell>{{user.name}}</td>
+                <td hide-xs md-cell>{{user.email}}</td>
+                <td md-cell>
+                    <div layout="row" layout-align="end" ng-cloak>
+                        <md-menu>
+                            <md-button aria-label="more" class="md-icon-button"
+                                       ng-click="$mdMenu.open($event)">
+                                <md-icon>more_vert</md-icon>
+                            </md-button>
+                            <md-menu-content width="2">
+                                <md-menu-item>
+                                    <md-button ng-click="userManagementCtrl.editUser($event, user)"><span
+                                            md-menu-align-target>Editar</span> {{item}}
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="userManagementCtrl.openRolesDialog($event, user)"><span
+                                        md-menu-align-target>Permissões</span> {{item}}
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+
+</div>

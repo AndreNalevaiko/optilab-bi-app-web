@@ -1,0 +1,94 @@
+<div flex layout="column" class="gorillascode-content gorillasauth-login">
+  <div class="login-box">
+    <md-toolbar
+        ng-style="publicCtrl.customConfigs['layout.primary.color'] ? {'background-color': publicCtrl.customConfigs['layout.primary.color']} : ''">
+      <div class="md-toolbar-tools" layout-align="center center">
+        <a href="" ng-click="loginCtrl.showLogin()">
+          <ng-md-icon class="arrow-back" icon="keyboard_arrow_left" size="48"
+                      ng-show="loginCtrl.selectedBox == 1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+              <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path>
+            </svg>
+          </ng-md-icon>
+        </a>
+        <p>{{loginCtrl.boxTitle}}</p>
+      </div>
+    </md-toolbar>
+
+    <md-tabs md-dynamic-height md-border-bottom md-no-bar md-selected="loginCtrl.selectedBox">
+      <md-tab label="Acesso">
+        <form name="loginForm" ng-submit="loginCtrl.doLogin()" novalidate>
+
+          <md-button ng-if="publicCtrl.customConfigs['allows.login.facebook']" class="md-raised facebook" ng-click="loginCtrl.loginFacebook()">
+            <span hide-xs="true">Entre utilizando o Facebook</span>
+            <span hide-gt-xs="true" show-xs="true">Entre com o Facebook</span>
+          </md-button>
+
+          <p ng-if="publicCtrl.customConfigs['allows.login.facebook']" class="background-line">
+            <span>ou use seu email</span>
+          </p>
+
+          <md-input-container md-no-float class="md-block">
+            <label>Email</label>
+            <input type="email" ng-model="loginCtrl.user.email" name="email" maxlength="256"
+                   autocomplete="email" required autofocus/>
+            <div ng-messages="loginForm.email.$error">
+              <div ng-message="required">Informe seu e-mail</div>
+              <div ng-message="email">E-mail invalido</div>
+            </div>
+          </md-input-container>
+
+          <md-input-container md-no-float class="md-block">
+            <label>Senha</label>
+            <input type="password" ng-model="loginCtrl.user.password" name="password"
+                   maxlength="256" required/>
+            <div ng-messages="loginForm.password.$error">
+              <div ng-message="required">Informe sua senha</div>
+            </div>
+          </md-input-container>
+
+          <md-input-container class="md-block" md-theme="default">
+            <md-button type="submit" class="md-raised md-primary"
+                       ng-style="publicCtrl.customConfigs['layout.primary.color'] && !loginForm.$invalid ? {'background-color': publicCtrl.customConfigs['layout.primary.color']} : ''"
+                       ng-disabled="loginForm.$invalid">
+              Entrar
+            </md-button>
+          </md-input-container>
+
+        </form>
+      </md-tab>
+
+      <md-tab label="Problemas?">
+        <form name="recoverForm" ng-submit="loginCtrl.recoverPassword()" novalidate>
+          <p>Confirme seu e-mail</p>
+          <p>&nbsp;</p>
+          <md-input-container md-no-float class="md-block">
+            <label>Email</label>
+            <input type="email" ng-model="loginCtrl.emailRecover" name="email" maxlength="256"
+                   autocomplete="email" required autofocus/>
+            <div ng-messages="recoverForm.email.$error">
+              <div ng-message="email">E-mail invalido</div>
+            </div>
+          </md-input-container>
+
+          <md-input-container class="md-block" md-theme="default">
+            <md-button type="submit" class="md-raised md-primary"
+                       ng-style="publicCtrl.customConfigs['layout.primary.color'] && !recoverForm.$invalid ? {'background-color': publicCtrl.customConfigs['layout.primary.color']} : ''"
+                       ng-disabled="recoverForm.$invalid">
+              Recuperar senha
+            </md-button>
+          </md-input-container>
+
+          <p ng-show="loginCtrl.emailRecoverMessage">{{loginCtrl.emailRecoverMessage}}</p>
+        </form>
+
+      </md-tab>
+    </md-tabs>
+  </div>
+
+</div>
+
+<div layout="row" layout-align="center" ng-show="loginCtrl.selectedBox == 0">
+  <md-button ng-click="loginCtrl.showRecover()">Esqueceu sua senha?</md-button>
+</div>
+

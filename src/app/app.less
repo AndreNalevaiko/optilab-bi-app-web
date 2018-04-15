@@ -1,0 +1,231 @@
+#loading-bar .bar {
+  background: #FFEB3B;
+  height: 4px;
+}
+
+a {
+  color: #4285f4;
+  text-decoration: none;
+}
+
+// Se o botão tem apenas um ícone e não tem texto então diminui a largura padrão
+.md-button.only-icon {
+  min-width: inherit;
+}
+
+// Texto para indicar que não existem itens para exibir
+.gorillascode-no-results {
+  color: rgba(0, 0, 0, 0.54);
+  padding: 20px 0;
+  text-align: center;
+}
+
+// Adiciona animação ao exibir um novo item
+.gorillascode-animate {
+  &.ng-enter,
+  &.ng-leave,
+  &.ng-hide-add,
+  &.ng-hide-remove {
+    -webkit-transition: 0.5s linear all;
+    -moz-transition: 0.5s linear all;
+    -o-transition: 0.5s linear all;
+    transition: 0.5s linear all;
+  }
+
+  &.ng-enter,
+  &.ng-hide,
+  &.ng-leave.ng-leave-active {
+    opacity: 0;
+  }
+
+  &.ng-leave,
+  &.ng-enter.ng-enter-active {
+    opacity: 1;
+  }
+}
+
+.gorillascode-fixed-toolbar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: inherit;
+}
+
+.gorillascode-search-box {
+  padding: 10px;
+
+  md-input-container {
+    margin: 0;
+
+    .md-errors-spacer {
+      display: none;
+    }
+  }
+}
+
+.gorillascode-page {
+  height: 100%;
+
+  md-content {
+    background-color: #FFF;
+
+    @media (min-width: 600px) {
+      background-color: #F5F5F5;
+    }
+  }
+
+  .main-content {
+    h2 {
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+  }
+}
+
+.gorillascode-content {
+  background-color: #FFF;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100px;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+
+  .input_search{
+    margin-bottom: -20px;
+    font-size: 16px;
+    margin-top: -10px;
+  }
+
+  @media (min-width: 600px) {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
+    margin-bottom: 10px;
+    max-width: 800px;
+    padding: 40px;
+  }
+}
+
+.footer {
+  font-size: 12px;
+  letter-spacing: .020em;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+// Foto do perfil do usuário
+.gorillascode-profile-photo {
+  background: #FFF;
+  border: 1px solid #CCC;
+  border-radius: 50%;
+}
+
+// Faixa que fica atrás do conteúdo principal
+.gorillascode-content-background {
+  width: 100%;
+  height: 128px;
+  position: absolute;
+}
+
+// Cria um menu dropdown
+.gorillascode-menu-dropdown {
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position: relative;
+
+    li {
+      display: inline-block;
+
+      // Mostra o dropdown no hover
+      &:hover > ul {
+        display: inherit;
+      }
+    }
+
+    // Esconde o dropdown por padrão
+    ul {
+      display: none;
+      position: absolute;
+      top: 36px; // Altura principal
+
+      a {
+        line-height: 32px;
+      }
+
+      // Primeiro nível do menu
+      li {
+        width: 320px;
+        float: none;
+        display: list-item;
+        position: relative;
+      }
+
+      // Segundo, terceiro e outros níveis do menu
+      ul {
+        li {
+          position: relative;
+          top: -60px;
+          left: 170px;
+        }
+      }
+    }
+  }
+
+  a {
+    display: block;
+    line-height: 36px;
+    padding: 0 10px;
+    text-decoration: none;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-secondary {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.md-input-has-value .value {
+  margin-bottom: 12px;
+}
+
+.image-loading {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+p.background-line {
+  display: table;
+  white-space: nowrap;
+  margin-bottom: 18px;
+  margin-top: 18px;
+  font-size: 14px;
+  color: #a0a0a0;
+}
+
+p.background-line span {
+  padding: 0 10px;
+}
+
+p.background-line:after,
+p.background-line:before {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: #dddddd;
+  content: '';
+  display: table-cell;
+  position: relative;
+  top: 9px;
+  width: 50%;
+}

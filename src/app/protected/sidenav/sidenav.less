@@ -1,0 +1,56 @@
+.gorillascode-sidenav {
+  background-color: #FFF;
+
+  md-toolbar {
+    &.header {
+      .logo {
+        height: 26px;
+        margin-right: 16px;
+      }
+    }
+  }
+
+  md-list-item {
+    a.md-button {
+      margin: 0;
+    }
+
+    &.active {
+      background-color: #EEE;
+    }
+  }
+
+  .profile-photo {
+    min-width: inherit;
+    margin-right: 16px !important;
+    height: 55px;
+    padding: 0;
+    border-radius: 50%;
+
+    img {
+      margin: 0;
+      height: 55px !important;
+      width: 55px !important;
+    }
+
+    .change-photo {
+      background: rgba(0, 0, 0, 0.26);
+      border-radius: 50%;
+      display: none;
+      height: 55px;
+      position: absolute;
+      top: 0;
+      width: 55px;
+
+      md-icon {
+        color: #FFF;
+      }
+    }
+
+    &:hover {
+      .change-photo {
+        display: flex;
+      }
+    }
+  }
+}

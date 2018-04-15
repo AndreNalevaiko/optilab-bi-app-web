@@ -1,0 +1,22 @@
+<md-dialog class="gorillascode-profile-photo-edit" aria-label="Alterar Foto do Perfil">
+  <md-dialog-content flex layout="column" class="md-content">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Foto de Perfil</h2>
+      </div>
+    </md-toolbar>
+
+    <div class="md-dialog-content">
+      <div accept="image/*" ngf-drop ng-model="profilePhotoCtrl.file"
+           ngf-pattern="image/*" ngf-drag-over-class="'drag-over'" class="crop-area">
+        <img-crop flex image="profilePhotoCtrl.file | ngfDataUrl" area-type="circle"
+                  result-image="profilePhotoCtrl.fileCroppedData"
+                  result-image-size="300"/>
+      </div>
+    </div>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button ng-click="profilePhotoCtrl.cancel()">Cancelar</md-button>
+    <md-button class="md-accent" ng-click="profilePhotoCtrl.save()">Salvar</md-button>
+  </md-dialog-actions>
+</md-dialog>

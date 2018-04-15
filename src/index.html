@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="gorillasauth" ng-controller="AppController" ng-strict-di>
+  <head>
+    <title ng-bind-template="{{pageTitle ? pageTitle + ' - ' : ''}}OptilabBI">OptilabBI</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="msapplication-config" content="/assets/browserconfig.xml">
+
+    <link rel="author" href="https://gorillascode.com/" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png" sizes="16x16">
+    <link rel="mask-icon" href="/assets/images/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+    <link rel="manifest" href="/assets/manifest.json">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <% styles.forEach(function(file) { %>
+    <link rel="stylesheet" type="text/css" href="/<%= file %>" />
+    <% }); %>
+  </head>
+  <body ng-cloak layout="row">
+    <div ui-view flex layout="row">
+      <div layout="column" layout-align="center center" flex>
+        <md-progress-circular md-mode="indeterminate" md-diameter="50"></md-progress-circular>
+      </div>
+    </div>
+
+    <script>
+      var appVersion = {
+        buildDate: new Date(<%= new Date().getTime() %>),
+        number: '<%= version %>'
+      };
+    </script>
+
+    <% scripts.forEach(function(file) { %>
+    <script src="/<%= file %>"></script>
+    <% }); %>
+
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '1785616938424306',
+            xfbml      : true,
+            version    : 'v2.8'
+          });
+        };
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "//connect.facebook.net/pt_BR/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+      </script>
+
+  </body>
+</html>

@@ -1,0 +1,42 @@
+.gorillasauth-profile {
+
+  .profile-photo {
+    cursor: pointer;
+    height: 150px;
+    margin: auto;
+    width: 150px;
+
+    .gorillascode-profile-photo {
+      background: #FFF;
+      border: 2px solid #FFF;
+      height: 150px;
+      width: 150px;
+    }
+
+    .file-select {
+      background: rgba(0, 0, 0, 0.26);
+      border-radius: 50%;
+      display: none;
+      height: 150px;
+      margin: 2px;
+      position: absolute;
+      top: 40px;
+      width: 150px;
+
+      md-icon {
+        color: #FFF;
+      }
+
+      @media (max-width: 600px) {
+        top: 20px
+      }
+    }
+
+    &:hover {
+      .file-select {
+        display: flex;
+      }
+    }
+  }
+}
+

@@ -1,0 +1,10 @@
+*.sw*
+*~
+.idea/
+build/
+bin/
+node_modules/
+vendor/
+package-lock.json
+.vscode/tags
+fabfile.pyc

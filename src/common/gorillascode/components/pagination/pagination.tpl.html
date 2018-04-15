@@ -1,0 +1,9 @@
+<div ng-show="!paginationCtrl.allLoaded">
+  <div ng-show="!paginationCtrl.loading && paginationCtrl.list.result.length" layout="column">
+    <md-button ng-click="paginationCtrl.loadMore()">Ver mais</md-button>
+  </div>
+
+  <p ng-show="paginationCtrl.loading" layout="column" layout-align="center center">
+    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+  </p>
+</div>

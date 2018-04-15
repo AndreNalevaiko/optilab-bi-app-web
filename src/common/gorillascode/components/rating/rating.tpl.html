@@ -1,0 +1,9 @@
+<div layout="row" layout-align="start center" class="gorillascode-rating">
+  <div ng-repeat="n in [].constructor(maxValue) track by $index" class="full-icon">
+    <md-icon md-font-icon="material-icons">star_border</md-icon>
+
+    <div class="fill-star" ng-style="{ width: calcFill($index + 1) }">
+      <md-icon md-font-icon="material-icons">star</md-icon>
+    </div>
+  </div>
+</div>

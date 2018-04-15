@@ -1,0 +1,36 @@
+<md-dialog class="proposal-details" aria-label="gorillasauth-user-roles">
+  <form name="editForm" ng-cloak ng-submit="confirm()">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Permissões</h2>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+
+        <div layout="column" layout-padding ng-repeat="app in applications" class="roles">
+          <span><strong>{{app.name}}</strong></span>
+          <div>
+            <md-checkbox ng-model="role.checked" ng-repeat="role in app.roles">
+              {{role.name}}
+            </md-checkbox>
+
+            <md-divider></md-divider>
+          </div>
+        </div>
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()">
+        Cancelar
+      </md-button>
+      <button class="md-button md-accent" type="submit" ng-disabled="editForm.$invalid">
+        Salvar
+      </button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

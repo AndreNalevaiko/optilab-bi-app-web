@@ -1,0 +1,42 @@
+<div class="gorillascode-content gorillasauth-profile">
+
+  <form name="profileForm" ng-submit="profileCtrl.save()">
+    <div class="profile-photo">
+      <div class="profile-photo" ngf-select="protectedCtrl.selectProfilePhoto($file, $event)">
+        <img ng-src="{{protectedCtrl.user.profile_photo.url || '/assets/images/default-avatar.png'}}"
+             class="gorillascode-profile-photo" title="Foto do perfil">
+
+        <div class="file-select" layout="row" layout-align="center center">
+          <md-icon md-font-icon="material-icons" aria-label="Alterar a foto">photo_camera
+          </md-icon>
+        </div>
+        <md-tooltip>Alterar a foto</md-tooltip>
+      </div>
+    </div>
+
+    <md-input-container class="md-block">
+      <label>Nome</label>
+      <input ng-model="profileCtrl.user.name" size="50" name="name" required autofocus/>
+
+      <div ng-messages="profileForm.name.$error">
+        <div ng-message="required">Campo obrigatório</div>
+      </div>
+    </md-input-container>
+
+    <md-input-container class="md-block">
+      <label>E-mail</label>
+      <input type="email" ng-model="profileCtrl.user.email" name="email" required autofocus/>
+
+      <div ng-messages="profileForm.email.$error">
+        <div ng-message="required">Campo obrigatório</div>
+        <div ng-message="email">Informe um email válido</div>
+      </div>
+    </md-input-container>
+
+    <div layout="row" layout-align="end">
+      <md-button  ui-sref="protected.change-password">Alterar senha</md-button>
+      <md-button type="submit" class="md-accent md-raised" ng-disabled="profileForm.$invalid">Salvar</md-button>
+    </div>
+  </form>
+
+</div>

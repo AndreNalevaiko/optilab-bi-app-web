@@ -1,0 +1,53 @@
+<md-dialog class="proposal-details" aria-label="proposal-details">
+  <form name="editForm" ng-cloak ng-submit="confirm()">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{title}}</h2>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+
+        <md-input-container class="md-block">
+          <label>Nome</label>
+          <input ng-model="user.name" size="50" name="name" required autofocus/>
+
+          <div ng-messages="editForm.name.$error">
+            <div ng-message="required">Campo obrigatório</div>
+          </div>
+        </md-input-container>
+
+        <md-input-container class="md-block">
+          <label>E-mail</label>
+          <input type="email" ng-model="user.email" name="email" required/>
+
+          <div ng-messages="editForm.email.$error">
+            <div ng-message="required">Campo obrigatório</div>
+            <div ng-message="email">Informe um email válido</div>
+          </div>
+        </md-input-container>
+
+         <md-input-container class="md-block" ng-if="isNew">
+          <label>Senha</label>
+          <input type="password" ng-model="user.password" name="password" required/>
+
+          <div ng-messages="editForm.password.$error">
+            <div ng-message="required">Campo obrigatório</div>
+          </div>
+        </md-input-container>
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="cancel()">
+        Cancelar
+      </md-button>
+      <button class="md-button md-accent" type="submit" ng-disabled="editForm.$invalid">
+        Confirmar
+      </button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

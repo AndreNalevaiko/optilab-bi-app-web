@@ -1,0 +1,20 @@
+
+<md-content flex role="navigation">
+  <div layout="row" layout-align="center" layout-padding flex>
+    <img src="/assets/images/logo-footer.png">
+
+  </div>
+
+  <md-list>
+    <md-list-item ui-sref="protected.dashboard">
+      <md-icon md-font-icon="material-icons" aria-label="Meus Apps">view_module</md-icon>
+      <p>Resumo</p>
+    </md-list-item>
+
+    <md-list-item ui-sref="protected.user-management"
+                  ng-class="{ active: $state.includes('protected.user-management') }">
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">timeline</md-icon>
+      <p>Gráficos</p>
+    </md-list-item>
+  </md-list>
+</md-content>
