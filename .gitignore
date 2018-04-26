@@ -1,10 +1,9 @@
 *.sw*
 *~
+.git
 .idea/
 build/
 bin/
+logs/
 node_modules/
 vendor/
-package-lock.json
-.vscode/tags
-fabfile.pyc

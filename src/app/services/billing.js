@@ -3,7 +3,7 @@ angular.module('gorillasauth.services.billing', [])
     .service('BillingService', ['configuration', '$http',
         function (configuration, $http) {
 
-            this.get = function (app_id) {
+            this.get = function () {
                 var data = {
                     "period":{
                         "date_start": "01/01/2017",

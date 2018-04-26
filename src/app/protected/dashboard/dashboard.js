@@ -11,13 +11,6 @@ angular.module('gorillasauth.protected.dashboard', [
         controller: 'DashboardController as dashboardCtrl',
         data: {
           pageTitle: 'Dashboards'
-        },
-        resolve: {
-          billing: ['BillingService', function (BillingService) {
-            return BillingService.get().then(function (response) {
-              return response;
-            });
-          }]
         }
       });
     }

@@ -17,6 +17,7 @@ angular.module('gorillasauth', [
   'gorillascode.services.notification',
   'gorillasauth.services.application',
   'gorillasauth.services.billing',
+  'gorillasauth.services.abstract-products',
   'gorillasauth.services.user-management',
   'gorillasauth.services.file',
   'gorillasauth.services.role',
