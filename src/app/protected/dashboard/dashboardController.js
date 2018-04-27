@@ -9,6 +9,7 @@ angular.module('gorillasauth.protected.dashboard')
       self.loading = {
         billing: false,
         abstract_products: false,
+        abstract_brands: false,
         abstract_customers: false
       };
 
@@ -22,10 +23,16 @@ angular.module('gorillasauth.protected.dashboard')
           self.loading.billing = false;          
         });
 
-        AbstractProductsService.get().then(function (response) {
-          console.log(response);
-          self.abstract_products = response;
-          self.loading.abstract_products = false;          
+        // AbstractProductsService.get().then(function (response) {
+        //   console.log(response);
+        //   self.abstract_products = response;
+        //   self.loading.abstract_products = false;          
+        // });
+
+        AbstractProductsService.getBrands().then(function (brands) {
+          console.log(brands);
+          self.abstract_brands = brands;
+          self.loading.abstract_brands = false;          
         });
       };
 
