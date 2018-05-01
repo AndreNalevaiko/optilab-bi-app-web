@@ -43,7 +43,7 @@ angular.module('gorillascode.filters', [])
         case 2:
           return 'Pato Branco';
 
-        case 2:
+        case 6:
           return 'Cascavel';
 
         default:

@@ -17,6 +17,7 @@ angular.module('gorillasauth.protected.dashboard')
         self.loading.billing = true;
         self.loading.abstract_products = true;
         self.loading.abstract_customers = true;
+        self.loading.abstract_brands = true;
 
         BillingService.get().then(function (response) {
           self.billing = response;
