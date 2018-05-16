@@ -23,18 +23,18 @@
                 </div>
             </div>
         </div>
-        <!-- <div layout="row" flex>
-        <div ng-if="dashboardCtrl.loading.abstract_products" flex>
-            <span>Carregando o Resumo dos produtos</span>
-            <md-progress-linear md-mode="indeterminate"></md-progress-linear>
-        </div>
-        <div class="business" layout"column" ng-repeat="emp in dashboardCtrl.abstract_products">
+        <div layout="row" flex>
+            <div ng-if="dashboardCtrl.loading.abstract_products" flex>
+                <span>Carregando o Resumo dos produtos</span>
+                <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+            </div>
+            <div class="business" layout"column" ng-repeat="emp in dashboardCtrl.abstract_products">
                 <div class="info" layout="row" layout-align="space-between center" ng-repeat="product in emp">
                     <span>{{product.description}}</span><span>{{product.amount}}</span>
                 </div>
+            </div>
         </div>
-    </div> -->
-        <div layout="row" layout-xs="column" flex>
+        <div layout="row" layout-xs="column" flex ng-show="false">
             <div ng-if="dashboardCtrl.loading.abstract_brands" flex>
                 <span>Carregando o Resumo dos produtos</span>
                 <md-progress-linear md-mode="indeterminate"></md-progress-linear>

@@ -34,8 +34,8 @@ angular.module('gorillasauth.services.abstract-products', [])
                         }
                     ],
                     "period": {
-                        "date_start": "01/01/2017",
-                        "date_end": "31/12/2017"
+                        "month": '02',
+                        "year": '2018'
                     }
                 };
 
@@ -74,9 +74,9 @@ angular.module('gorillasauth.services.abstract-products', [])
                         "label": "ITOP"
                         }
                     ],
-                    "period":{
-                        "date_start": "01/01/2017",
-                        "date_end": "31/12/2018"
+                    "period": {
+                        "month": '02',
+                        "year": '2018'
                     }
                 };
 

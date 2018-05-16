@@ -24,11 +24,11 @@ angular.module('gorillasauth.protected.dashboard')
           self.loading.billing = false;          
         });
 
-        // AbstractProductsService.get().then(function (response) {
-        //   console.log(response);
-        //   self.abstract_products = response;
-        //   self.loading.abstract_products = false;          
-        // });
+        AbstractProductsService.get().then(function (response) {
+          console.log(response);
+          self.abstract_products = response;
+          self.loading.abstract_products = false;          
+        });
 
         AbstractProductsService.getBrands().then(function (brands) {
           console.log(brands);

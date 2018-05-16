@@ -5,9 +5,9 @@ angular.module('gorillasauth.services.billing', [])
 
             this.get = function () {
                 var data = {
-                    "period":{
-                        "date_start": "01/01/2017",
-                        "date_end": "31/12/2017"	
+                    "period": {
+                        "month": '02',
+                        "year": '2018'
                     }
                 };
                 return $http.post(configuration.apiUrl + '/billing/', data).then(function (response) {
