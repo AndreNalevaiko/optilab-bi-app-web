@@ -10,6 +10,8 @@ angular.module('gorillasauth', [
   'md.data.table',
   'ngFileUpload',
   'ngImgCrop',
+  'idf.br-filters',
+  'ui.utils.masks',
   'gorillascode',
   'gorillascode.services.upload',
   'gorillascode.services.user',
@@ -21,6 +23,7 @@ angular.module('gorillasauth', [
   'gorillasauth.services.user-management',
   'gorillasauth.services.file',
   'gorillasauth.services.role',
+  'gorillasauth.services.budget',
   'gorillasauth.public',
   'gorillasauth.protected'
 ])
@@ -28,7 +31,7 @@ angular.module('gorillasauth', [
   .config(['$urlRouterProvider', '$httpProvider', '$mdThemingProvider', 'cfpLoadingBarProvider',
 
     function ($urlRouterProvider, $httpProvider, $mdThemingProvider, cfpLoadingBarProvider) {
-      $urlRouterProvider.otherwise('/dashboard');
+      $urlRouterProvider.otherwise('/billing');
       $httpProvider.interceptors.push('AuthInterceptor');
       cfpLoadingBarProvider.includeSpinner = false;
 

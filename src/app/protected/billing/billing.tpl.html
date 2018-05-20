@@ -1,0 +1,35 @@
+<div class="optilab-bi-billing" layout-padding flex>
+    <md-card flex>
+        <div layout="row" layout-xs="column" flex>
+            <div ng-if="billingCtrl.loading.billing" flex>
+                <span>Carregando o faturamento</span>
+                <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+            </div>
+            <div class="business" layout="column" ng-repeat="bil in billingCtrl.billing" flex>
+                <div class="alias" layout="row" layout-align="center" flex>
+                    <span>Faturamento {{bil.business_alias}}</span>
+                </div>
+                <div class="info" layout="row" layout-align="space-between center">
+                    <span>Budget</span>
+                    <span ng-if="bil.budget" ng-click="billingCtrl.insertBudget($event, bil.business, bil.budget)">
+                        {{bil.budget.value | currency : R$ : 2}}
+                    </span>
+                    <span ng-if="!bil.budget">
+                        <md-button class="md-primary btn-budget" 
+                                   ng-click="billingCtrl.insertBudget($event, bil.business)">
+                            Inserir budget
+                        </md-button>
+                    </span>
+                </div>
+                <div class="info" layout="row" layout-align="space-between center">
+                    <span>Fat. acumulado</span>
+                    <span>{{bil.value | currency : R$ : 2}}</span>
+                </div>
+                <div class="info" layout="row" layout-align="space-between center">
+                    <span>Porcentagem alcançada</span>
+                    <span>{{(bil.value / bil.budget.value) | percentage:2}}</span>
+                </div>
+            </div>
+        </div>
+    </md-card>
+</div>

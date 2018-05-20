@@ -6,15 +6,22 @@
   </div>
 
   <md-list>
-    <md-list-item ui-sref="protected.dashboard">
-      <md-icon md-font-icon="material-icons" aria-label="Meus Apps">view_module</md-icon>
-      <p>Resumo</p>
+    <md-list-item ui-sref="protected.billing" 
+                  ng-class="{ active: $state.includes('protected.billing') }">
+      <md-icon md-font-icon="material-icons" aria-label="Meus Apps">timeline</md-icon>
+      <p>Faturamento</p>
     </md-list-item>
 
-    <md-list-item ui-sref="protected.user-management"
-                  ng-class="{ active: $state.includes('protected.user-management') }">
-      <md-icon md-font-icon="material-icons" aria-label="Usuários">timeline</md-icon>
-      <p>Gráficos</p>
+    <md-list-item ui-sref="protected.products"
+                  ng-class="{ active: $state.includes('protected.products') }">
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">view_module</md-icon>
+      <p>Produtos</p>
+    </md-list-item>
+
+    <md-list-item ui-sref="protected.customers"
+                  ng-class="{ active: $state.includes('protected.customers') }">
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">view_module</md-icon>
+      <p>Clientes</p>
     </md-list-item>
   </md-list>
 </md-content>

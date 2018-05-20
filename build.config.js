@@ -75,6 +75,8 @@ module.exports = {
       'vendor/angular-messages/angular-messages.js',
       'vendor/angular-material-data-table/dist/md-data-table.js',
       'vendor/angular-resource/angular-resource.js',
+      'vendor/angular-br-filters/release/angular-br-filters.js',
+      'vendor/angular-input-masks/angular-input-masks-standalone.js',
       'vendor/angular-ui-router/release/angular-ui-router.js',
       'vendor/angular-ui-utils/modules/route/route.js',
       'vendor/ng-file-upload/ng-file-upload.js',
