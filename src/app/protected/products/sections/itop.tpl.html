@@ -1,0 +1,80 @@
+
+<div layout="row" layout-align="center" flex>
+    <span>Itop</span>
+</div>
+<div layout="row" layout-align="space-between start" flex>
+                
+    <div layout="column">
+
+        <br>
+        <br>
+
+        <span>Itop Geral</span>
+
+        <span>Itop Mult Conv</span>
+
+        <span>Itop VS Dig</span>
+
+    </div>
+
+    <div layout="column">
+        <span>2017</span>
+
+        <div layout="row">
+
+            <div layout="column">
+
+                <span>Qtd</span>
+
+                <span>{{emp.geral_itop['2017'][0].amount}}</span>
+
+                <span>{{emp.itop_mult['2017'][0].amount}}</span>
+
+                <span>{{emp.itop_vs_dig['2017'][0].amount}}</span>
+
+                
+            </div>
+
+            <div layout="column">
+                <span>Vlr</span>
+
+                <span>{{emp.geral_itop['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.itop_mult['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.itop_vs_dig['2017'][0].value | currency : R$ : 2}}</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div layout="column">
+        <span>2018</span>
+
+        <div layout="row">
+
+            <div layout="column">
+
+                <span>Qtd</span>
+
+                <span>{{emp.geral_itop['2018'][0].amount}}</span>
+
+                <span>{{emp.itop_mult['2018'][0].amount}}</span>
+
+                <span>{{emp.itop_vs_dig['2018'][0].amount}}</span>
+                
+            </div>
+
+            <div layout="column">
+                <span>Vlr</span>
+
+                <span>{{emp.geral_itop['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.itop_mult['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.itop_vs_dig['2018'][0].value | currency : R$ : 2}}</span>
+
+            </div>
+        </div>
+    </div>
+</div>

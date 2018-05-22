@@ -1,0 +1,98 @@
+
+<div layout="row" layout-align="center" flex>
+    <span>Transitions</span>
+</div>
+<div layout="row" layout-align="space-between start" flex>
+                
+    <div layout="column">
+
+        <br>
+        <br>
+
+        <span>Trans Geral</span>
+
+        <span>Trans Itop</span>
+
+        <span>Trans Kodak</span>
+
+        <span>Trans Varilux</span>
+
+        <span>Trans Vs</span>
+
+    </div>
+
+    <div layout="column">
+        <span>2017</span>
+
+        <div layout="row">
+
+            <div layout="column">
+
+                <span>Qtd</span>
+
+                <span>{{emp.geral_trans['2017'][0].amount}}</span>
+
+                <span>{{emp.trans_itop['2017'][0].amount}}</span>
+
+                <span>{{emp.trans_kodak['2017'][0].amount}}</span>
+
+                <span>{{emp.trans_vlx['2017'][0].amount}}</span>
+
+                <span>{{emp.trans_vs['2017'][0].amount}}</span>
+                
+            </div>
+
+            <div layout="column">
+                <span>Vlr</span>
+
+                <span>{{emp.geral_trans['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_itop['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_kodak['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_vlx['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_vs['2017'][0].value | currency : R$ : 2}}</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div layout="column">
+        <span>2018</span>
+
+        <div layout="row">
+
+            <div layout="column">
+
+                <span>Qtd</span>
+
+                <span>{{emp.geral_trans['2018'][0].amount}}</span>
+
+                <span>{{emp.trans_itop['2018'][0].amount}}</span>
+
+                <span>{{emp.trans_kodak['2018'][0].amount}}</span>
+
+                <span>{{emp.trans_vlx['2018'][0].amount}}</span>
+
+                <span>{{emp.trans_vs['2018'][0].amount}}</span>
+                
+            </div>
+
+            <div layout="column">
+                <span>Vlr</span>
+
+                <span>{{emp.geral_trans['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_itop['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_kodak['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_vlx['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.trans_vs['2018'][0].value | currency : R$ : 2}}</span>
+            </div>
+        </div>
+    </div>
+</div>

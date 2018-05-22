@@ -44,9 +44,9 @@ angular.module('gorillasauth.services.abstract-products', [])
                 });
             };
 
-            this.getBrand = function (dateSelected, brand) {
+            this.getBrand = function (dateSelected, brands) {
                 var data = {
-                    "brands": [brand],
+                    "brands": brands,
                     "period": {
                         "month": String(dateSelected.month),
                         "years": String(dateSelected.year -1) + ',' + String(dateSelected.year)

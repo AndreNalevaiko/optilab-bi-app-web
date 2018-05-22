@@ -1,0 +1,165 @@
+
+<div layout="row" layout-align="center" flex>
+    <span>Varilux</span>
+</div>
+<div layout="row" layout-align="space-between start" flex>
+                
+    <div layout="column" class="label-product values">
+
+        <br>
+        <span>Classes</span>
+
+        <span>Varilux Geral</span>
+
+        <span>Varilux X</span>
+
+        <span>Varilux S</span>
+
+        <span>Varilux E</span>
+
+        <span>Varilux Physio</span>
+
+        <span>Varilux Comfort</span>
+
+        <span>Varilux Liberty</span>
+
+        <span>Varilux Digitime</span>
+
+    </div>
+
+    <div layout="column" layout-align="start center">
+        <span>2017</span>
+
+        <div layout="row" class="values">
+
+            <div layout="column">
+
+                <span class="label-values">Qtd</span>
+
+                <span>{{emp.geral_vlx['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_x['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_s['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_e['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_physio['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_comfort['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_liberty['2017'][0].amount}}</span>
+
+                <span>{{emp.vlx_digitime['2017'][0].amount}}</span>
+
+                
+            </div>
+
+            <div layout="column">
+                <span class="label-values">Vlr</span>
+
+                <span>{{emp.geral_vlx['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_x['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_s['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_e['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_physio['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_comfort['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_liberty['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_digitime['2017'][0].value | currency : R$ : 2}}</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div layout="column" layout-align="start center">
+        <span>2018</span>
+
+        <div layout="row" class="values">
+
+            <div layout="column">
+
+                <span class="label-values">Qtd</span>
+
+                <span>{{emp.geral_vlx['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_x['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_s['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_e['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_physio['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_comfort['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_liberty['2018'][0].amount}}</span>
+
+                <span>{{emp.vlx_digitime['2018'][0].amount}}</span>
+
+                
+            </div>
+
+            <div layout="column">
+                <span class="label-values">Vlr</span>
+
+                <span>{{emp.geral_vlx['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_x['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_s['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_e['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_physio['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_comfort['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_liberty['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.vlx_digitime['2018'][0].value | currency : R$ : 2}}</span>
+            </div>
+        </div>
+    </div>
+    <div layout="column" layout-align="start center">
+        <span>%</span>
+
+        <div layout="row" class="values">
+
+            <div layout="column" layout-align="start center">
+
+                <span class="label-values">Qtd</span>
+
+                <span ng-class="(emp.geral_vlx['2018'][0].amount / emp.geral_vlx['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.geral_vlx['2018'][0].amount / emp.geral_vlx['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_x['2018'][0].amount / emp.vlx_x['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_x['2018'][0].amount / emp.vlx_x['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_s['2018'][0].amount / emp.vlx_s['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_s['2018'][0].amount / emp.vlx_s['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_e['2018'][0].amount / emp.vlx_e['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_e['2018'][0].amount / emp.vlx_e['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_physio['2018'][0].amount / emp.vlx_physio['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_physio['2018'][0].amount / emp.vlx_physio['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_comfort['2018'][0].amount / emp.vlx_comfort['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_comfort['2018'][0].amount / emp.vlx_comfort['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_liberty['2018'][0].amount / emp.vlx_liberty['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_liberty['2018'][0].amount / emp.vlx_liberty['2017'][0].amount) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_digitime['2018'][0].amount / emp.vlx_digitime['2017'][0].amount) < 1 ? 'less' : 'greater'">{{(emp.vlx_digitime['2018'][0].amount / emp.vlx_digitime['2017'][0].amount) - 1 | percentage: 2}}</span>
+
+                
+            </div>
+
+            <div layout="column" layout-align="start center">
+                <span class="label-values">Vlr</span>
+
+                <span ng-class="(emp.geral_vlx['2018'][0].value / emp.geral_vlx['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.geral_vlx['2018'][0].value / emp.geral_vlx['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_x['2018'][0].value / emp.vlx_x['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_x['2018'][0].value / emp.vlx_x['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_s['2018'][0].value / emp.vlx_s['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_s['2018'][0].value / emp.vlx_s['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_e['2018'][0].value / emp.vlx_e['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_e['2018'][0].value / emp.vlx_e['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_physio['2018'][0].value / emp.vlx_physio['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_physio['2018'][0].value / emp.vlx_physio['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_comfort['2018'][0].value / emp.vlx_comfort['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_comfort['2018'][0].value / emp.vlx_comfort['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_liberty['2018'][0].value / emp.vlx_liberty['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_liberty['2018'][0].value / emp.vlx_liberty['2017'][0].value) - 1 | percentage: 2}}</span>
+                <span ng-class="(emp.vlx_digitime['2018'][0].value / emp.vlx_digitime['2017'][0].value) < 1 ? 'less' : 'greater'">{{(emp.vlx_digitime['2018'][0].value / emp.vlx_digitime['2017'][0].value) - 1 | percentage: 2}}</span>
+            </div>
+        </div>
+    </div>
+</div>

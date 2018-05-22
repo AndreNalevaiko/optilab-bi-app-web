@@ -46,6 +46,15 @@ angular.module('gorillascode.filters', [])
         case 6:
           return 'Cascavel';
 
+        case '1':
+          return 'Curitiba';
+
+        case '2':
+          return 'Pato Branco';
+
+        case '6':
+          return 'Cascavel';
+
         default:
           return value;
       }

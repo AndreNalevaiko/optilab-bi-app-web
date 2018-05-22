@@ -1,0 +1,98 @@
+
+<div layout="row" layout-align="center" flex>
+    <span>Crizal</span>
+</div>
+<div layout="row" layout-align="space-between start" flex>
+                
+    <div layout="column">
+
+        <br>
+        <br>
+
+        <span>Crizal Geral</span>
+
+        <span>Crizal Kodak</span>
+
+        <span>Crizal Varilux</span>
+
+        <span>Crizal Vs Conv</span>
+
+        <span>Crizal Vs Dig</span>
+
+    </div>
+
+    <div layout="column">
+        <span>2017</span>
+
+        <div layout="row">
+
+            <div layout="column">
+
+                <span>Qtd</span>
+
+                <span>{{emp.geral_crizal['2017'][0].amount}}</span>
+
+                <span>{{emp.cz_kodak['2017'][0].amount}}</span>
+
+                <span>{{emp.cz_vlx['2017'][0].amount}}</span>
+
+                <span>{{emp.cz_vs_conv['2017'][0].amount}}</span>
+
+                <span>{{emp.cz_vs_dig['2017'][0].amount}}</span>
+                
+            </div>
+
+            <div layout="column">
+                <span>Vlr</span>
+
+                <span>{{emp.geral_crizal['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_kodak['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_vlx['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_vs_conv['2017'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_vs_dig['2017'][0].value | currency : R$ : 2}}</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div layout="column">
+        <span>2018</span>
+
+        <div layout="row">
+
+            <div layout="column">
+
+                <span>Qtd</span>
+
+                <span>{{emp.geral_crizal['2018'][0].amount}}</span>
+
+                <span>{{emp.cz_kodak['2018'][0].amount}}</span>
+
+                <span>{{emp.cz_vlx['2018'][0].amount}}</span>
+
+                <span>{{emp.cz_vs_conv['2018'][0].amount}}</span>
+
+                <span>{{emp.cz_vs_dig['2018'][0].amount}}</span>
+                
+            </div>
+
+            <div layout="column">
+                <span>Vlr</span>
+
+                <span>{{emp.geral_crizal['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_kodak['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_vlx['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_vs_conv['2018'][0].value | currency : R$ : 2}}</span>
+
+                <span>{{emp.cz_vs_dig['2018'][0].value | currency : R$ : 2}}</span>
+            </div>
+        </div>
+    </div>
+</div>
