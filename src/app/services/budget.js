@@ -14,18 +14,18 @@ angular.module('gorillasauth.services.budget', [
                 }
               };
       
-              this.search = function (searchParameters) {
-      
-                if (!searchParameters) {
-                  searchParameters = {};
-                }
-      
-                return Budget.get(searchParameters).$promise;
-              };
-      
-              this.get = function (id) {
-                return Budget.get({id: id}).$promise;
-              };
+            this.search = function (searchParameters) {
+    
+              if (!searchParameters) {
+                searchParameters = {};
+              }
+    
+              return Budget.get(searchParameters).$promise;
+            };
+    
+            this.get = function (id) {
+              return Budget.get({id: id}).$promise;
+            };
 
         }
     ])
