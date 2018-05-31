@@ -1,11 +1,15 @@
 angular.module('gorillasauth.protected.products')
 
-  .controller('productsController', [ 'BillingService', 'ReportProductsService',
-    function (BillingService, ReportProductsService) {
+  .controller('productsController', ['ReportProductsService', 'DateFilterService',
+    function (ReportProductsService, DateFilterService) {
       var self = this;
 
       self.dateNow = new Date();
 
+      self.orderTable = 'brand';
+
+      self.filterOptions = DateFilterService.filterOptions();
+      // self.dateFilter = DateFilterService.filterDateNow();
       self.dateFilter = {
         day: self.dateNow.getDay(),
         //month: self.dateNow.getMonth(),
@@ -21,15 +25,13 @@ angular.module('gorillasauth.protected.products')
         var searchParams = createSearchParams();
 
         ReportProductsService.search(searchParams).then(function (response) {
-          self.brands = response;
+          self.brands = response.objects;
           self.loading = false;          
         });
-
-
       };
 
       function createSearchParams() {
-        return {
+        var params = {
           q: {
             filters: [
               {
@@ -42,9 +44,16 @@ angular.module('gorillasauth.protected.products')
                 op: 'eq',
                 val: self.dateFilter.month
               },
+            ],
+            order_by: [
+              {
+                field: self.orderTable.replace('-', ''),
+                direction: self.orderTable.indexOf('-') < 0 ? 'desc' : 'asc'
+              }
             ]
           }
         };
+        return params;
       }
 
       self.search();

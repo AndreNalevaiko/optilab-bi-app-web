@@ -1,25 +1,25 @@
 <div class="optilab-bi-products" layout-padding flex>
-    <md-card flex>
+    <md-card>
         <div ng-if="productsCtrl.loading" flex>
             <span>Carregando o relatórios de produtos</span>
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
 
-        <div ng-if="!productsCtrl.loading" layout="column" layout-align="start center" flex>
-            <div layout="column" layout-align="space-between center">
-                <div layout="column" layout-align="start center" class="emp-box" ng-repeat="(key, emp) in productsCtrl.brands">
-                    <div class="business-label" layout="row" layout-align="center">
-                        <span>{{key | companyAlias}}</span>
-                    </div>
-
-                    <ng-include src="'protected/products/sections/varilux.tpl.html'"></ng-include>
-                    <!-- <ng-include src="'protected/products/sections/kodak.tpl.html'"></ng-include>
-                    <ng-include src="'protected/products/sections/itop.tpl.html'"></ng-include>
-                    <ng-include src="'protected/products/sections/crizal.tpl.html'"></ng-include>
-                    <ng-include src="'protected/products/sections/trans.tpl.html'"></ng-include> -->
-                </div>
-            </div> 
+        <div ng-if="!productsCtrl.loading" layout-align="start center" flex>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="Curitiba">
+                    <ng-include src="'protected/products/tables/productsTableEmp1.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Cascavel">
+                    <ng-include src="'protected/products/tables/productsTableEmp6.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Pato Branco">
+                    <ng-include src="'protected/products/tables/productsTableEmp2.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Londrina">
+                    <ng-include src="'protected/products/tables/productsTableEmp5.tpl.html'"></ng-include>
+                </md-tab>
+            </md-tabs>
         </div>
-
     </md-card>
 </div>

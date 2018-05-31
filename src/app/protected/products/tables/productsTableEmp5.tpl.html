@@ -1,0 +1,66 @@
+<div layout="row" layout-align="space-around" layout-padding flex>
+    <md-input-container class="md-block" style="min-width: 150px;">
+        <label>Mês de referência</label>
+        <md-select ng-model="productsCtrl.dateFilter.month" md-on-close="productsCtrl.search()">
+            <md-option ng-value="month.value" ng-repeat="month in productsCtrl.filterOptions.months">
+                {{month.label}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <md-input-container class="md-block" style="min-width: 150px;">
+        <label>Ano de referência</label>
+        <md-select ng-model="productsCtrl.dateFilter.year" md-on-close="productsCtrl.search()">
+            <md-option ng-value="year" ng-repeat="year in productsCtrl.filterOptions.years">
+                {{year}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+</div>
+<md-table-container flex>
+    <table md-table>
+        <thead md-head md-order="productsCtrl.orderTable" md-on-reorder="productsCtrl.search">
+            <tr md-row>
+                <th md-column md-order-by="brand">
+                    <span>Marca</span>
+                </th>
+                <th md-column md-order-by="label">
+                    <span>Produto</span>
+                </th>
+                <th md-column md-order-by="qtd_latest_year">
+                    <span>Qtd {{productsCtrl.dateFilter.year - 1}}</span>
+                </th>
+                <th md-column md-order-by="value_latest_year">
+                    <span>Fat {{productsCtrl.dateFilter.year - 1}}</span>
+                </th>
+                <th md-column md-order-by="qtd_current_year">
+                    <span>Qtd {{productsCtrl.dateFilter.year}}</span>
+                </th>
+                <th md-column md-order-by="value_current_year">
+                    <span>Fat {{productsCtrl.dateFilter.year}}</span>
+                </th>
+                <th md-column md-order-by="value">
+                    <span>Qtd %</span>
+                </th>
+                <th md-column md-order-by="value">
+                    <span>Fat %</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row ng-repeat="product in productsCtrl.brands  | filter: {business_code: 5}">
+                <td md-cell>{{product.brand}}</td>
+                <td md-cell>{{product.label}}</td>
+                <td md-cell>{{product.qtd_latest_year}}</td>
+                <td md-cell>{{product.value_latest_year | currency : R$ : 2}}</td>
+                <td md-cell>{{product.qtd_current_year}}</td>
+                <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
+                <td md-cell>
+                    {{product.qtd_current_year / product.qtd_latest_year | percentage: 2}}
+                </td>
+                <td md-cell>
+                    {{product.value_current_year / product.value_latest_year | percentage: 2}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>

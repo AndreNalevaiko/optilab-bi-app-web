@@ -4,64 +4,24 @@
         padding: 8px;
     }
 
-    .business{
-        margin: 15px 5px;
-        border: 2px solid #d9ffd9;
-        border-radius: 4px;
-        
-        .alias{
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 400;
-            padding: 4px;
-            background-color: lightgrey;
+    table {
+        tbody > .md-row:hover {
+          background-color: #EEEEEE;
         }
     
-        .info{
-            font-size: 12px;
-            font-weight: 300;
-            margin: 4px 0px;
+        tbody .md-row {
+          cursor: pointer !important;
+        }
+    
+        td.md-cell:nth-child(n+2):nth-last-child(n+2), th.md-column:nth-child(n+2):nth-last-child(n+2) {
+          padding: 0 24px 0 0 !important;
+        }
+    
+        tr.md-row:focus {
+          outline: none;
         }
     }
-
-    .brand{
-        font-size: 15px;
-        font-weight: 400;
-        background-color: #00602459;
-    }
-
-    .business-label{
-        font-size: 17px;
-        font-weight: 400;
-        text-transform: uppercase;
-        color: gray;
-    }
-
-    .years{
-
-    }
-
-    .label-product{
-        font-size: 14px;
-        font-weight: 300;
-        white-space: nowrap;
-    }
-
-    .values{
-        font-size: 14px;
-        padding: 0px 2px;
-        /* border: 1px; */
-        font-weight: 300;
-
-    }
-
-    .label-values{
-        text-align: center;
-        text-transform: uppercase;
-        font-size: 12px;
-
-        
-    }
+    
 
     span{
         &.less{
@@ -71,13 +31,6 @@
         &.greater{
             color: green;
         }
-    }
-
-    .emp-box{
-        margin: 15px;
-        padding: 15px;
-        border: 2px solid #00602459;
-        border-radius: 3px;
     }
 
 }

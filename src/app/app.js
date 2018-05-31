@@ -24,6 +24,7 @@ angular.module('gorillasauth', [
   'gorillasauth.services.file',
   'gorillasauth.services.role',
   'gorillasauth.services.budget',
+  'gorillasauth.services.date-filter',
   'gorillasauth.public',
   'gorillasauth.protected'
 ])
@@ -35,7 +36,7 @@ angular.module('gorillasauth', [
       $httpProvider.interceptors.push('AuthInterceptor');
       cfpLoadingBarProvider.includeSpinner = false;
 
-      $mdThemingProvider.theme('default').primaryPalette('blue-grey').accentPalette('pink');
+      $mdThemingProvider.theme('default').primaryPalette('blue-grey').accentPalette('teal');
 
 
       if (!String.prototype.startsWith) {
