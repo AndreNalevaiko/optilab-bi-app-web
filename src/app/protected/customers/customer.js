@@ -1,13 +1,13 @@
-angular.module('gorillasauth.protected.customers', [
+angular.module('gorillasauth.protected.customer', [
   'ui.router'
 ])
 
   .config(['$stateProvider',
     function ($stateProvider) {
-      $stateProvider.state('protected.customers', {
-        url: '/customers',
-        templateUrl: 'protected/customers/customers.tpl.html',
-        controller: 'customersController as customersCtrl',
+      $stateProvider.state('protected.customer', {
+        url: '/customer',
+        templateUrl: 'protected/customers/customer.tpl.html',
+        controller: 'CustomerController as customerCtrl',
         data: {
           pageTitle: 'Clientes'
         }

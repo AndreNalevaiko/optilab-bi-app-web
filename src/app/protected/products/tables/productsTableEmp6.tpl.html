@@ -55,10 +55,10 @@
                 <td md-cell>{{product.qtd_current_year}}</td>
                 <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>
-                    {{product.qtd_current_year / product.qtd_latest_year | percentage: 2}}
+                    {{(product.qtd_current_year / product.qtd_latest_year) - 1 | percentage: 2}}
                 </td>
                 <td md-cell>
-                    {{product.value_current_year / product.value_latest_year | percentage: 2}}
+                    {{(product.value_current_year / product.value_latest_year) - 1 | percentage: 2}}
                 </td>
             </tr>
         </tbody>

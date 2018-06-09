@@ -4,31 +4,33 @@
         padding: 8px;
     }
 
-    .business{
-        margin: 15px 5px;
-        border: 2px solid #d9ffd9;
-        border-radius: 4px;
-        
-        .alias{
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 400;
-            padding: 4px;
-            background-color: lightgrey;
+    table {
+        tbody > .md-row:hover {
+          background-color: #EEEEEE;
         }
     
-        .info{
-            font-size: 12px;
-            font-weight: 300;
-            margin: 4px 0px;
+        tbody .md-row {
+          cursor: pointer !important;
+        }
+    
+        td.md-cell:nth-child(n+2):nth-last-child(n+2), th.md-column:nth-child(n+2):nth-last-child(n+2) {
+          padding: 0 24px 0 0 !important;
+        }
+    
+        tr.md-row:focus {
+          outline: none;
         }
     }
+    
 
-    .brand{
-        font-size: 15px;
-        font-weight: 400;
-        background-color: #00602459;
+    span{
+        &.less{
+            color: red;
+        }
+
+        &.greater{
+            color: green;
+        }
     }
-
 
 }

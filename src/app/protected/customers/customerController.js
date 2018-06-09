@@ -1,10 +1,14 @@
-angular.module('gorillasauth.protected.customers')
+angular.module('gorillasauth.protected.customer')
 
-  .controller('customersController', [ 'BillingService', 'AbstractcustomersService',
-    function (BillingService, AbstractcustomersService) {
+  .controller('CustomerController', [ 'DateFilterService', 'CustomerService',
+    function (DateFilterService, CustomerService) {
       var self = this;
 
       self.dateNow = new Date();
+
+      self.orderTable = 'cli_nome_fan';
+
+      self.filterOptions = DateFilterService.filterOptions();
 
       self.dateFilter = {
         day: self.dateNow.getDay(),
@@ -14,14 +18,13 @@ angular.module('gorillasauth.protected.customers')
       };
 
       self.abstract_customers = null;
-      self.loading = {
-        billing: false,
-        abstract_brands: false,
-        abstract_customers: false
-      };
+
+      self.loading = false;
 
       self.search = function () {
-        return {};
+        CustomerService.getAbstract(self.dateFilter).then(function (response){
+          self.abstract_customers = response;
+        });
       };
 
       self.search();

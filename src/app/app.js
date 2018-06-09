@@ -24,6 +24,7 @@ angular.module('gorillasauth', [
   'gorillasauth.services.file',
   'gorillasauth.services.role',
   'gorillasauth.services.budget',
+  'gorillasauth.services.customer',
   'gorillasauth.services.date-filter',
   'gorillasauth.public',
   'gorillasauth.protected'

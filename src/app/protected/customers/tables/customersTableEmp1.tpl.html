@@ -1,0 +1,51 @@
+<div layout="row" layout-align="space-around" layout-padding flex>
+    <md-input-container class="md-block" style="min-width: 150px;">
+        <label>Mês de referência</label>
+        <md-select ng-model="customerCtrl.dateFilter.month" md-on-close="customerCtrl.search()">
+            <md-option ng-value="month.value" ng-repeat="month in customerCtrl.filterOptions.months">
+                {{month.label}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <md-input-container class="md-block" style="min-width: 150px;">
+        <label>Ano de referência</label>
+        <md-select ng-model="customerCtrl.dateFilter.year" md-on-close="customerCtrl.search()">
+            <md-option ng-value="year" ng-repeat="year in customerCtrl.filterOptions.years">
+                {{year}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+</div>
+
+<md-table-container flex>
+    <table md-table>
+        <thead md-head md-order="customerCtrl.orderTable" md-on-reorder="customerCtrl.search">
+            <tr md-row>
+                <th md-column md-order-by="cli_codigo">
+                    <span>Cód.</span>
+                </th>
+                <th md-column md-order-by="cli_nome_fan">
+                    <span>Cliente</span>
+                </th>
+                <th md-column md-order-by="latest_value">
+                    <span>Valor Mes Passado</span>
+                </th>
+                <th md-column md-order-by="current_value">
+                    <span>Valor Mes Atual</span>
+                </th>
+                <th md-column md-order-by="variation">
+                    <span>%</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | filter: {emp_code: 1} | orderBy: customerCtrl.orderTable">
+                <td md-cell>{{customer.cli_codigo}}</td>
+                <td md-cell>{{customer.cli_nome_fan}}</td>
+                <td md-cell>{{customer.latest_value | currency : R$ : 2}}</td>
+                <td md-cell>{{customer.current_value | currency : R$ : 2}}</td>
+                <td md-cell>{{customer.variation | percentage: 2}}</td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>
