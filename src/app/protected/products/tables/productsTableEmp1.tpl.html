@@ -16,7 +16,9 @@
         </md-select>
     </md-input-container>
 </div>
-
+<div layout="row" layout-align="end" ng-show="false" flex>
+    <md-button class="md-primary" ng-click="productsCtrl.export()">Exportar Excel</md-button>
+</div>
 <md-table-container flex>
     <table md-table>
         <thead md-head md-order="productsCtrl.orderTable" md-on-reorder="productsCtrl.search">

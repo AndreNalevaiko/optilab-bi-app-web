@@ -8,44 +8,89 @@
         </md-select>
     </md-input-container>
     <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Ano de referência</label>
-        <md-select ng-model="customerCtrl.dateFilter.year" md-on-close="customerCtrl.search()">
-            <md-option ng-value="year" ng-repeat="year in customerCtrl.filterOptions.years">
-                {{year}}
+        <label>Mês de referência</label>
+        <md-select ng-model="customerCtrl.dateFilter.month" md-on-close="customerCtrl.search()">
+            <md-option ng-value="month.value" ng-repeat="month in customerCtrl.filterOptions.months">
+                {{month.label}}
             </md-option>
         </md-select>
     </md-input-container>
 </div>
 
-<md-table-container flex>
-    <table md-table>
-        <thead md-head md-order="customerCtrl.orderTable" md-on-reorder="customerCtrl.search">
-            <tr md-row>
-                <th md-column md-order-by="cli_codigo">
-                    <span>Cód.</span>
-                </th>
-                <th md-column md-order-by="cli_nome_fan">
-                    <span>Cliente</span>
-                </th>
-                <th md-column md-order-by="latest_value">
-                    <span>Valor Mes Passado</span>
-                </th>
-                <th md-column md-order-by="current_value">
-                    <span>Valor Mes Atual</span>
-                </th>
-                <th md-column md-order-by="variation">
-                    <span>%</span>
-                </th>
-            </tr>
-        </thead>
-        <tbody md-body>
-            <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | filter: {emp_code: 1} | orderBy: customerCtrl.orderTable">
-                <td md-cell>{{customer.cli_codigo}}</td>
-                <td md-cell>{{customer.cli_nome_fan}}</td>
-                <td md-cell>{{customer.latest_value | currency : R$ : 2}}</td>
-                <td md-cell>{{customer.current_value | currency : R$ : 2}}</td>
-                <td md-cell>{{customer.variation | percentage: 2}}</td>
-            </tr>
-        </tbody>
-    </table>
-</md-table-container>
+<div class="customers-actives">
+    <div class="header-actives" layout="row" layout-align="center" flex>
+        <span>Clientes ativos</span>
+    </div>
+    <div layout="row" ng-if="customerCtrl.amounts_customers">
+        <div class="type-active" layout="column" layout-align="start center" flex>
+            <span class="header">Média ano passado</span>
+            <span>{{customerCtrl.amounts_customers['1'].average_latest_year | currency : '' : 2}}</span>
+        </div>
+        <div class="type-active" layout="column" layout-align="start center" flex>
+            <span class="header">Mês anterior</span>
+            <span>{{customerCtrl.amounts_customers['1'].latest_month}}</span>
+        </div>
+        <div class="type-active" layout="column" layout-align="start center" flex>
+            <span class="header">Mês Atual</span>
+            <span>{{customerCtrl.amounts_customers['1'].current_month}}</span>
+        </div>
+        <div class="type-active" layout="column" layout-align="start center" flex>
+            <span class="header">Dia Anterior</span>
+            <span>{{customerCtrl.amounts_customers['1'].latest_day}}</span>
+        </div>
+        <div class="type-active" layout="column" layout-align="start center" flex>
+            <span class="header">Hoje</span>
+            <span>{{customerCtrl.amounts_customers['1'].current_day}}</span>
+        </div>
+    </div>
+    <div class="loading" layout="column" layout-align="center center" ng-if="!customerCtrl.amounts_customers">
+            <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+    </div>
+</div>
+
+<div class="loading" layout="column" layout-align="center center" layout-padding
+    ng-if="!customerCtrl.abstract_customers">
+        <md-progress-circular md-diameter="40"></md-progress-circular>
+    <span>Carregando</span>
+</div>
+
+<div ng-if="customerCtrl.abstract_customers">
+    <md-table-container flex>
+        <table md-table>
+            <thead md-head md-order="customerCtrl.orderTable" md-on-reorder="customerCtrl.search">
+                <tr md-row>
+                    <th md-column md-order-by="cli_nome_fan">
+                        <span>Cliente</span>
+                    </th>
+                    <th md-column md-order-by="latest_value">
+                        <span>Fat. Mês Anterior</span>
+                    </th>
+                    <th md-column md-order-by="current_value">
+                        <span>Fat. Mês</span>
+                    </th>
+                    <th md-column md-order-by="variation">
+                        <span>%</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | filter: {emp_code: 1} | orderBy: customerCtrl.orderTable">
+                    <td md-cell>
+                        {{customer.cli_nome_fan}}
+                        <md-tooltip>Cód: {{customer.cli_codigo}}</md-tooltip>
+                    </td>
+                    <td md-cell>{{customer.latest_value | currency : R$ : 2}}</td>
+                    <td md-cell>{{customer.current_value | currency : R$ : 2}}</td>
+                    <td md-cell>
+                        <span ng-if="customer.variation != 0" class="status-percentage" ng-class="customer.variation < 0 ? 'less' : 'greater'">
+                            {{customer.variation | percentage: 2}}
+                        </span>
+                        <span ng-if="customer.variation == 0">
+                            --
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+</div>

@@ -10,7 +10,7 @@ angular.module('gorillasauth.protected.billing', [
         templateUrl: 'protected/billing/billing.tpl.html',
         controller: 'billingController as billingCtrl',
         data: {
-          pageTitle: 'billings'
+          pageTitle: 'Faturamento'
         }
       });
     }

@@ -59,8 +59,6 @@ angular.module('gorillasauth.protected.billing')
 
               if (self.budget.length){
                 setEmpBudget();
-
-                console.log(self.billing);
               }
 
             }, function (error){

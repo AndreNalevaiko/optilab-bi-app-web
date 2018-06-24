@@ -15,6 +15,7 @@ angular.module('gorillasauth.services.customer', [])
 
             this.getAmounts = function (dateSelected) {
                 var data = {
+                        "day": String(dateSelected.day),
                         "month": String(dateSelected.month),
                         "year": String(dateSelected.year)
                 };

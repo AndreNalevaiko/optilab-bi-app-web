@@ -58,6 +58,23 @@ angular.module('gorillasauth.protected.products')
 
       self.search();
 
+      self.export = function () {
+        var reader = new FileReader();
+
+        ReportProductsService.export(self.dateFilter).then(function (response){
+          console.log('ERROR', response);   
+          var blob = new Blob([response.data], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});       
+          // saveAs(blob, 'TESTE.xlsx')
+          reader.readAsDataURL(blob);
+        }, function (error){
+          console.log('ERROR', error);
+        });
+
+        reader.onload = function(e) { 
+          window.open(decodeURIComponent(reader.result), '_self', '', false); 
+        };
+      };
+
     }
   ])
 

@@ -10,7 +10,7 @@ angular.module('gorillasauth.protected.products', [
         templateUrl: 'protected/products/products.tpl.html',
         controller: 'productsController as productsCtrl',
         data: {
-          pageTitle: 'productss'
+          pageTitle: 'Produtos'
         }
       });
     }
