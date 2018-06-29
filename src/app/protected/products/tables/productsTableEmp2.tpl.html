@@ -16,6 +16,7 @@
             </md-option>
         </md-select>
     </md-input-container>
+    <md-button class="md-primary" ng-click="productsCtrl.export(1)">Exportar Excel</md-button>
 </div>
 <md-table-container flex>
     <table md-table>
@@ -56,10 +57,18 @@
                 <td md-cell>{{product.qtd_current_year}}</td>
                 <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>
-                    {{(product.qtd_current_year / product.qtd_latest_year) - 1 | percentage: 2}}
+                    <span ng-if="((product.qtd_current_year / product.qtd_latest_year) - 1) != 0" class="percentage-value" 
+                        ng-class="(product.qtd_current_year / product.qtd_latest_year) - 1 < 0 ? 'less' : 'greater'">
+                        {{(product.qtd_current_year / product.qtd_latest_year) - 1 | percentage: 2}}
+                    </span>
+                    <span ng-if="((product.qtd_current_year / product.qtd_latest_year) - 1) == 0">--</span>
                 </td>
                 <td md-cell>
-                    {{(product.value_current_year / product.value_latest_year) - 1 | percentage: 2}}
+                    <span ng-if="((product.value_current_year / product.value_latest_year) - 1) != 0" class="percentage-value" 
+                        ng-class="(product.value_current_year / product.value_latest_year) - 1 < 0 ? 'less' : 'greater'">
+                        {{(product.value_current_year / product.value_latest_year) - 1 | percentage: 2}}
+                    </span>
+                    <span ng-if="((product.value_current_year / product.value_latest_year) - 1) == 0">--</span>
                 </td>
             </tr>
         </tbody>

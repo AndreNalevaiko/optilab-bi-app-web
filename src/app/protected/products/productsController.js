@@ -1,7 +1,7 @@
 angular.module('gorillasauth.protected.products')
 
-  .controller('productsController', ['ReportProductsService', 'DateFilterService',
-    function (ReportProductsService, DateFilterService) {
+  .controller('productsController', ['ReportProductsService', 'DateFilterService', 'FileSaver',
+    function (ReportProductsService, DateFilterService, FileSaver) {
       var self = this;
 
       self.dateNow = new Date();
@@ -58,21 +58,13 @@ angular.module('gorillasauth.protected.products')
 
       self.search();
 
-      self.export = function () {
-        var reader = new FileReader();
-
-        ReportProductsService.export(self.dateFilter).then(function (response){
-          console.log('ERROR', response);   
+      self.export = function (business_code) {
+        ReportProductsService.export(self.dateFilter, business_code).then(function (response){
           var blob = new Blob([response.data], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});       
-          // saveAs(blob, 'TESTE.xlsx')
-          reader.readAsDataURL(blob);
+          FileSaver.saveAs(blob, 'TESTE.xlsx');
         }, function (error){
           console.log('ERROR', error);
         });
-
-        reader.onload = function(e) { 
-          window.open(decodeURIComponent(reader.result), '_self', '', false); 
-        };
       };
 
     }

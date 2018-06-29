@@ -82,7 +82,8 @@ module.exports = {
       'vendor/ng-file-upload/ng-file-upload.js',
       'vendor/cropper/dist/cropper.js',
       'vendor/ng-cropper/dist/ngCropper.js',
-      'vendor/ng-img-crop/compile/unminified/ng-img-crop.js'
+      'vendor/ng-img-crop/compile/unminified/ng-img-crop.js',
+      'vendor/angular-file-saver/dist/angular-file-saver.bundle.js'
     ],
     css: [
       'vendor/cropper/dist/cropper.css',

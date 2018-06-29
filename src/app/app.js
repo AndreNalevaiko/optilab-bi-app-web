@@ -11,6 +11,7 @@ angular.module('gorillasauth', [
   'ngFileUpload',
   'ngImgCrop',
   'idf.br-filters',
+  'ngFileSaver',
   'ui.utils.masks',
   'gorillascode',
   'gorillascode.services.upload',

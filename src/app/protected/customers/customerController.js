@@ -1,7 +1,7 @@
 angular.module('gorillasauth.protected.customer')
 
-  .controller('CustomerController', [ 'DateFilterService', 'CustomerService',
-    function (DateFilterService, CustomerService) {
+  .controller('CustomerController', [ 'DateFilterService', 'CustomerService', '$scope',
+    function (DateFilterService, CustomerService, $scope) {
       var self = this;
 
       self.dateNow = new Date();
@@ -35,6 +35,25 @@ angular.module('gorillasauth.protected.customer')
       };
 
       self.search();
+
+      $scope.pagination = {
+        "1": {
+          page: 0,
+          pageSize: 20
+        },
+        "2": {
+          page: 0,
+          pageSize: 20
+        },
+        "5": {
+          page: 0,
+          pageSize: 20
+        },
+        "6": {
+          page: 0,
+          pageSize: 20
+        }
+      };
  
     }
   ])

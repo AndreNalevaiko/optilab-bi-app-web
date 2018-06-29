@@ -31,13 +31,21 @@ angular.module('gorillasauth.services.report-products', [
                 });
             };
 
-            this.export = function (dateSelected) {
-                var data = {
+            this.export = function (dateSelected, business_code) {
+                var params = {
                     "month": String(dateSelected.month),
-                    "current_year": String(dateSelected.year)
+                    "year": String(dateSelected.year),
+                    "emp_code": String(business_code)
                 };
 
-                return $http.post(configuration.apiUrl + '/report_products/_export_xlsx', data).then(function (response) {
+                var http = {
+                    url: configuration.apiUrl + '/report_products/_export_xlsx', 
+                    method: "GET",
+                    params: params,
+                    responseType: "arraybuffer"
+                };
+
+                return $http(http).then(function (response) {
                     return response;
                 });
             };
