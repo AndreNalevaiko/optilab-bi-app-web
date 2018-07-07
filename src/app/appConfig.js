@@ -6,8 +6,8 @@ angular.module('gorillasauth')
     var configs = {
       development: {
         environment: 'development',
-        hostnames: ['localhost'],
-        apiUrl: 'http://localhost:5000',
+        hostnames: ['192.168.10.179'],
+        apiUrl: 'http://192.168.10.179:5000',
         business_alias: {1: 'Curitiba', 2: 'Pato Branco', 6: 'Cascavel'}
       }
     };

@@ -9,13 +9,13 @@ angular.module('gorillasauth.protected.products')
       self.orderTable = 'brand';
 
       self.filterOptions = DateFilterService.filterOptions();
-      // self.dateFilter = DateFilterService.filterDateNow();
-      self.dateFilter = {
-        day: self.dateNow.getDay(),
-        //month: self.dateNow.getMonth(),
-        month: 2,
-        year: self.dateNow.getFullYear(),
-      };
+      self.dateFilter = DateFilterService.filterDateNow();
+      // self.dateFilter = {
+      //   day: self.dateNow.getDay(),
+      //   month: self.dateNow.getMonth(),
+      //   //month: 2,
+      //   year: self.dateNow.getFullYear(),
+      // };
       
       self.loading = false;
 

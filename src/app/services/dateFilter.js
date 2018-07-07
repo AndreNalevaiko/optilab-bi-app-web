@@ -8,8 +8,8 @@ angular.module('gorillasauth.services.date-filter', [])
             this.filterDateNow = function() {
                 return {
                     day: self.dateNow.getDay(),
-                    //month: self.dateNow.getMonth(),
-                    month: 2,
+                    month: self.dateNow.getMonth(),
+                    // month: 2,
                     year: self.dateNow.getFullYear(),
                 };
             }; 

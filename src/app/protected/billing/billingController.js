@@ -10,8 +10,8 @@ angular.module('gorillasauth.protected.billing')
 
       self.dateFilter = {
         day: self.dateNow.getDay(),
-        //month: self.dateNow.getMonth(),
-        month: 2,
+        month: self.dateNow.getMonth(),
+        // month: 2,
         year: self.dateNow.getFullYear(),
       };
 
