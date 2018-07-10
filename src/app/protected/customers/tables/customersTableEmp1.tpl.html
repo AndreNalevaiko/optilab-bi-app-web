@@ -7,14 +7,6 @@
             </md-option>
         </md-select>
     </md-input-container>
-    <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Mês de referência</label>
-        <md-select ng-model="customerCtrl.dateFilter.month" md-on-close="customerCtrl.search()">
-            <md-option ng-value="month.value" ng-repeat="month in customerCtrl.filterOptions.months">
-                {{month.label}}
-            </md-option>
-        </md-select>
-    </md-input-container>
 </div>
 
 <div class="customers-actives">
