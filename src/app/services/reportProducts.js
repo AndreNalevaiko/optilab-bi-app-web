@@ -18,7 +18,7 @@ angular.module('gorillasauth.services.report-products', [
               return ReportProducts.get({id: id}).$promise;
             };
 
-            this.refreshReport = function (dateSelected) {
+            this.generate = function (dateSelected) {
                 var data = {
                     "period": {
                         "month": String(dateSelected.month),

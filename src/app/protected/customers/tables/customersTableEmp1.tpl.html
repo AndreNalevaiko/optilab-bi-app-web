@@ -8,10 +8,10 @@
         </md-select>
     </md-input-container>
     <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Mês de referência</label>
-        <md-select ng-model="customerCtrl.dateFilter.month" md-on-close="customerCtrl.search()">
-            <md-option ng-value="month.value" ng-repeat="month in customerCtrl.filterOptions.months">
-                {{month.label}}
+        <label>Ano de referência</label>
+        <md-select ng-model="customerCtrl.dateFilter.year" md-on-close="customerCtrl.search()">
+            <md-option ng-value="year" ng-repeat="year in customerCtrl.filterOptions.years">
+                {{year}}
             </md-option>
         </md-select>
     </md-input-container>
@@ -50,11 +50,22 @@
 
 <div class="loading" layout="column" layout-align="center center" layout-padding
     ng-if="!customerCtrl.abstract_customers">
-        <md-progress-circular md-diameter="40"></md-progress-circular>
+    <md-progress-circular md-diameter="40"></md-progress-circular>
     <span>Carregando</span>
 </div>
 
 <div ng-if="customerCtrl.abstract_customers">
+    <div class="box-search" layout="row" layout-align="space-between center" flex>
+        <md-icon>search</md-icon>
+        <md-input-container flex>
+            <label>Cód do cliente</label>
+            <input type="text" ng-model="filterCod">
+        </md-input-container>
+        <md-input-container flex="66">
+            <label>Nome do cliente</label>
+            <input type="text" ng-model="filterName">
+        </md-input-container>
+    </div>
     <md-table-container flex>
         <table md-table>
             <thead md-head md-order="customerCtrl.orderTable" md-on-reorder="customerCtrl.search">
@@ -75,7 +86,8 @@
             </thead>
             <tbody md-body>
                 <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | 
-                    filter: {emp_code: 1} | orderBy: customerCtrl.orderTable | limitTo: pagination['1'].pageSize : pagination['1'].page*pagination['1'].pageSize">
+                    filter: {emp_code: 1, cli_nome_fan: filterName, cli_codigo: filterCod} | orderBy: customerCtrl.orderTable | 
+                    limitTo: pagination['1'].pageSize : pagination['1'].page*pagination['1'].pageSize">
                     <!-- startFrom:pagination['1'].currentPage*pagination['1'].pageSize | limitTo:pagination['1'].pageSize"> -->
                     <td md-cell>
                         {{customer.cli_nome_fan}}
@@ -95,7 +107,7 @@
             </tbody>
         </table>
     </md-table-container>
-    <div class="paginator" layout="row" layout-align="end center" flex>
+    <div ng-hide="filterCod || filterName" class="paginator" layout="row" layout-align="end center" flex>
         <!-- <div class="label-pages" ng-show="(query.page * query.limit) < creditorFilesCtrl.files.limit">
             {{(query.page * query.limit) - (query.limit -1)}} - {{query.page * query.limit}} de {{creditorFilesCtrl.files.limit}}
         </div>

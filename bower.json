@@ -23,6 +23,9 @@
     "ng-img-crop": "^0.3.2"
   },
   "resolutions": {
-    "angular": "~1.5.0"
+    "angular": "~1.5.0",
+    "angular-animate": "~1.5.0",
+    "angular-aria": "~1.5.0",
+    "angular-messages": "~1.5.0"
   }
 }

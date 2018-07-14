@@ -1,22 +1,29 @@
 angular.module('gorillasauth.services.date-filter', [])
   
-      .service('DateFilterService', ['configuration', 'Budget',
-          function (configuration, Budget) {
+      .service('DateFilterService', ['configuration',
+          function (configuration) {
   
             var dateNow = new Date();
 
             this.filterDateNow = function() {
+                if (configuration.environment != 'development'){
+                    return {
+                        day: dateNow.getDay(),
+                        month: dateNow.getMonth(),
+                        year: dateNow.getFullYear(),
+                    };
+                }
                 return {
-                    day: self.dateNow.getDay(),
-                    //month: self.dateNow.getMonth(),
+                    day: dateNow.getDay(),
                     month: 2,
-                    year: self.dateNow.getFullYear(),
+                    year: dateNow.getFullYear(),
                 };
             }; 
 
             this.filterOptions = function() {
                 var filters = {
-                    years: [2018,2019,2020,2021,2022,2023,2024,2025],
+                    // TODO configurar para pegar os anos dinamicamente e nao fixos
+                    years: [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],
                     months: [
                         {label: 'Janeiro', value: 1},
                         {label: 'Fevereiro', value: 2},
