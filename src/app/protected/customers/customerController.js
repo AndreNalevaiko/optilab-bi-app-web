@@ -10,12 +10,7 @@ angular.module('gorillasauth.protected.customer')
 
       self.filterOptions = DateFilterService.filterOptions();
 
-      self.dateFilter = {
-        day: self.dateNow.getDay(),
-        //month: self.dateNow.getMonth(),
-        month: 2,
-        year: self.dateNow.getFullYear(),
-      };
+      self.dateFilter = DateFilterService.filterDateNow();
 
       self.abstract_customers = null;
 
