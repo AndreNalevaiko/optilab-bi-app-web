@@ -4,35 +4,55 @@ angular.module('gorillasauth.protected.customer')
     function (DateFilterService, CustomerService, $scope) {
       var self = this;
 
-      self.dateNow = new Date();
-
       self.orderTable = 'cli_nome_fan';
 
       self.filterOptions = DateFilterService.filterOptions();
 
-      self.dateFilter = {
-        day: self.dateNow.getDay(),
-        //month: self.dateNow.getMonth(),
-        month: 2,
-        year: self.dateNow.getFullYear(),
-      };
+      self.dateFilter = DateFilterService.filterDateNow();
 
       self.abstract_customers = null;
 
       self.loading = false;
 
       self.search = function () {
-        CustomerService.getAbstract(self.dateFilter).then(function (response){
-          self.abstract_customers = response;
+        var filterCustomerBilling = createFilterSearchCustomerBilling();
+        CustomerService.searchCustomerBillingReport(filterCustomerBilling).then(function (response){
+          self.abstract_customers = response.objects;
         });
-
-        // TODO retirar
-        var dateToAmounts = angular.copy(self.dateFilter);
-        dateToAmounts.day = 6;
-        CustomerService.getAmounts(dateToAmounts).then(function (response){
-          self.amounts_customers = response;
+        
+        var filterActiveCustomers = createFilterSearchActiveCustomers();
+        CustomerService.searchNumberActiveCustomers(filterActiveCustomers).then(function (response){
+          var active_customers = {};
+          if (response.objects.length) {
+            angular.forEach(response.objects, function (obj) {
+              active_customers[obj.business_code] = obj;
+            });
+          }
+          self.amounts_customers = active_customers;
         });
       };
+
+      function createFilterSearchCustomerBilling() {
+        return {
+          q: {
+            filters: [
+              {name: 'month', op: 'eq', val: self.dateFilter.month},
+              {name: 'year', op: 'eq', val: self.dateFilter.year},
+            ]
+          }
+        };
+      }
+      
+      function createFilterSearchActiveCustomers() {
+        var dateFormated = self.dateFilter.year + '-' + self.dateFilter.month + '-' + self.dateFilter.day;
+        return {
+          q: {
+            filters: [
+              {name: 'date', op: 'eq', val: dateFormated}
+            ]
+          }
+        };
+      }
 
       self.search();
 

@@ -28,19 +28,19 @@
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Mês anterior</span>
-            <span>{{customerCtrl.amounts_customers['5'].latest_month}}</span>
+            <span>{{customerCtrl.amounts_customers['5'].number_latest_month}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Mês Atual</span>
-            <span>{{customerCtrl.amounts_customers['5'].current_month}}</span>
+            <span>{{customerCtrl.amounts_customers['5'].number_current_month}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Dia Anterior</span>
-            <span>{{customerCtrl.amounts_customers['5'].latest_day}}</span>
+            <span>{{customerCtrl.amounts_customers['5'].number_latest_day}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Hoje</span>
-            <span>{{customerCtrl.amounts_customers['5'].current_day}}</span>
+            <span>{{customerCtrl.amounts_customers['5'].number_current_day}}</span>
         </div>
     </div>
     <div class="loading" layout="column" layout-align="center center" ng-if="!customerCtrl.amounts_customers">
@@ -85,11 +85,11 @@
             </thead>
             <tbody md-body>
                 <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | 
-                filter: {emp_code: 5, cli_nome_fan: filterName, cli_codigo: filterCod} | 
+                filter: {business_code: 5, customer_name: filterName, customer_code: filterCod} | 
                 orderBy: customerCtrl.orderTable | limitTo: pagination['5'].pageSize : pagination['5'].page*pagination['5'].pageSize">
                     <td md-cell>
-                        {{customer.cli_nome_fan}}
-                        <md-tooltip>Cód: {{customer.cli_codigo}}</md-tooltip>
+                        {{customer.customer_name}}
+                        <md-tooltip>Cód: {{customer.customer_code}}</md-tooltip>
                     </td>
                     <td md-cell>{{customer.latest_value | currency : R$ : 2}}</td>
                     <td md-cell>{{customer.current_value | currency : R$ : 2}}</td>
