@@ -8,7 +8,7 @@
   <md-list>
     <md-list-item ui-sref="protected.billing" 
                   ng-class="{ active: $state.includes('protected.billing') }">
-      <md-icon md-font-icon="material-icons" aria-label="Meus Apps">timeline</md-icon>
+      <md-icon md-font-icon="material-icons" aria-label="Meus Apps">attach_money</md-icon>
       <p>Faturamento</p>
     </md-list-item>
 
@@ -20,8 +20,14 @@
 
     <md-list-item ui-sref="protected.customer"
                   ng-class="{ active: $state.includes('protected.customer') }">
-      <md-icon md-font-icon="material-icons" aria-label="Usuários">view_module</md-icon>
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">person</md-icon>
       <p>Clientes</p>
+    </md-list-item>
+
+    <md-list-item ui-sref="protected.customer"
+                  ng-class="{ active: $state.includes('protected.customer') }">
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">timeline</md-icon>
+      <p>KPI</p>
     </md-list-item>
   </md-list>
 </md-content>

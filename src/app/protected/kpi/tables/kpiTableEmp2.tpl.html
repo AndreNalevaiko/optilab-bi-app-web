@@ -1,0 +1,83 @@
+
+<div layout="row" layout-align="space-around" layout-padding flex>
+    <md-input-container class="md-block" style="min-width: 150px;">
+        <label>Mês de referência</label>
+        <md-select ng-model="productsCtrl.dateFilter.month" md-on-close="productsCtrl.search()">
+            <md-option ng-value="month.value" ng-repeat="month in productsCtrl.filterOptions.months">
+                {{month.label}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <md-input-container class="md-block" style="min-width: 150px;">
+        <label>Ano de referência</label>
+        <md-select ng-model="productsCtrl.dateFilter.year" md-on-close="productsCtrl.search()">
+            <md-option ng-value="year" ng-repeat="year in productsCtrl.filterOptions.years">
+                {{year}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <md-button class="md-primary" ng-click="productsCtrl.export(2)">Exportar Excel</md-button>
+</div>
+<div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+    <br>
+    <span ng-if="productsCtrl.loading">Carregando</span>
+    <span ng-if="productsCtrl.generating">Os dados do mes e ano de referência ainda não haviam sido processados. Aguarde mais um momento.</span>
+</div>
+<md-table-container ng-if="!productsCtrl.loading && !productsCtrl.generating" flex>
+    <table md-table>
+        <thead md-head md-order="productsCtrl.orderTable">
+            <tr md-row>
+                <th md-column md-order-by="brand">
+                    <span>Marca</span>
+                </th>
+                <th md-column md-order-by="label">
+                    <span>Produto</span>
+                </th>
+                <th md-column md-order-by="qtd_latest_year">
+                    <span>Qtd {{productsCtrl.dateFilter.year - 1}}</span>
+                </th>
+                <th md-column md-order-by="value_latest_year">
+                    <span>Fat {{productsCtrl.dateFilter.year - 1}}</span>
+                </th>
+                <th md-column md-order-by="qtd_current_year">
+                    <span>Qtd {{productsCtrl.dateFilter.year}}</span>
+                </th>
+                <th md-column md-order-by="value_current_year">
+                    <span>Fat {{productsCtrl.dateFilter.year}}</span>
+                </th>
+                <th md-column md-order-by="var_qtd">
+                    <span>Qtd %</span>
+                </th>
+                <th md-column md-order-by="var_value">
+                    <span>Fat %</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row ng-repeat="product in productsCtrl.brands | filter: {business_code: 2} | 
+                orderBy: productsCtrl.orderTable">
+                <td md-cell>{{product.brand | uppercase}}</td>
+                <td md-cell>{{product.label | uppercase}}</td>
+                <td md-cell>{{product.qtd_latest_year}}</td>
+                <td md-cell>{{product.value_latest_year | currency : R$ : 2}}</td>
+                <td md-cell>{{product.qtd_current_year}}</td>
+                <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
+                <td md-cell>
+                    <span ng-if="product.var_qtd != 0" class="percentage-value" 
+                        ng-class="product.var_qtd < 0 ? 'less' : 'greater'">
+                        {{product.var_qtd | percentage: 2}}
+                    </span>
+                    <span ng-if="product.var_qtd == 0">--</span>
+                </td>
+                <td md-cell>
+                    <span ng-if="product.var_value != 0" class="percentage-value" 
+                        ng-class="product.var_value < 0 ? 'less' : 'greater'">
+                        {{product.var_value | percentage: 2}}
+                    </span>
+                    <span ng-if="product.var_value == 0">--</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>

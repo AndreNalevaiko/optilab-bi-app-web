@@ -1,0 +1,25 @@
+<div class="optilab-bi-products" layout-padding flex>
+    <md-card>
+        <div ng-if="productsCtrl.loading" flex>
+            <span>Carregando o relatórios de produtos</span>
+            <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+        </div>
+
+        <div ng-if="!productsCtrl.loading" layout-align="start center" flex>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="Curitiba">
+                    <ng-include src="'protected/products/tables/productsTableEmp1.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Cascavel">
+                    <ng-include src="'protected/products/tables/productsTableEmp6.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Pato Branco">
+                    <ng-include src="'protected/products/tables/productsTableEmp2.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Londrina">
+                    <ng-include src="'protected/products/tables/productsTableEmp5.tpl.html'"></ng-include>
+                </md-tab>
+            </md-tabs>
+        </div>
+    </md-card>
+</div>
