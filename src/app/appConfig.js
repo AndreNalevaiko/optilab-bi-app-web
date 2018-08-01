@@ -8,19 +8,19 @@ angular.module('gorillasauth')
         environment: 'development',
         hostnames: ['localhost'],
         apiUrl: 'http://localhost:5000',
-        business_alias: {1: 'Curitiba', 2: 'Pato Branco', 6: 'Cascavel'}
+        business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel'}
       },
       production_internal: {
         environment: 'production_internal',
         hostnames: ['192.168.10.179'],
         apiUrl: 'http://192.168.10.179:5000',
-        business_alias: {1: 'Curitiba', 2: 'Pato Branco', 6: 'Cascavel'}
+        business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel'}
       },
       production_external: {
         environment: 'production_external',
         hostnames: ['187.95.123.144'],
         apiUrl: 'http://187.95.123.144:5000',
-        business_alias: {1: 'Curitiba', 2: 'Pato Branco', 6: 'Cascavel'}
+        business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel'}
       }
     };
 
