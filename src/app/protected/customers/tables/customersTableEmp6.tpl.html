@@ -24,23 +24,23 @@
     <div layout="row" ng-if="customerCtrl.amounts_customers">
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Média ano passado</span>
-            <span>{{customerCtrl.amounts_customers['1'].average_latest_year | currency : '' : 2}}</span>
+            <span>{{customerCtrl.amounts_customers['6].average_latest_year | currency : '' : 2}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Mês anterior</span>
-            <span>{{customerCtrl.amounts_customers['1'].number_latest_month}}</span>
+            <span>{{customerCtrl.amounts_customers['6'].number_latest_month}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Mês Atual</span>
-            <span>{{customerCtrl.amounts_customers['1'].number_current_month}}</span>
+            <span>{{customerCtrl.amounts_customers['6'].number_current_month}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Dia Anterior</span>
-            <span>{{customerCtrl.amounts_customers['1'].number_latest_day}}</span>
+            <span>{{customerCtrl.amounts_customers['6'].number_latest_day}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
             <span class="header">Hoje</span>
-            <span>{{customerCtrl.amounts_customers['1'].number_current_day}}</span>
+            <span>{{customerCtrl.amounts_customers['6'].number_current_day}}</span>
         </div>
     </div>
     <div class="loading" layout="column" layout-align="center center" ng-if="!customerCtrl.amounts_customers">
