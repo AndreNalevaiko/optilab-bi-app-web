@@ -1,7 +1,7 @@
 angular.module('gorillasauth.protected.customer')
 
-  .controller('CustomerController', [ 'DateFilterService', 'CustomerService', '$scope',
-    function (DateFilterService, CustomerService, $scope) {
+  .controller('CustomerController', [ 'DateFilterService', 'CustomerService', '$scope', 'NotificationService',
+    function (DateFilterService, CustomerService, $scope, NotificationService) {
       var self = this;
 
       self.orderTable = 'cli_nome_fan';
@@ -14,12 +14,14 @@ angular.module('gorillasauth.protected.customer')
 
       self.loading = false;
 
+      self.generating = false;
+
       self.search = function () {
-        var filterCustomerBilling = createFilterSearchCustomerBilling();
-        CustomerService.searchCustomerBillingReport(filterCustomerBilling).then(function (response){
-          self.abstract_customers = response.objects;
-        });
-        
+        searchCustomerBilling();
+        searchActive();
+      };
+
+      function searchActive() {
         var filterActiveCustomers = createFilterSearchActiveCustomers();
         CustomerService.searchNumberActiveCustomers(filterActiveCustomers).then(function (response){
           var active_customers = {};
@@ -27,10 +29,37 @@ angular.module('gorillasauth.protected.customer')
             angular.forEach(response.objects, function (obj) {
               active_customers[obj.business_code] = obj;
             });
+          } else {
+            generateReports();
           }
           self.amounts_customers = active_customers;
         });
-      };
+      }
+
+      function searchCustomerBilling() {
+        var filterCustomerBilling = createFilterSearchCustomerBilling();
+        CustomerService.searchCustomerBillingReport(filterCustomerBilling).then(function (response){
+          if (response.objects.length) {
+            self.abstract_customers = response.objects;
+          } else {
+            generateReports();
+          }
+          
+        });
+      }
+
+      function generateReports() {
+        if (!self.generating) {
+          self.generating = true;
+
+          NotificationService.success('Gerando os dados!');
+          CustomerService.generate(self.dateFilter).then(function (response) {
+            self.search();
+          }, function (error) {
+            NotificationService.error('Ocorreu um erro ao gerar os dados!');
+          });
+        }
+      }
 
       function createFilterSearchCustomerBilling() {
         return {
