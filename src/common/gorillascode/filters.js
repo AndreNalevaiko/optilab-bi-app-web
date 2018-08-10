@@ -43,6 +43,9 @@ angular.module('gorillascode.filters', [])
         case 2:
           return 'Pato Branco';
 
+        case 5:
+          return 'Londrina';
+
         case 6:
           return 'Cascavel';
 
@@ -51,6 +54,9 @@ angular.module('gorillascode.filters', [])
 
         case '2':
           return 'Pato Branco';
+
+        case '5':
+          return 'Londrina';
 
         case '6':
           return 'Cascavel';

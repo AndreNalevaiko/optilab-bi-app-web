@@ -1,23 +1,29 @@
 angular.module('gorillasauth.protected.billing')
 
-  .controller('billingController', [ 'BillingService', 'BudgetService', '$mdDialog', 
-    'NotificationService', '$mdMedia',
-    function (BillingService, BudgetService, $mdDialog, NotificationService, $mdMedia) {
+  .controller('billingController', ['$scope', 'BillingService', 'BudgetService', '$mdDialog', 
+    'NotificationService', '$mdMedia', 'DateFilterService', 'KpiService',
+    function ($scope, BillingService, BudgetService, $mdDialog, NotificationService, $mdMedia, 
+      DateFilterService, KpiService) {
       var self = this;
 
-      self.bugdet = null;
-      self.dateNow = new Date();
+      self.dateFilter = DateFilterService.filterDateNow();
+      self.filterOptions = DateFilterService.filterOptions();
 
-      self.dateFilter = {
-        day: self.dateNow.getDay(),
-        //month: self.dateNow.getMonth(),
-        month: 2,
-        year: self.dateNow.getFullYear(),
+      self.businessCodeFilter = 1;
+      self.selectedTab = 0;
+
+      self.tabToBusinessCode = {
+        0: 1,
+        1: 6,
+        2: 2,
+        3: 5
       };
 
       self.billing = null;
       self.loading = {
-        billing: false
+        billing: false,
+        kpi: false,
+        generating_kpi: false
       };
 
       self.insertBudget = function (ev, business_code, budget) {
@@ -47,7 +53,28 @@ angular.module('gorillasauth.protected.billing')
         });
       };
 
-      self.search = function () {
+      self.editKpiBudget = function (ev, kpi) {
+        $mdDialog.show({
+          controller: 'editKpiBudgetController as ctrl',
+          fullscreen: $mdMedia('xs'),
+          locals: {
+            kpi: kpi,
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/billing/edit-kpi-budget-dialog.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          kpi.budget_billing = result.budget_billing;
+          kpi.budget_order_quantity = result.budget_order_quantity;
+          kpi.budget_quantity_pieces = result.budget_quantity_pieces;
+          kpi.budget_tm = result.budget_tm;
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
+      self.searchBilling = function () {
         self.loading.billing = true;
 
         BillingService.get(self.dateFilter).then(function (response) {
@@ -68,6 +95,57 @@ angular.module('gorillasauth.protected.billing')
           NotificationService.error('Ocorreu um erro ao buscar o faturamento');
         }); 
       };
+
+      self.searchKpi = function () {
+        var kpiSearchParams = createFilterSearchKpi();
+        self.loading.kpi = true;
+        
+        KpiService.search(kpiSearchParams).then(function (response) {
+          if(response.objects.length) {
+            self.kpis = response.objects;
+            self.loading.kpi = false;
+          } else if (!self.generateTentative){
+            generateKpi();
+          }
+        }, function (error) {
+          NotificationService.error('Ocorreu um erro ao buscar o KPI');
+        });
+      };
+
+      self.checkLengthResult = function (type) {
+        if (type == 'billing') {
+          return self.billing.filter(function (bil) {
+            return bil.business == self.businessCodeFilter;
+          }).length > 0;
+        } else if (type == 'kpi') {
+          return self.kpis.filter(function (kpi) {
+            return kpi.business_code == self.businessCodeFilter;
+          }).length > 0;
+        }
+      };
+      
+      function generateKpi() {
+        self.generateTentative = true;
+        self.loading.generating_kpi = true;
+        KpiService.generate(self.dateFilter).then(function (response) {
+          self.generateTentative = false;
+          self.loading.generating_kpi = false;
+          self.searchKpi();
+        }, function (error) {
+          NotificationService.error('Ocorreu um erro ao gerar o KPI');
+        });
+      }
+
+      function createFilterSearchKpi() {
+        return {
+          q: {
+            filters: [
+              {name: 'month', op: 'eq', val: self.dateFilter.month},
+              {name: 'year', op: 'eq', val: self.dateFilter.year},
+            ]
+          }
+        };
+      }
 
       function setEmpBudget (emp_code){
         angular.forEach(self.billing, function (bil){
@@ -90,7 +168,22 @@ angular.module('gorillasauth.protected.billing')
         };
         return BudgetService.search(params);
       }
+
+      $scope.$watch(function () {
+        return self.selectedTab;
+      }, function (newVal, oldVal) {
+        if (Number(newVal) !== Number(oldVal)) {
+          self.businessCodeFilter = self.tabToBusinessCode[newVal];
+        }
+      });
+
+      self.search = function () {
+        self.searchBilling();
+        self.searchKpi();
+      };
+
       self.search();
+
     }
   ])
 
@@ -120,6 +213,39 @@ angular.module('gorillasauth.protected.billing')
 
       function save() {
         BudgetService.save(self.budget).then(function (response){
+          $mdDialog.hide(response);
+        }, function (error) {
+          NotificationService.error('Ocorreu um erro ao salvar o budget!');
+        });
+      }
+
+      function close() {
+        $mdDialog.cancel();
+      }
+    }
+  ])
+
+  .controller('editKpiBudgetController', ['KpiService', '$mdDialog', 'NotificationService', 
+    'kpi',
+    function (KpiService, $mdDialog, NotificationService, kpi) {
+      var self = this;
+
+      self.kpi = angular.copy(kpi);
+      self.title = kpi ? 'Editar budget' : 'Inserir budget';
+
+      self.save = save;
+      self.close = close;
+
+      function save() {
+        var kpiToSave = {
+          id: self.kpi.id,
+          budget_billing: self.kpi.budget_billing,
+          budget_order_quantity: self.kpi.budget_order_quantity,
+          budget_quantity_pieces: self.kpi.budget_quantity_pieces,
+          budget_tm: self.kpi.budget_tm,
+        };
+
+        KpiService.save(kpiToSave).then(function (response){
           $mdDialog.hide(response);
         }, function (error) {
           NotificationService.error('Ocorreu um erro ao salvar o budget!');

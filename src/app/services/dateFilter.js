@@ -3,9 +3,9 @@ angular.module('gorillasauth.services.date-filter', [])
       .service('DateFilterService', ['configuration',
           function (configuration) {
   
-            var dateNow = new Date();
-
-            this.filterDateNow = function() {
+            this.filterDateNow = function(date) {
+                var dateNow = date ? date : new Date();
+                
                 if (configuration.environment != 'development'){
                     return {
                         day: dateNow.getDay(),
