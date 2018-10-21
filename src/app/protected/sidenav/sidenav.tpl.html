@@ -23,5 +23,11 @@
       <md-icon md-font-icon="material-icons" aria-label="Usuários">person</md-icon>
       <p>Clientes</p>
     </md-list-item>
+
+    <md-list-item ui-sref="protected.rate-service"
+                  ng-class="{ active: $state.includes('protected.rate-service') }">
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">person</md-icon>
+      <p>Rate Serviço</p>
+    </md-list-item>
   </md-list>
 </md-content>
