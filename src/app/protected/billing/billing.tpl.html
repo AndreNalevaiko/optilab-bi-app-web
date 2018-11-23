@@ -3,13 +3,43 @@
 
         <div layout-align="start center" flex>
             <md-tabs md-dynamic-height md-border-bottom md-selected="billingCtrl.selectedTab">
-                <md-tab label="Curitiba">
+                <md-tab>
+                    <md-tab-label>
+                        <span>Curitiba</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
+                            {{billingCtrl.getParticipationForGlobal(1) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
                 </md-tab>
-                <md-tab label="Cascavel">
+                <md-tab>
+                    <md-tab-label>
+                        <span>Cascavel</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
+                            {{billingCtrl.getParticipationForGlobal(6) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
                 </md-tab>
-                <md-tab label="Pato Branco">
+                <md-tab>
+                    <md-tab-label>
+                        <span>Pato Branco</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
+                            {{billingCtrl.getParticipationForGlobal(2) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
                 </md-tab>
-                <md-tab label="Londrina">
+                <md-tab>
+                    <md-tab-label>
+                        <span>Londrina</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
+                            {{billingCtrl.getParticipationForGlobal(5) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
+                </md-tab>
+                <md-tab label="Global">
                 </md-tab>
             </md-tabs>
             <div layout="row" layout-xs="column" layout-align="start center" flex>
@@ -82,7 +112,7 @@
                     <span>Sem resultado</span>
                 </div>
 
-                <md-table-container ng-repeat="kpi in billingCtrl.kpis | filter: {business_code: billingCtrl.businessCodeFilter}" 
+                <md-table-container ng-repeat="kpi in billingCtrl.kpis | filter: {business_code: billingCtrl.businessCodeFilter == 'Global' ? 0 : billingCtrl.businessCodeFilter}" 
                     ng-hide="billingCtrl.loading.kpi" flex>
                     <table md-table>
                         <thead md-head>
