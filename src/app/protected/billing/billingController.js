@@ -17,7 +17,7 @@ angular.module('gorillasauth.protected.billing')
         1: 6,
         2: 2,
         3: 5,
-        4: "Global"
+        4: 0
       };
 
       self.billing = null;
@@ -120,14 +120,14 @@ angular.module('gorillasauth.protected.billing')
           }).length > 0;
         } else if (type == 'kpi') {
           return self.kpis.filter(function (kpi) {
-            return kpi.business_code == self.businessCodeFilter == 'Global' ? 0 : self.businessCodeFilter;
+            return kpi.business_code == self.businessCodeFilter;
           }).length > 0;
         }
       };
 
       self.getParticipationForGlobal = function (business_code) {
         var billing = self.billing.filter(function (bil) { return bil.business == business_code;})[0];
-        var billingGlobal = self.billing.filter(function (bil) { return bil.business == 'Global';})[0];
+        var billingGlobal = self.billing.filter(function (bil) { return bil.business == 0;})[0];
 
         return billing.value / billingGlobal.value;
       };
