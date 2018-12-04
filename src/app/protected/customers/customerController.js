@@ -86,6 +86,10 @@ angular.module('gorillasauth.protected.customer')
       self.search();
 
       $scope.pagination = {
+        "0": {
+          page: 0,
+          pageSize: 20
+        },
         "1": {
           page: 0,
           pageSize: 20
