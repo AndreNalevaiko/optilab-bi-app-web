@@ -39,7 +39,7 @@
             <span>{{customerCtrl.amounts_customers['1'].number_latest_day}}</span>
         </div>
         <div class="type-active" layout="column" layout-align="start center" flex>
-            <span class="header">Hoje</span>
+            <span class="header">Dia Atual</span>
             <span>{{customerCtrl.amounts_customers['1'].number_current_day}}</span>
         </div>
     </div>
@@ -49,12 +49,12 @@
 </div>
 
 <div class="loading" layout="column" layout-align="center center" layout-padding
-    ng-if="!customerCtrl.abstract_customers">
+    ng-if="!customerCtrl.abstract_customers || customerCtrl.generating">
     <md-progress-circular md-diameter="40"></md-progress-circular>
     <span>Carregando</span>
 </div>
 
-<div ng-if="customerCtrl.abstract_customers">
+<div ng-show="customerCtrl.abstract_customers && !customerCtrl.generating">
     <div class="box-search" layout="row" layout-align="space-between center" flex>
         <md-icon>search</md-icon>
         <md-input-container flex>

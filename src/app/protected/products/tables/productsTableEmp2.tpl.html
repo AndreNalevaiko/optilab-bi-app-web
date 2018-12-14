@@ -22,7 +22,8 @@
     <md-progress-circular md-diameter="40"></md-progress-circular>
     <br>
     <span ng-if="productsCtrl.loading">Carregando</span>
-    <span ng-if="productsCtrl.generating">Os dados do mes e ano de referência ainda não haviam sido processados. Aguarde mais um momento.</span>
+    <span ng-if="productsCtrl.generating">Os dados do mes e ano de referência ainda não haviam sido processados.</span>
+    <span ng-if="productsCtrl.generating">Aguarde mais um momento.</span>
 </div>
 <md-table-container ng-if="!productsCtrl.loading && !productsCtrl.generating" flex>
     <table md-table>

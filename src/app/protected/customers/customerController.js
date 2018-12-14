@@ -17,6 +17,7 @@ angular.module('gorillasauth.protected.customer')
       self.generating = false;
 
       self.search = function () {
+        self.amounts_customers = null;
         searchCustomerBilling();
         searchActive();
       };
@@ -54,6 +55,7 @@ angular.module('gorillasauth.protected.customer')
 
           NotificationService.success('Gerando os dados!');
           CustomerService.generate(self.dateFilter).then(function (response) {
+            self.generating = false;
             self.search();
           }, function (error) {
             NotificationService.error('Ocorreu um erro ao gerar os dados!');
