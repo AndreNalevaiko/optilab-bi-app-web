@@ -4,6 +4,7 @@ angular.module('gorillasauth', [
   'ngMaterial',
   'ngResource',
   'ngMessages',
+  'angularMoment',
   'templates-app',
   'templates-common',
   'ui.router',
@@ -33,8 +34,8 @@ angular.module('gorillasauth', [
 ])
 
   .config(['$urlRouterProvider', '$httpProvider', '$mdThemingProvider', 'cfpLoadingBarProvider',
-
-    function ($urlRouterProvider, $httpProvider, $mdThemingProvider, cfpLoadingBarProvider) {
+    '$mdDateLocaleProvider',
+    function ($urlRouterProvider, $httpProvider, $mdThemingProvider, cfpLoadingBarProvider, $mdDateLocaleProvider) {
       $urlRouterProvider.otherwise('/billing');
       $httpProvider.interceptors.push('AuthInterceptor');
       cfpLoadingBarProvider.includeSpinner = false;
@@ -48,6 +49,17 @@ angular.module('gorillasauth', [
           return this.indexOf(searchString, position) === position;
         };
       }
+
+      // Altera o formato das datas
+      $mdDateLocaleProvider.formatDate = function (date) {
+        return date ? moment(date).format('L') : null;
+      };
+
+      // Altera o parse das datas
+      $mdDateLocaleProvider.parseDate = function (dateString) {
+        var m = moment(dateString, 'L', true);
+        return m.isValid() ? m.toDate() : new Date(NaN);
+      };
     }
   ])
 

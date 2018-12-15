@@ -5,10 +5,15 @@ angular.module('gorillasauth.protected.rate-service')
     function (RateServiceService, DateFilterService, FileSaver, $mdDialog, $mdMedia) {
       var self = this;
 
-      var range = function(start, end, step) {
+      self.dateNow = new Date();
+      var y = self.dateNow.getFullYear();
+      var m = self.dateNow.getMonth();
+      self.startDate = new Date(y, m, 1);
+      self.endDate = new Date(y, m + 1, 0);
+
+      self.range = function(start, end, step) {
         var range = [];
         var typeofStart = typeof start;
-        var typeofEnd = typeof end;
     
         if (end < start) {
             step = -step;
@@ -36,7 +41,7 @@ angular.module('gorillasauth.protected.rate-service')
       self.qtdDcMore = 5;
       self.qtdDcLess = -2;
       self.maxDaysConsidered = 14;
-      self.rangeDc = range(self.qtdDcLess, self.qtdDcMore, 1);
+      self.cuttingTime = 14;
 
       self.openAgreedDates = function (ev) {
         $mdDialog.show({
@@ -58,51 +63,34 @@ angular.module('gorillasauth.protected.rate-service')
       };
       
       self.search = function () {
-        RateServiceService.get().then(function (response) {
-          console.log(response);
-          self.dc = self.consolidateResponse(response);
+        RateServiceService.get(createSearchParams()).then(function (response) {
+          self.rateServiceResult = response;
+          self.consolidateResponse();
         });
       };
 
       function createSearchParams() {
         var params = {
-          q: {
-            filters: [
-              {
-                name: 'current_year',
-                op: 'eq',
-                val: self.dateFilter.year
-              },
-              {
-                name: 'month',
-                op: 'eq',
-                val: self.dateFilter.month
-              },
-            ],
-            order_by: [
-              {
-                field: self.orderTable.replace('-', ''),
-                direction: self.orderTable.indexOf('-') < 0 ? 'desc' : 'asc'
-              }
-            ]
-          }
+          data_ini: self.startDate,
+          data_final: self.endDate
         };
         return params;
       }
 
-      self.consolidateResponse = function (data) {
+      self.consolidateResponse = function () {
+        self.rangeDc = self.range(self.qtdDcLess, self.qtdDcMore, 1);
         var consolided = {
-          finished: {length: 0, dcMore: 0, dcLess: 0},
-          simpleSurf: {length: 0, dcMore: 0, dcLess: 0},
-          advancedSurf: {length: 0, dcMore: 0, dcLess: 0},
-          tratementSurf: {length: 0, dcMore: 0, dcLess: 0},
-          digitalSurf: {length: 0, dcMore: 0, dcLess: 0},
-          variluxX: {length: 0, dcMore: 0, dcLess: 0}
+          finished: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
+          simpleSurf: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
+          advancedSurf: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
+          tratementSurf: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
+          digitalSurf: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
+          variluxX: {length: 0, dcMore: 0, dcLess: 0,  dcTotal: 0}
         };
         var type = null;
         var pedidDc = null;
 
-        angular.forEach(data, function (pedid) {
+        angular.forEach(self.rateServiceResult, function (pedid) {
           if (self.selectedTab == 'all' || pedid.business == self.selectedTab) {
             
             if (pedid.type == 'ACABADAS') {
@@ -120,20 +108,38 @@ angular.module('gorillasauth.protected.rate-service')
             }
 
             pedidDc = pedid.working_days - self.agreedDate[type];
-            if (pedidDc > self.qtdDcMore) {
-              consolided[type].dcMore = consolided[type].dcMore + 1;
-              consolided[type].length++;
-            } else if (pedidDc < self.qtdDcLess) {
-              consolided[type].dcLess = consolided[type].dcLess + 1;
-              consolided[type].length++;
-            } else {
-              consolided[type][pedidDc] = consolided[type][pedidDc] ? consolided[type][pedidDc] + 1 : 1;
-              consolided[type].length++;
+
+            if (pedidDc > 0 && new Date(pedid.start_date).getHours() > self.cuttingTime) {
+              pedidDc = pedidDc - 1;
             }
+
+
+            if (pedidDc <= self.maxDaysConsidered) {
+              // So considera os pedidos com dias até a data maxima
+              if (pedidDc > self.qtdDcMore) {
+                // Se é maior que o DC+ adiciona a metrica DC++
+                consolided[type].dcMore = consolided[type].dcMore + 1;
+                consolided[type].length++;
+              } else if (pedidDc < self.qtdDcLess) {
+                // Se é menor que o DC- adiciona a metrica DC--
+                consolided[type].dcLess = consolided[type].dcLess + 1;
+                consolided[type].length++;
+              } else {
+                // Senão adiciona ao respectivo dc
+                consolided[type][pedidDc] = consolided[type][pedidDc] ? consolided[type][pedidDc] + 1 : 1;
+                consolided[type].length++;
+              }
+                            
+              if (pedidDc < 1) {
+                // Se a DC for menor que 1 adiciona ao DC TOTAL sem incrementar o length que ja foi incrementado
+                consolided[type].dcTotal = consolided[type].dcTotal + 1;
+              }
+            }
+
           }
         });
-        console.log(consolided);
-        return consolided;
+
+        self.dc = consolided;
       };
 
       self.search();

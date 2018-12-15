@@ -5,47 +5,47 @@
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
 
-        <div layout="row" layout-align="space-around" layout-padding flex>
-            <md-input-container>
-                <label>Data inicial</label>
-                <md-datepicker ng-model="rateServiceCtrl.start_date"></md-datepicker>
-            </md-input-container>
-            <md-input-container>
-                <label>Data final</label>
-                <md-datepicker ng-model="rateServiceCtrl.end_date"></md-datepicker>
-            </md-input-container>
-            <md-button class="md-primary" ng-click="rateServiceCtrl.export(1)">Exportar Excel</md-button>
-        </div>
-
-        <div layout="column">
-            <span>Parametros</span>
-            <form name="ratesForm" flex>
-                <div layout="row">
-                    <md-input-container>
-                        <label>Quantidade DC +</label>
-                        <input type="number" ng-model="rateServiceCtrl.qtdDcMore" required>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Quantidade DC -</label>
-                        <input type="number" ng-model="rateServiceCtrl.qtdDcLess" required>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Máximo de dias a considerar</label>
-                        <input type="number" ng-model="rateServiceCtrl.maxDaysConsidered" required>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Hora de corte</label>
-                        <input type="number" ng-model="rateServiceCtrl.maxDaysConsidered" required>
-                    </md-input-container>
-                </div>
+        <div layout="row" layout-align="space-around center" layout-padding flex>
+            <div layout="row" flex>
+                <md-input-container>
+                    <label>Data inicial</label>
+                    <md-datepicker ng-model="rateServiceCtrl.startDate"></md-datepicker>
+                </md-input-container>
+                <md-input-container>
+                    <label>Data final</label>
+                    <md-datepicker ng-model="rateServiceCtrl.endDate"></md-datepicker>
+                </md-input-container>
+            </div>
+            <div layout="column" layout-align="space-between center" flex>
+                <md-button class="md-primary" ng-click="rateServiceCtrl.consolidateResponse()">Recalcular</md-button>
                 <md-button class="md-primary" ng-click="rateServiceCtrl.openAgreedDates($event)">
                     Abrir datas combinadas
                 </md-button>
-                
-            </form>
+            </div>
         </div>
 
-        <div layout="row">
+        <form name="ratesForm" flex>
+            <div layout="row" layout-align="space-around">
+                <md-input-container>
+                    <label>Quantidade DC +</label>
+                    <input type="number" ng-model="rateServiceCtrl.qtdDcMore" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Quantidade DC -</label>
+                    <input type="number" ng-model="rateServiceCtrl.qtdDcLess" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Máximo de dias a considerar</label>
+                    <input type="number" ng-model="rateServiceCtrl.maxDaysConsidered" required>
+                </md-input-container>
+                <md-input-container>
+                    <label>Hora de corte</label>
+                    <input type="number" min="0" max="23" ng-model="rateServiceCtrl.cuttingTime" required>
+                </md-input-container>
+            </div>
+        </form>
+        
+        <div layout="row" layout-align="center">
             <div class="labels" layout="column">
                 <span>GRUPO</span>
                 <span>ACABADAS</span>
@@ -64,15 +64,27 @@
                 <span>{{rateServiceCtrl.dc.digitalSurf.dcLess / rateServiceCtrl.dc.digitalSurf.length | percentage: 2}}</span>
                 <span>{{rateServiceCtrl.dc.variluxX.dcLess / rateServiceCtrl.dc.variluxX.length | percentage: 2}}</span>
             </div>
-            <div class="values" ng-repeat="dc in rateServiceCtrl.rangeDc" layout="column">
-                <span class="label-dc">{{dc == 0 ? 'DC' : dc}}</span>
-                <span>{{rateServiceCtrl.dc.finished[dc] / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
-                <span>{{rateServiceCtrl.dc.simpleSurf[dc] / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
-                <span>{{rateServiceCtrl.dc.advancedSurf[dc] / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
-                <span>{{rateServiceCtrl.dc.tratementSurf[dc] / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
-                <span>{{rateServiceCtrl.dc.digitalSurf[dc] / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
-                <span>{{rateServiceCtrl.dc.variluxX[dc] / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+            <div layout="row" ng-repeat="dc in rateServiceCtrl.rangeDc">
+                <div class="values" layout="column">
+                    <span class="label-dc">{{dc == 0 ? 'DC' : dc}}</span>
+                    <span>{{rateServiceCtrl.dc.finished[dc] / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.simpleSurf[dc] / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.advancedSurf[dc] / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.tratementSurf[dc] / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.digitalSurf[dc] / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.variluxX[dc] / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+                </div>
+                <div ng-if="dc == 0" class="values dc-total" layout="column">
+                    <span class="label-dc">DC TOTAL</span>
+                    <span>{{rateServiceCtrl.dc.finished.dcTotal / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.simpleSurf.dcTotal / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.advancedSurf.dcTotal / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.tratementSurf.dcTotal / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.digitalSurf.dcTotal / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
+                    <span>{{rateServiceCtrl.dc.variluxX.dcTotal / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+                </div>
             </div>
+            
             <div class="values" layout="column">
                 <span class="label-dc">DC ++</span>
                 <span>{{(rateServiceCtrl.dc.finished.dcMore / rateServiceCtrl.dc.finished.length) | percentage:2}}</span>

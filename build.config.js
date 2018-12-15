@@ -81,6 +81,9 @@ module.exports = {
       'vendor/angular-ui-utils/modules/route/route.js',
       'vendor/ng-file-upload/ng-file-upload.js',
       'vendor/cropper/dist/cropper.js',
+      'vendor/moment/moment.js',
+      'vendor/moment/locale/pt-br.js',
+      'vendor/angular-moment/angular-moment.min.js',
       'vendor/ng-cropper/dist/ngCropper.js',
       'vendor/ng-img-crop/compile/unminified/ng-img-crop.js',
       'vendor/angular-file-saver/dist/angular-file-saver.bundle.js'

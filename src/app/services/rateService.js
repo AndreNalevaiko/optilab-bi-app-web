@@ -30,8 +30,12 @@ angular.module('gorillasauth.services.rate-service', [
               return RateService.get(searchParameters).$promise;
             };
     
-            this.get = function (id) {
-              return $http.get(configuration.apiUrl + '/rate_service/_generate').then(function (response) {
+            this.get = function (params) {
+              return $http({
+                    url: configuration.apiUrl + '/rate_service/_generate', 
+                    method: "GET",
+                    params: params
+                }).then(function (response) {
                   return response.data;
               });
             };
