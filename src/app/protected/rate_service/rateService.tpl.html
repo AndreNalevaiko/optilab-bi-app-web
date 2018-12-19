@@ -1,11 +1,16 @@
 <div class="optilab-bi-rate-service" layout-padding flex>
     <md-card>
-        <div ng-if="rateServiceCtrl.loading" flex>
-            <span>Carregando o relatórios de produtos</span>
-            <md-progress-linear md-mode="indeterminate"></md-progress-linear>
-        </div>
-
-        <div layout="row" layout-align="space-around center" layout-padding flex>
+        <md-tabs md-dynamic-height md-border-bottom md-selected="rateServiceCtrl.selectedTab">
+            <md-tab label="Curitiba">
+            </md-tab>
+            <md-tab label="Cascavel">
+            </md-tab>
+            <md-tab label="Pato Branco">
+            </md-tab>
+            <md-tab label="Global">
+            </md-tab>
+        </md-tabs>
+        <div layout="row" layout-xs="column" layout-align="space-around center" layout-padding flex>
             <div layout="row" flex>
                 <md-input-container>
                     <label>Data inicial</label>
@@ -16,11 +21,11 @@
                     <md-datepicker ng-model="rateServiceCtrl.endDate"></md-datepicker>
                 </md-input-container>
             </div>
-            <div layout="column" layout-align="space-between center" flex>
-                <md-button class="md-primary" ng-click="rateServiceCtrl.consolidateResponse()">Recalcular</md-button>
+            <div layout="row" layout-xs="column" layout-align="space-between center" flex>
                 <md-button class="md-primary" ng-click="rateServiceCtrl.openAgreedDates($event)">
                     Abrir datas combinadas
                 </md-button>
+                <md-button class="md-raised md-primary" ng-click="rateServiceCtrl.search()">Recalcular</md-button>
             </div>
         </div>
 
@@ -44,8 +49,18 @@
                 </md-input-container>
             </div>
         </form>
+
+        <div class="loading" layout="column" layout-align="center center" ng-if="rateServiceCtrl.loading" flex>
+            <md-progress-circular md-diameter="40"></md-progress-circular>
+            <br>
+            <span ng-if="rateServiceCtrl.loading">Carregando</span>
+        </div>
+        <div class="loading" layout="column" layout-align="center center"  layout-padding
+            ng-if="!rateServiceCtrl.loading && !rateServiceCtrl.dc" flex>
+            <span >Não foram encontrados pedidos suficientes para medir no periodo selecionado</span>
+        </div>  
         
-        <div layout="row" layout-align="center">
+        <div id="mainTable" ng-if="!rateServiceCtrl.loading && rateServiceCtrl.dc" layout="row" layout-align="center">
             <div class="labels" layout="column">
                 <span>GRUPO</span>
                 <span>ACABADAS</span>
@@ -57,43 +72,71 @@
             </div>
             <div class="values" layout="column">
                 <span class="label-dc">DC --</span>
-                <span>{{rateServiceCtrl.dc.finished.dcLess / rateServiceCtrl.dc.finished.length | percentage: 2}}</span>
-                <span>{{rateServiceCtrl.dc.simpleSurf.dcLess / rateServiceCtrl.dc.simpleSurf.length | percentage: 2}}</span>
-                <span>{{rateServiceCtrl.dc.advancedSurf.dcLess / rateServiceCtrl.dc.advancedSurf.length | percentage: 2}}</span>
-                <span>{{rateServiceCtrl.dc.tratementSurf.dcLess / rateServiceCtrl.dc.tratementSurf.length | percentage: 2}}</span>
-                <span>{{rateServiceCtrl.dc.digitalSurf.dcLess / rateServiceCtrl.dc.digitalSurf.length | percentage: 2}}</span>
-                <span>{{rateServiceCtrl.dc.variluxX.dcLess / rateServiceCtrl.dc.variluxX.length | percentage: 2}}</span>
+                <span ng-if="rateServiceCtrl.dc.finished.dcLess">{{rateServiceCtrl.dc.finished.dcLess / rateServiceCtrl.dc.finished.length | percentage: 2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.finished.dcLess">--</span>
+                <span ng-if="rateServiceCtrl.dc.simpleSurf.dcLess">{{rateServiceCtrl.dc.simpleSurf.dcLess / rateServiceCtrl.dc.simpleSurf.length | percentage: 2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.simpleSurf.dcLess">--</span>
+                <span ng-if="rateServiceCtrl.dc.advancedSurf.dcLess">{{rateServiceCtrl.dc.advancedSurf.dcLess / rateServiceCtrl.dc.advancedSurf.length | percentage: 2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.advancedSurf.dcLess">--</span>
+                <span ng-if="rateServiceCtrl.dc.tratementSurf.dcLess">{{rateServiceCtrl.dc.tratementSurf.dcLess / rateServiceCtrl.dc.tratementSurf.length | percentage: 2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.tratementSurf.dcLess">--</span>
+                <span ng-if="rateServiceCtrl.dc.digitalSurf.dcLess">{{rateServiceCtrl.dc.digitalSurf.dcLess / rateServiceCtrl.dc.digitalSurf.length | percentage: 2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.digitalSurf.dcLess">--</span>
+                <span ng-if="rateServiceCtrl.dc.variluxX.dcLess">{{rateServiceCtrl.dc.variluxX.dcLess / rateServiceCtrl.dc.variluxX.length | percentage: 2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.variluxX.dcLess">--</span>
             </div>
-            <div layout="row" ng-repeat="dc in rateServiceCtrl.rangeDc">
+            <div id="rangeDc" layout="row" ng-repeat="dc in rateServiceCtrl.rangeDc">
                 <div class="values" layout="column">
                     <span class="label-dc">{{dc == 0 ? 'DC' : dc}}</span>
-                    <span>{{rateServiceCtrl.dc.finished[dc] / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.simpleSurf[dc] / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.advancedSurf[dc] / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.tratementSurf[dc] / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.digitalSurf[dc] / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.variluxX[dc] / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+                    <span ng-if="rateServiceCtrl.dc.finished[dc]">{{rateServiceCtrl.dc.finished[dc] / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.finished[dc]">--</span>
+                    <span ng-if="rateServiceCtrl.dc.simpleSurf[dc]">{{rateServiceCtrl.dc.simpleSurf[dc] / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.simpleSurf[dc]">--</span>
+                    <span ng-if="rateServiceCtrl.dc.advancedSurf[dc]">{{rateServiceCtrl.dc.advancedSurf[dc] / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.advancedSurf[dc]">--</span>
+                    <span ng-if="rateServiceCtrl.dc.tratementSurf[dc]">{{rateServiceCtrl.dc.tratementSurf[dc] / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.tratementSurf[dc]">--</span>
+                    <span ng-if="rateServiceCtrl.dc.digitalSurf[dc]">{{rateServiceCtrl.dc.digitalSurf[dc] / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.digitalSurf[dc]">--</span>
+                    <span ng-if="rateServiceCtrl.dc.variluxX[dc]">{{rateServiceCtrl.dc.variluxX[dc] / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.variluxX[dc]">--</span>
                 </div>
                 <div ng-if="dc == 0" class="values dc-total" layout="column">
                     <span class="label-dc">DC TOTAL</span>
-                    <span>{{rateServiceCtrl.dc.finished.dcTotal / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.simpleSurf.dcTotal / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.advancedSurf.dcTotal / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.tratementSurf.dcTotal / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.digitalSurf.dcTotal / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
-                    <span>{{rateServiceCtrl.dc.variluxX.dcTotal / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+                    <span ng-if="rateServiceCtrl.dc.finished.dcTotal">{{rateServiceCtrl.dc.finished.dcTotal / rateServiceCtrl.dc.finished.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.finished.dcTotal">--</span>
+                    <span ng-if="rateServiceCtrl.dc.simpleSurf.dcTotal">{{rateServiceCtrl.dc.simpleSurf.dcTotal / rateServiceCtrl.dc.simpleSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.simpleSurf.dcTotal">--</span>
+                    <span ng-if="rateServiceCtrl.dc.advancedSurf.dcTotal">{{rateServiceCtrl.dc.advancedSurf.dcTotal / rateServiceCtrl.dc.advancedSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.advancedSurf.dcTotal">--</span>
+                    <span ng-if="rateServiceCtrl.dc.tratementSurf.dcTotal">{{rateServiceCtrl.dc.tratementSurf.dcTotal / rateServiceCtrl.dc.tratementSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.tratementSurf.dcTotal">--</span>
+                    <span ng-if="rateServiceCtrl.dc.digitalSurf.dcTotal">{{rateServiceCtrl.dc.digitalSurf.dcTotal / rateServiceCtrl.dc.digitalSurf.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.digitalSurf.dcTotal">--</span>
+                    <span ng-if="rateServiceCtrl.dc.variluxX.dcTotal">{{rateServiceCtrl.dc.variluxX.dcTotal / rateServiceCtrl.dc.variluxX.length | percentage: 2 }}</span>
+                    <span ng-if="!rateServiceCtrl.dc.variluxX.dcTotal">--</span>
                 </div>
             </div>
             
             <div class="values" layout="column">
                 <span class="label-dc">DC ++</span>
-                <span>{{(rateServiceCtrl.dc.finished.dcMore / rateServiceCtrl.dc.finished.length) | percentage:2}}</span>
-                <span>{{(rateServiceCtrl.dc.simpleSurf.dcMore / rateServiceCtrl.dc.simpleSurf.length) | percentage:2}}</span>
-                <span>{{(rateServiceCtrl.dc.advancedSurf.dcMore / rateServiceCtrl.dc.advancedSurf.length) | percentage:2}}</span>
-                <span>{{(rateServiceCtrl.dc.tratementSurf.dcMore / rateServiceCtrl.dc.tratementSurf.length) | percentage:2}}</span>
-                <span>{{(rateServiceCtrl.dc.digitalSurf.dcMore / rateServiceCtrl.dc.digitalSurf.length) | percentage:2}}</span>
-                <span>{{(rateServiceCtrl.dc.variluxX.dcMore / rateServiceCtrl.dc.variluxX.length) | percentage:2}}</span>
+                <span ng-if="rateServiceCtrl.dc.finished.dcMore">{{(rateServiceCtrl.dc.finished.dcMore / rateServiceCtrl.dc.finished.length) | percentage:2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.finished.dcMore">--</span>
+                <span ng-if="rateServiceCtrl.dc.simpleSurf.dcMore">{{(rateServiceCtrl.dc.simpleSurf.dcMore / rateServiceCtrl.dc.simpleSurf.length) | percentage:2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.simpleSurf.dcMore">--</span>
+                <span ng-if="rateServiceCtrl.dc.advancedSurf.dcMore">{{(rateServiceCtrl.dc.advancedSurf.dcMore / rateServiceCtrl.dc.advancedSurf.length) | percentage:2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.advancedSurf.dcMore">--</span>
+                <span ng-if="rateServiceCtrl.dc.tratementSurf.dcMore">{{(rateServiceCtrl.dc.tratementSurf.dcMore / rateServiceCtrl.dc.tratementSurf.length) | percentage:2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.tratementSurf.dcMore">--</span>
+                <span ng-if="rateServiceCtrl.dc.digitalSurf.dcMore">{{(rateServiceCtrl.dc.digitalSurf.dcMore / rateServiceCtrl.dc.digitalSurf.length) | percentage:2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.digitalSurf.dcMore">--</span>
+                <span ng-if="rateServiceCtrl.dc.variluxX.dcMore">{{(rateServiceCtrl.dc.variluxX.dcMore / rateServiceCtrl.dc.variluxX.length) | percentage:2}}</span>
+                <span ng-if="!rateServiceCtrl.dc.variluxX.dcMore">--</span>
             </div>
         </div>
     </md-card>
+
+    <md-button ng-click="rateServiceCtrl.exportTableToCSV('teste2.csv')" ng-disabled="!(!rateServiceCtrl.loading && rateServiceCtrl.dc)">
+        Exportar
+    </md-button>
 </div>

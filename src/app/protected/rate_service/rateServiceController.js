@@ -1,15 +1,33 @@
 angular.module('gorillasauth.protected.rate-service')
 
-  .controller('RateServiceController', ['RateServiceService', 'DateFilterService', 'FileSaver', '$mdDialog',
-    '$mdMedia',
-    function (RateServiceService, DateFilterService, FileSaver, $mdDialog, $mdMedia) {
+  .controller('RateServiceController', ['RateServiceService', 'DateFilterService', '$mdDialog',
+    '$mdMedia', '$scope',
+    function (RateServiceService, DateFilterService, $mdDialog, $mdMedia, $scope) {
       var self = this;
+
+      self.loading = false;
+      self.tabToBusinessCode = {
+        0: 1,
+        1: 6,
+        2: 2,
+        3: null
+      };
+      self.selectedTab = 0;
+      self.businessCodeFilter = self.tabToBusinessCode[self.selectedTab];
 
       self.dateNow = new Date();
       var y = self.dateNow.getFullYear();
       var m = self.dateNow.getMonth();
       self.startDate = new Date(y, m, 1);
       self.endDate = new Date(y, m + 1, 0);
+
+      self.filterOptions = DateFilterService.filterOptions();
+      self.dateFilter = DateFilterService.filterDateNow();
+
+      self.qtdDcMore = 5;
+      self.qtdDcLess = -2;
+      self.maxDaysConsidered = 14;
+      self.cuttingTime = 14;
 
       self.range = function(start, end, step) {
         var range = [];
@@ -31,17 +49,8 @@ angular.module('gorillasauth.protected.rate-service')
         return range;
     
       };
-
-      self.selectedTab = 1;
-      self.filterOptions = DateFilterService.filterOptions();
-      self.dateFilter = DateFilterService.filterDateNow();
-
+      
       self.agreedDate = RateServiceService.getAgreedDate(self.selectedTab);
-
-      self.qtdDcMore = 5;
-      self.qtdDcLess = -2;
-      self.maxDaysConsidered = 14;
-      self.cuttingTime = 14;
 
       self.openAgreedDates = function (ev) {
         $mdDialog.show({
@@ -63,16 +72,22 @@ angular.module('gorillasauth.protected.rate-service')
       };
       
       self.search = function () {
+        self.loading = true;
         RateServiceService.get(createSearchParams()).then(function (response) {
           self.rateServiceResult = response;
           self.consolidateResponse();
+          self.loading = false;
+        }, function (error) {
+          self.loading = false;
         });
       };
 
+      self.exportTableToCSV = exportTableToCSV;
+
       function createSearchParams() {
         var params = {
-          data_ini: self.startDate,
-          data_final: self.endDate
+          data_ini: self.startDate.toLocaleDateString(),
+          data_final: self.endDate.toLocaleDateString()
         };
         return params;
       }
@@ -90,8 +105,13 @@ angular.module('gorillasauth.protected.rate-service')
         var type = null;
         var pedidDc = null;
 
+        if (!self.rateServiceResult.length) {
+          self.dc = null;
+          return;
+        }
+
         angular.forEach(self.rateServiceResult, function (pedid) {
-          if (self.selectedTab == 'all' || pedid.business == self.selectedTab) {
+          if (self.selectedTab == 3 || pedid.business == self.businessCodeFilter) {
             
             if (pedid.type == 'ACABADAS') {
               type = 'finished';
@@ -142,7 +162,78 @@ angular.module('gorillasauth.protected.rate-service')
         self.dc = consolided;
       };
 
+      function downloadCSV(csv, filename) {
+        var csvFile;
+        var downloadLink;
+    
+        // CSV file
+        csvFile = new Blob([csv], {type: "text/csv"});
+    
+        // Download link
+        downloadLink = document.createElement("a");
+    
+        // File name
+        downloadLink.download = filename;
+    
+        // Create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+    
+        // Hide download link
+        downloadLink.style.display = "none";
+    
+        // Add the link to DOM
+        document.body.appendChild(downloadLink);
+    
+        // Click download link
+        downloadLink.click();
+      }
+
+      function exportTableToCSV(filename) {
+        var csv = [];
+        var columns = document.getElementById("mainTable").children;
+        var isColumnDc = false;
+        
+        angular.forEach(columns, function (column) {
+          if (column.id == 'rangeDc') {
+            var rangeColumns = column.children[0].children;
+            for (i=0; i < rangeColumns.length; i++) {
+              if (rangeColumns[i].textContent == 'DC') {
+                isColumnDc = true;
+              }
+              csv[i] = csv[i] ? csv[i] + ';' + rangeColumns[i].textContent : rangeColumns[i].textContent;
+
+              if (isColumnDc && (i + 1) == rangeColumns.length) {
+                var columnTotalDc = column.children[1].children;
+                for (i=0; i < columnTotalDc.length; i++) {
+                  csv[i] = csv[i] ? csv[i] + ';' + columnTotalDc[i].textContent : columnTotalDc[i].textContent;
+                }
+                isColumnDc = false;
+              }
+            }
+          } else {
+            for (i=0; i < column.children.length; i++) {
+              csv[i] = csv[i] ? csv[i] + ';' + column.children[i].textContent : column.children[i].textContent;
+            }
+          }
+        });
+    
+        // Download CSV file
+        downloadCSV(csv.join("\n"), filename);
+      }
+
+      
       self.search();
+
+      $scope.$watch(function () {
+        return self.selectedTab;
+      }, function (newVal, oldVal) {
+        if (Number(newVal) !== Number(oldVal)) {
+          self.businessCodeFilter = self.tabToBusinessCode[newVal];
+          if (self.rateServiceResult) {
+            self.consolidateResponse();
+          }
+        }
+      });
     }
   ])
 
