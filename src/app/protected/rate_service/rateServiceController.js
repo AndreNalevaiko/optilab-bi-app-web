@@ -1,8 +1,8 @@
 angular.module('gorillasauth.protected.rate-service')
 
-  .controller('RateServiceController', ['RateServiceService', 'DateFilterService', '$mdDialog',
+  .controller('RateServiceController', ['RateServiceService', 'NotificationService', '$mdDialog',
     '$mdMedia', '$scope',
-    function (RateServiceService, DateFilterService, $mdDialog, $mdMedia, $scope) {
+    function (RateServiceService, NotificationService, $mdDialog, $mdMedia, $scope) {
       var self = this;
 
       self.loading = false;
@@ -20,14 +20,6 @@ angular.module('gorillasauth.protected.rate-service')
       var m = self.dateNow.getMonth();
       self.startDate = new Date(y, m, 1);
       self.endDate = new Date(y, m + 1, 0);
-
-      self.filterOptions = DateFilterService.filterOptions();
-      self.dateFilter = DateFilterService.filterDateNow();
-
-      self.qtdDcMore = 5;
-      self.qtdDcLess = -2;
-      self.maxDaysConsidered = 14;
-      self.cuttingTime = 14;
 
       self.range = function(start, end, step) {
         var range = [];
@@ -50,15 +42,16 @@ angular.module('gorillasauth.protected.rate-service')
     
       };
       
-      self.agreedDate = RateServiceService.getAgreedDate(self.selectedTab);
+      self.agreedDate = RateServiceService.getAgreedDate(self.businessCodeFilter);
+      self.paramsDc = RateServiceService.getParamsDc(self.businessCodeFilter);
 
       self.openAgreedDates = function (ev) {
         $mdDialog.show({
           controller: 'editAgreedDatesController as ctrl',
           fullscreen: $mdMedia('xs'),
           locals: {
-            business_code: self.selectedTab,
-            agreedDate: RateServiceService.getAgreedDate(self.selectedTab)
+            business_code: self.businessCodeFilter,
+            agreedDate: RateServiceService.getAgreedDate(self.businessCodeFilter)
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/rate_service/dialog/editDCGroup.tpl.html',
@@ -66,9 +59,16 @@ angular.module('gorillasauth.protected.rate-service')
           clickOutsideToClose: true
         }).then(function (result) {
           console.log('dislog Confirmed');
+          NotificationService.success('Salvo com sucesso!');
+          self.agreedDate = RateServiceService.getAgreedDate(self.businessCodeFilter);
         }, function (){
           console.log('Canceled Operation');
         });
+      };
+
+      self.saveParamsDc = function () {
+        RateServiceService.setParamsDc(self.businessCodeFilter, self.paramsDc);
+        NotificationService.success('Salvo com sucesso!');
       };
       
       self.search = function () {
@@ -93,7 +93,7 @@ angular.module('gorillasauth.protected.rate-service')
       }
 
       self.consolidateResponse = function () {
-        self.rangeDc = self.range(self.qtdDcLess, self.qtdDcMore, 1);
+        self.rangeDc = self.range(self.paramsDc.qtdDcLess, self.paramsDc.qtdDcMore, 1);
         var consolided = {
           finished: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
           simpleSurf: {length: 0, dcMore: 0, dcLess: 0, dcTotal: 0},
@@ -129,18 +129,18 @@ angular.module('gorillasauth.protected.rate-service')
 
             pedidDc = pedid.working_days - self.agreedDate[type];
 
-            if (pedidDc > 0 && new Date(pedid.start_date).getHours() > self.cuttingTime) {
+            if (pedidDc > 0 && new Date(pedid.start_date).getHours() > self.paramsDc.cuttingTime) {
               pedidDc = pedidDc - 1;
             }
 
 
-            if (pedidDc <= self.maxDaysConsidered) {
+            if (pedidDc <= self.paramsDc.maxDaysConsidered) {
               // So considera os pedidos com dias até a data maxima
-              if (pedidDc > self.qtdDcMore) {
+              if (pedidDc > self.paramsDc.qtdDcMore) {
                 // Se é maior que o DC+ adiciona a metrica DC++
                 consolided[type].dcMore = consolided[type].dcMore + 1;
                 consolided[type].length++;
-              } else if (pedidDc < self.qtdDcLess) {
+              } else if (pedidDc < self.paramsDc.qtdDcLess) {
                 // Se é menor que o DC- adiciona a metrica DC--
                 consolided[type].dcLess = consolided[type].dcLess + 1;
                 consolided[type].length++;
@@ -188,7 +188,8 @@ angular.module('gorillasauth.protected.rate-service')
         downloadLink.click();
       }
 
-      function exportTableToCSV(filename) {
+      function exportTableToCSV() {
+        var filename = 'TaxaServico Emp ' + (self.businessCodeFilter || 'Global') + '.csv';
         var csv = [];
         var columns = document.getElementById("mainTable").children;
         var isColumnDc = false;
@@ -229,6 +230,10 @@ angular.module('gorillasauth.protected.rate-service')
       }, function (newVal, oldVal) {
         if (Number(newVal) !== Number(oldVal)) {
           self.businessCodeFilter = self.tabToBusinessCode[newVal];
+          
+          self.agreedDate = RateServiceService.getAgreedDate(self.businessCodeFilter);
+          self.paramsDc = RateServiceService.getParamsDc(self.businessCodeFilter);
+          
           if (self.rateServiceResult) {
             self.consolidateResponse();
           }

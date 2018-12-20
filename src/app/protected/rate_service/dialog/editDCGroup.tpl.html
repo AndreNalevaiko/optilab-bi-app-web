@@ -3,14 +3,15 @@
             <div class="md-toolbar-tools">
                 <h2>Editar parametros DC</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="ctrl.close()">
+                <md-button class="md-icon-button" ng-click="ctrl.cancel()">
                     <md-icon>close</md-icon>
                 </md-button>
             </div>
         </md-toolbar>
         <md-dialog-content class="md-dialog-content">
             <div layout="column" class="label">
-                <span>Empresa: {{ctrl.business_code | companyAlias}}</span>
+                <span ng-if="ctrl.business_code">Empresa: {{ctrl.business_code | companyAlias}}</span>
+                <span ng-if="!ctrl.business_code">Empresa: Global</span>
             </div>
             <form name="manageForm" layout-padding flex>
                 <div layout="row">
@@ -19,13 +20,13 @@
                         <input type="number" ng-model="ctrl.agreedDate.finished" required>
                     </md-input-container>
                     <md-input-container flex>
-                        <label>SUFAÇADA S/ COL OU VERNIZ</label>
+                        <label>SURF S/ COL E VERNIZ</label>
                         <input type="number" ng-model="ctrl.agreedDate.simpleSurf" required>
                     </md-input-container>
                 </div>
                 <div layout="row">
                     <md-input-container flex>
-                        <label>SUFAÇADA C/ COL OU VERNIZ</label>
+                        <label>SURF C/ COL OU VERNIZ</label>
                         <input type="number" ng-model="ctrl.agreedDate.advancedSurf" required>
                     </md-input-container>
                     <md-input-container flex>
@@ -43,15 +44,16 @@
                         <input type="number" ng-model="ctrl.agreedDate.variluxX" required>
                     </md-input-container>
                 </div>
-                    
-                <div layout="row" layout-align="end">
-                    <md-button ng-click="ctrl.close()">
-                        Cancelar
-                    </md-button>
-                    <md-button class="md-accent" ng-click="ctrl.save()" ng-disabled="manageForm.$invalid">
-                        Salvar
-                    </md-button>
-                </div>
             </form>
         </md-dialog-content>
+        <md-dialog-actions flex>
+            <div layout="row" layout-align="end" flex>
+                <md-button ng-click="ctrl.cancel()">
+                    Cancelar
+                </md-button>
+                <md-button class="md-accent" ng-click="ctrl.confirm()" ng-disabled="manageForm.$invalid">
+                    Salvar
+                </md-button>
+            </div>
+        </md-dialog-actions>
     </md-dialog>

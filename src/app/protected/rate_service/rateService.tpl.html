@@ -29,28 +29,33 @@
             </div>
         </div>
 
-        <form name="ratesForm" flex>
-            <div layout="row" layout-align="space-around">
+        <form name="ratesForm" class="rates-form" flex>
+            <div layout="row" layout-align="space-around center">
                 <md-input-container>
                     <label>Quantidade DC +</label>
-                    <input type="number" ng-model="rateServiceCtrl.qtdDcMore" required>
+                    <input type="number" ng-model="rateServiceCtrl.paramsDc.qtdDcMore" required>
                 </md-input-container>
                 <md-input-container>
                     <label>Quantidade DC -</label>
-                    <input type="number" ng-model="rateServiceCtrl.qtdDcLess" required>
+                    <input type="number" ng-model="rateServiceCtrl.paramsDc.qtdDcLess" required>
                 </md-input-container>
                 <md-input-container>
-                    <label>Máximo de dias a considerar</label>
-                    <input type="number" ng-model="rateServiceCtrl.maxDaysConsidered" required>
+                    <label>Qtd dias considerados</label>
+                    <input type="number" ng-model="rateServiceCtrl.paramsDc.maxDaysConsidered" required>
                 </md-input-container>
                 <md-input-container>
                     <label>Hora de corte</label>
-                    <input type="number" min="0" max="23" ng-model="rateServiceCtrl.cuttingTime" required>
+                    <input type="number" min="0" max="23" ng-model="rateServiceCtrl.paramsDc.cuttingTime" required>
                 </md-input-container>
+
+                <md-button class="md-raised md-primary" ng-disabled="ratesForm.$invalid && !ratesForm.$pristine" 
+                    ng-click="rateServiceCtrl.saveParamsDc()">
+                    Salvar
+                </md-button>
             </div>
         </form>
 
-        <div class="loading" layout="column" layout-align="center center" ng-if="rateServiceCtrl.loading" flex>
+        <div class="loading" layout="column" layout-align="center center" ng-if="rateServiceCtrl.loading" layout-padding flex>
             <md-progress-circular md-diameter="40"></md-progress-circular>
             <br>
             <span ng-if="rateServiceCtrl.loading">Carregando</span>
@@ -60,6 +65,7 @@
             <span >Não foram encontrados pedidos suficientes para medir no periodo selecionado</span>
         </div>  
         
+        <div layout-padding ng-if="!rateServiceCtrl.loading && rateServiceCtrl.dc"></div>
         <div id="mainTable" ng-if="!rateServiceCtrl.loading && rateServiceCtrl.dc" layout="row" layout-align="center">
             <div class="labels" layout="column">
                 <span>GRUPO</span>
@@ -136,7 +142,8 @@
         </div>
     </md-card>
 
-    <md-button ng-click="rateServiceCtrl.exportTableToCSV('teste2.csv')" ng-disabled="!(!rateServiceCtrl.loading && rateServiceCtrl.dc)">
+    <md-button ng-click="rateServiceCtrl.exportTableToCSV()" 
+        ng-disabled="!(!rateServiceCtrl.loading && rateServiceCtrl.dc)">
         Exportar
     </md-button>
 </div>

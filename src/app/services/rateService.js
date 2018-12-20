@@ -6,6 +6,7 @@ angular.module('gorillasauth.services.rate-service', [
         function (configuration, $http, RateService, $cookies) {
 
             var COOKIE_AGREED_DATE_GROUP = 'agreed_dates_groups';
+            var COOKIE_PARAMS_DC = 'params_dc';
             var cookieExpirationDate = new Date();
             cookieExpirationDate.setDate(cookieExpirationDate.getDate() + 365);
 
@@ -18,8 +19,16 @@ angular.module('gorillasauth.services.rate-service', [
                 variluxX: 3
             };
 
-            // $cookies.remove(COOKIE_AGREED_DATE_GROUP);
-            var agreedDates = $cookies.getObject(COOKIE_AGREED_DATE_GROUP) || {1: null, 2: null, 6: null};
+            var defaultParamsDc = {
+                qtdDcMore: 5,
+                qtdDcLess: -1,
+                maxDaysConsidered: 10,
+                cuttingTime: 14
+            };
+
+            // $cookies.remove(COOKIE_PARAMS_DC);
+            var agreedDates = $cookies.getObject(COOKIE_AGREED_DATE_GROUP) || {1: null, 2: null, 6: null, 0: null};
+            var paramsDc = $cookies.getObject(COOKIE_PARAMS_DC) || {1: null, 2: null, 6: null, 0: null};
  
             this.search = function (searchParameters) {
     
@@ -79,7 +88,7 @@ angular.module('gorillasauth.services.rate-service', [
                         expires: cookieExpirationDate,
                     });
                 }
-                return agreedDates[business_code];
+                return angular.copy(agreedDates[business_code]);
             };
 
             this.setAgreedDate = function (business_code, agreedDate) {
@@ -89,6 +98,25 @@ angular.module('gorillasauth.services.rate-service', [
                 });
 
                 return agreedDates;
+            };
+
+            this.getParamsDc = function (business_code) {
+                if (paramsDc[business_code] == null) {
+                    paramsDc[business_code] = defaultParamsDc;
+                    $cookies.putObject(COOKIE_PARAMS_DC, paramsDc, {
+                        expires: cookieExpirationDate,
+                    });
+                }
+                return angular.copy(paramsDc[business_code]);
+            };
+
+            this.setParamsDc = function (business_code, paramDc) {
+                paramsDc[business_code] = paramDc;
+                $cookies.putObject(COOKIE_PARAMS_DC, paramDc, {
+                    expires: cookieExpirationDate,
+                });
+
+                return paramsDc;
             };
 
         }
