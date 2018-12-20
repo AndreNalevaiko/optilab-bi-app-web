@@ -18,25 +18,19 @@ angular.module('gorillasauth.protected', [
         controller: 'ProtectedController as protectedCtrl',
         url: '',
         templateUrl: 'protected/protected.tpl.html',
-        // resolve: {
-        //   user: ['$q', '$location', 'UserService', function ($q, $location, UserService) {
-        //     if ($location.search().force_login && $location.search().force_login.toLowerCase() == 'true') {
-        //       return $q.reject({
-        //         status: 'unauthorized'
-        //       });
-        //     }
-
-        //     return UserService.me().then(function (user) {
-        //       return user;
-        //     }, function (error) {
-        //       if (error.status == 401 || error.status == 403) {
-        //         return $q.reject({
-        //           status: 'unauthorized'
-        //         });
-        //       }
-        //     });
-        //   }]
-        // }
+        resolve: {
+          user: ['$q', 'UserService', function ($q, UserService) {
+            return UserService.me().then(function (user) {
+              return user;
+            }, function (error) {
+              if (error.status == 401 || error.status == 403 || error.status == 404) {
+                return $q.reject({
+                  status: 'unauthorized'
+                });
+              }
+            });
+          }]
+        }
       });
     }
   ])

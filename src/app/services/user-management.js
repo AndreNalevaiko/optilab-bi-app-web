@@ -1,7 +1,7 @@
 angular.module('gorillasauth.services.user-management', [])
 
-  .service('UserManagementService', ['$q', 'User', '$http',
-    function ($q, User, $http) {
+  .service('UserManagementService', ['$q', 'User', '$http', 'configuration',
+    function ($q, User, $http, configuration) {
 
       /*
        Função auxilizar que realiza um GET /user passando os filtros passados por parâmetro.
@@ -15,15 +15,19 @@ angular.module('gorillasauth.services.user-management', [])
         }
 
         var parameters = {
-          'page[size]': 0,
-            filter: [filters],
-            sort: "name",
-            include: "roles"
+            q: {filters: filters},
         };
 
-
-        var promise = User.get(parameters).$promise.then(function (response) {
-            return response.result;
+        var url = configuration.apiUrl + '/v1/user';
+        var request = {
+          method: 'GET',
+          url: url,
+          params: parameters
+        };
+        
+        // var promise = User.get(parameters).$promise.then(function (response) {
+        var promise = $http(request).then(function (response) {
+            return response.data.objects;
         });
 
         return promise;
@@ -35,7 +39,7 @@ angular.module('gorillasauth.services.user-management', [])
       this.getAllUsersLessMe = function (me) {
         var filters = [{
           name: 'id',
-          op: 'ne',
+          op: 'neq',
           val: me.id
         }];
 

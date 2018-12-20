@@ -1,7 +1,7 @@
 angular.module('gorillasauth.public.login')
 
-    .controller('LoginController', ['$scope', '$state', 'AuthService', 'AuthTokenService', 'UserService', 'NotificationService', 'customConfigs',
-        function ($scope, $state, AuthService, AuthTokenService, UserService, NotificationService, customConfigs) {
+    .controller('LoginController', ['$scope', '$state', 'AuthService', 'AuthTokenService', 'UserService', 'NotificationService',
+        function ($scope, $state, AuthService, AuthTokenService, UserService, NotificationService) {
             AuthTokenService.clean();
 
             var self = this;
@@ -10,7 +10,7 @@ angular.module('gorillasauth.public.login')
 
             self.doLogin = function () {
                 UserService.signin(self.user.email, self.user.password).then(function (response) {
-                    $state.go('protected.my-apps');
+                    $state.go('protected.billing');
                 }, function(response) {
                     if (response.data && response.data.errors) {
                         var error = response.data.errors[0];

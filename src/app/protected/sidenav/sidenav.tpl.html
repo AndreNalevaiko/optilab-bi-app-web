@@ -29,6 +29,20 @@
       <md-icon md-font-icon="material-icons" aria-label="Usuários">timer</md-icon>
       <p>Taxa de serviço</p>
     </md-list-item>
+
+    <md-list-item ui-sref="protected.user-management" ng-show="false" 
+                  ng-class="{ active: $state.includes('protected.user-management') }">
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">timer</md-icon>
+      <p>Usuarios</p>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-list-item ng-click="protectedCtrl.logout()">
+      <md-icon md-font-icon="material-icons">power_settings_new</md-icon>
+      <p>Sair</p>
+    </md-list-item>
+    
     <md-divider></md-divider>
   </md-list>
 </md-content>
