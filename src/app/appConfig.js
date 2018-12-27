@@ -12,8 +12,8 @@ angular.module('gorillasauth')
       },
       production_internal: {
         environment: 'production_internal',
-        hostnames: ['192.168.10.179'],
-        apiUrl: 'http://192.168.10.179:5000',
+        hostnames: ['192.168.10.41'],
+        apiUrl: 'http://192.168.10.41:5000',
         business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel', 0: 'Global'}
       },
       production_external: {
