@@ -9,7 +9,7 @@ angular.module('gorillasauth.services.date-filter', [])
                 if (configuration.environment != 'development'){
                     return {
                         day: dateNow.getDate(),
-                        month: dateNow.getMonth(),
+                        month: dateNow.getMonth() + 1,
                         year: dateNow.getFullYear(),
                     };
                 }
