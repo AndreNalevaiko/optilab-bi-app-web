@@ -16,7 +16,7 @@ angular.module('gorillasauth.services.date-filter', [])
                 return {
                     day: 6,
                     month: 2,
-                    year: dateNow.getFullYear(),
+                    year: 2018,
                 };
             }; 
 
