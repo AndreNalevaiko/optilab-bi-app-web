@@ -6,10 +6,8 @@ angular.module('gorillasauth.protected.customer')
 
       self.orderTable = 'cli_nome_fan';
 
-      self.filterOptions = DateFilterService.filterOptions();
-
-      self.dateFilter = DateFilterService.filterDateNow();
-
+      self.dateFilter = new Date();
+      self.dateFilter.setDate(self.dateFilter.getDate()-1);
       self.abstract_customers = null;
 
       self.loading = false;
@@ -67,15 +65,15 @@ angular.module('gorillasauth.protected.customer')
         return {
           q: {
             filters: [
-              {name: 'month', op: 'eq', val: self.dateFilter.month},
-              {name: 'year', op: 'eq', val: self.dateFilter.year},
+              {name: 'date', op: 'eq', val: self.dateFilter}
             ]
           }
         };
       }
       
       function createFilterSearchActiveCustomers() {
-        var dateFormated = self.dateFilter.year + '-' + self.dateFilter.month + '-' + self.dateFilter.day;
+        var month = self.dateFilter.getMonth() + 1;
+        var dateFormated = self.dateFilter.getFullYear() + '-' + month + '-' + self.dateFilter.getDate();
         return {
           q: {
             filters: [

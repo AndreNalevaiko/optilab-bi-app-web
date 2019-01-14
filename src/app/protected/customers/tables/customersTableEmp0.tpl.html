@@ -1,19 +1,8 @@
 <div layout="row" layout-align="space-around" layout-padding flex>
-    <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Mês de referência</label>
-        <md-select ng-model="customerCtrl.dateFilter.month" md-on-close="customerCtrl.search()">
-            <md-option ng-value="month.value" ng-repeat="month in customerCtrl.filterOptions.months">
-                {{month.label}}
-            </md-option>
-        </md-select>
-    </md-input-container>
-    <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Ano de referência</label>
-        <md-select ng-model="customerCtrl.dateFilter.year" md-on-close="customerCtrl.search()">
-            <md-option ng-value="year" ng-repeat="year in customerCtrl.filterOptions.years">
-                {{year}}
-            </md-option>
-        </md-select>
+    <md-input-container>
+        <label>Data base</label>
+        <md-datepicker ng-disabled="customerCtrl.loading || customerCtrl.generating"
+            ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()"></md-datepicker>
     </md-input-container>
 </div>
     
@@ -85,7 +74,7 @@
             </thead>
             <tbody md-body>
                 <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | 
-                filter: {business_code: 6, customer_name: filterName, customer_code: filterCod} | 
+                filter: {business_code: 0, customer_name: filterName, customer_code: filterCod} | 
                 orderBy: customerCtrl.orderTable | limitTo: pagination['0'].pageSize : pagination['0'].page*pagination['0'].pageSize">
                     <td md-cell>
                         {{customer.customer_name}}
@@ -106,15 +95,6 @@
         </table>
     </md-table-container>
     <div ng-hide="filterCod || filterName" class="paginator" layout="row" layout-align="end center" flex>
-        <!-- <div class="label-pages" ng-show="(query.page * query.limit) < creditorFilesCtrl.files.limit">
-            {{(query.page * query.limit) - (query.limit -1)}} - {{query.page * query.limit}} de {{creditorFilesCtrl.files.limit}}
-        </div>
-        <div class="label-pages" ng-show="(query.page * query.limit) >= creditorFilesCtrl.files.limit">
-            {{(query.page * query.limit) - (query.limit -1)}} - {{creditorFilesCtrl.files.limit}} de {{creditorFilesCtrl.files.limit}}
-        </div> -->
-        <!-- <md-button class="md-icon-button" ng-click="pagination['1'].page = 0" 
-        ng-disabled="pagination['1'].page == 1">
-            <md-icon>first_page</md-icon>
         </md-button> -->
         <md-button class="md-icon-button" ng-click="pagination['0'].page = pagination['0'].page - 1" 
         ng-disabled="pagination['0'].page == 0">
@@ -123,9 +103,5 @@
         <md-button class="md-icon-button" ng-click="pagination['0'].page = pagination['0'].page + 1">
             <md-icon>navigate_next</md-icon>
         </md-button>
-        <!-- <md-button class="md-icon-button" ng-click="pagination['1'].page = pagination['1'].last_page" 
-        ng-disabled="pagination['1'].page == pagination['1'].last_page">
-            <md-icon>last_page</md-icon>
-        </md-button> -->
     </div>
 </div>

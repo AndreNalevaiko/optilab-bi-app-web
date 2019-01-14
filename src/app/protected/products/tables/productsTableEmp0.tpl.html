@@ -1,27 +1,17 @@
 <div layout="row" layout-align="space-around" layout-padding flex>
-    <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Mês de referência</label>
-        <md-select ng-model="productsCtrl.dateFilter.month" md-on-close="productsCtrl.search()">
-            <md-option ng-value="month.value" ng-repeat="month in productsCtrl.filterOptions.months">
-                {{month.label}}
-            </md-option>
-        </md-select>
+    <md-input-container>
+        <label>Data base</label>
+        <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
+            ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()"></md-datepicker>
     </md-input-container>
-    <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Ano de referência</label>
-        <md-select ng-model="productsCtrl.dateFilter.year" md-on-close="productsCtrl.search()">
-            <md-option ng-value="year" ng-repeat="year in productsCtrl.filterOptions.years">
-                {{year}}
-            </md-option>
-        </md-select>
-    </md-input-container>
+    <md-button class="md-primary md-raised" ng-click="productsCtrl.generateRe()">reneratereport</md-button>
     <md-button class="md-primary" ng-click="productsCtrl.export(0)">Exportar Excel</md-button>
 </div>
 <div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>
     <md-progress-circular md-diameter="40"></md-progress-circular>
     <br>
     <span ng-if="productsCtrl.loading">Carregando</span>
-    <span ng-if="productsCtrl.generating">Os dados do mes e ano de referência ainda não haviam sido processados.</span>
+    <span ng-if="productsCtrl.generating">Os dados da data base selecionada ainda não haviam sido processados.</span>
     <span ng-if="productsCtrl.generating">Aguarde mais um momento.</span>
 </div>
 <md-table-container ng-if="!productsCtrl.loading && !productsCtrl.generating" flex>
@@ -35,16 +25,16 @@
                     <span>Produto</span>
                 </th>
                 <th md-column md-order-by="qtd_latest_year">
-                    <span>Qtd {{productsCtrl.dateFilter.year - 1}}</span>
+                    <span>Qtd Anterior</span>
                 </th>
                 <th md-column md-order-by="value_latest_year">
-                    <span>Fat {{productsCtrl.dateFilter.year - 1}}</span>
+                    <span>Fat Anterior</span>
                 </th>
                 <th md-column md-order-by="qtd_current_year">
-                    <span>Qtd {{productsCtrl.dateFilter.year}}</span>
+                    <span>Qtd Atual</span>
                 </th>
                 <th md-column md-order-by="value_current_year">
-                    <span>Fat {{productsCtrl.dateFilter.year}}</span>
+                    <span>Fat Atual</span>
                 </th>
                 <th md-column md-order-by="var_qtd">
                     <span>Qtd %</span>
@@ -65,14 +55,14 @@
                 <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>
                     <span ng-if="product.var_qtd != 0" class="percentage-value" 
-                        ng-class="product.var_qtd < 0 ? 'less' : 'greater'">
+                    ng-class="product.var_qtd < 0 ? 'less' : 'greater'">
                         {{product.var_qtd | percentage: 2}}
                     </span>
                     <span ng-if="product.var_qtd == 0">--</span>
                 </td>
                 <td md-cell>
                     <span ng-if="product.var_value != 0" class="percentage-value" 
-                        ng-class="product.var_value < 0 ? 'less' : 'greater'">
+                    ng-class="product.var_value < 0 ? 'less' : 'greater'">
                         {{product.var_value | percentage: 2}}
                     </span>
                     <span ng-if="product.var_value == 0">--</span>
