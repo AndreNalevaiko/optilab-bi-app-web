@@ -4,8 +4,8 @@
         <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
             ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()"></md-datepicker>
     </md-input-container>
-    <md-button class="md-primary md-raised" ng-click="productsCtrl.generateRe()">reneratereport</md-button>
-    <md-button class="md-primary" ng-click="productsCtrl.export(6)">Exportar Excel</md-button>    
+    <!-- <md-button class="md-primary md-raised" ng-click="productsCtrl.generateRe()">reneratereport</md-button>
+    <md-button class="md-primary" ng-click="productsCtrl.export(6)">Exportar Excel</md-button>     -->
 </div>
 <div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>
     <md-progress-circular md-diameter="40"></md-progress-circular>
