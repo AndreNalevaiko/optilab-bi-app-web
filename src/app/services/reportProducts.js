@@ -20,10 +20,7 @@ angular.module('gorillasauth.services.report-products', [
 
             this.generate = function (dateSelected) {
                 var data = {
-                    "period": {
-                        "month": String(dateSelected.month),
-                        "years": String(dateSelected.year -1) + ',' + String(dateSelected.year)
-                    }
+                    "date": dateSelected
                 };
 
                 return $http.post(configuration.apiUrl + '/report_products/_generate', data).then(function (response) {

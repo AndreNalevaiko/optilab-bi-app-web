@@ -78,15 +78,15 @@ angular.module('gorillasauth.protected.customer')
         return {
           q: {
             filters: [
-              {name: 'month', op: 'eq', val: self.dateFilter.month},
-              {name: 'year', op: 'eq', val: self.dateFilter.year},
+              {name: 'date', op: 'eq', val: self.dateFilter}
             ]
           }
         };
       }
       
       function createFilterSearchActiveCustomers() {
-        var dateFormated = self.dateFilter.year + '-' + self.dateFilter.month + '-' + self.dateFilter.day;
+        var month = self.dateFilter.getMonth() + 1;
+        var dateFormated = self.dateFilter.getFullYear() + '-' + month + '-' + self.dateFilter.getDate();
         return {
           q: {
             filters: [

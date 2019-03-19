@@ -21,7 +21,8 @@ angular.module('gorillasauth.protected.products')
       self.generating = false;
 
       self.filterOptions = DateFilterService.filterOptions();
-      self.dateFilter = DateFilterService.filterDateNow();
+      self.dateFilter = new Date();
+      self.dateFilter.setDate(self.dateFilter.getDate()-1);
       
       self.search = function () {
         self.loading = true;
@@ -60,14 +61,9 @@ angular.module('gorillasauth.protected.products')
           q: {
             filters: [
               {
-                name: 'current_year',
+                name: 'date',
                 op: 'eq',
-                val: self.dateFilter.year
-              },
-              {
-                name: 'month',
-                op: 'eq',
-                val: self.dateFilter.month
+                val: self.dateFilter
               },
             ],
             order_by: [

@@ -4,15 +4,8 @@
         <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
             ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()"></md-datepicker>
     </md-input-container>
-    <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Ano de referência</label>
-        <md-select ng-model="productsCtrl.dateFilter.year" md-on-close="productsCtrl.search()">
-            <md-option ng-value="year" ng-repeat="year in productsCtrl.filterOptions.years">
-                {{year}}
-            </md-option>
-        </md-select>
-    </md-input-container>
-    <md-button class="md-primary" ng-click="productsCtrl.export(tabSeller[selectedTab])">Exportar Excel</md-button>
+    <!-- <md-button class="md-primary md-raised" ng-click="productsCtrl.generateRe()">reneratereport</md-button>
+    <md-button class="md-primary" ng-click="productsCtrl.export(5)">Exportar Excel</md-button>     -->
 </div>
 <div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>
     <md-progress-circular md-diameter="40"></md-progress-circular>
@@ -52,7 +45,7 @@
             </tr>
         </thead>
         <tbody md-body>
-            <tr md-row ng-repeat="product in productsCtrl.brands  | filter: {seller: tabSeller[selectedTab]} | 
+            <tr md-row ng-repeat="product in productsCtrl.brands  | filter: {business_code: 5} | 
                 orderBy: productsCtrl.orderTable">
                 <td md-cell>{{product.brand | uppercase}}</td>
                 <td md-cell>{{product.label | uppercase}}</td>
@@ -62,14 +55,14 @@
                 <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>
                     <span ng-if="product.var_qtd != 0" class="percentage-value" 
-                    ng-class="product.var_qtd < 0 ? 'less' : 'greater'">
+                        ng-class="product.var_qtd < 0 ? 'less' : 'greater'">
                         {{product.var_qtd | percentage: 2}}
                     </span>
                     <span ng-if="product.var_qtd == 0">--</span>
                 </td>
                 <td md-cell>
                     <span ng-if="product.var_value != 0" class="percentage-value" 
-                    ng-class="product.var_value < 0 ? 'less' : 'greater'">
+                        ng-class="product.var_value < 0 ? 'less' : 'greater'">
                         {{product.var_value | percentage: 2}}
                     </span>
                     <span ng-if="product.var_value == 0">--</span>
