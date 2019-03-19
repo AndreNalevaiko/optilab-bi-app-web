@@ -30,9 +30,9 @@
       <p>Taxa de serviço</p>
     </md-list-item>
 
-    <md-list-item ui-sref="protected.user-management" ng-show="false" 
+    <md-list-item ui-sref="protected.user-management" ng-if="protectedCtrl.userIsAdmin"
                   ng-class="{ active: $state.includes('protected.user-management') }">
-      <md-icon md-font-icon="material-icons" aria-label="Usuários">timer</md-icon>
+      <md-icon md-font-icon="material-icons" aria-label="Usuários">people</md-icon>
       <p>Usuarios</p>
     </md-list-item>
 

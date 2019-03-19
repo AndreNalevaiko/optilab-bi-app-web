@@ -31,11 +31,11 @@ angular.module('gorillasauth.services.report-products', [
                 });
             };
 
-            this.export = function (dateSelected, business_code) {
+            this.export = function (dateSelected, seller) {
                 var params = {
                     "month": String(dateSelected.month),
                     "year": String(dateSelected.year),
-                    "emp_code": String(business_code)
+                    "seller": String(seller)
                 };
 
                 var http = {

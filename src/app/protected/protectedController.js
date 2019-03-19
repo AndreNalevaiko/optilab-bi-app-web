@@ -1,10 +1,13 @@
 angular.module('gorillasauth.protected')
 
-  .controller('ProtectedController', ['$rootScope', '$mdSidenav', '$state', '$mdDialog', 'AuthService',
-    function ($rootScope, $mdSidenav, $state, $mdDialog, AuthService) {
+  .controller('ProtectedController', ['$rootScope', '$mdSidenav', '$state', '$mdDialog', 'AuthService', 'user',
+    function ($rootScope, $mdSidenav, $state, $mdDialog, AuthService, user) {
       var self = this;
 
-      
+      $rootScope.loggedUser = user;
+      self.loggedUser = user;
+
+      self.userIsAdmin = user.roles.filter( function (role) { return role.name == 'admin'; }).length;
 
       self.selectProfilePhoto = function (file, event) {
         if (!file) {

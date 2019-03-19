@@ -156,19 +156,30 @@ angular.module('gorillasauth.protected.user-management')
                     clickOutsideToClose: true,
                     resolve: {
                         roles: ['RoleService', function (RoleService) {
-                            return RoleService.gorillasauthRoles();
+                            return RoleService.getRoles();
                         }]
                     },
                     controller: ['$scope', '$mdDialog', 'roles', function ($scope, $mdDialog, roles) {
                         $scope.user = user;
                         $scope.roles = roles;
 
+                        angular.forEach($scope.roles, function (role) {
+                            angular.forEach($scope.user.roles, function (user_role) {
+                                if (user_role.id == role.id) {
+                                    role.checked = true;
+                                }
+                            });
+                        });
+
                         $scope.cancel = function () {
                             $mdDialog.cancel();
                         };
 
                         $scope.confirm = function () {
-                            $mdDialog.hide(roles);
+                            var rolesChecked = $scope.roles.filter( function (role) {
+                                return role.checked;
+                            });
+                            $mdDialog.hide(rolesChecked);
                         };
                     }]
                 };
@@ -176,7 +187,7 @@ angular.module('gorillasauth.protected.user-management')
                 $mdDialog.show(dialog).then(function (roles) {
                     var patch = {
                         id: String(user.id),
-                        roles: roles
+                        roles: roles.map( function (role) { return {id: role.id}; })
                     };
 
                     UserService.save(patch).then(function (response) {

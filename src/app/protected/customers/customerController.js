@@ -10,6 +10,17 @@ angular.module('gorillasauth.protected.customer')
 
       self.dateFilter = DateFilterService.filterDateNow();
 
+      $scope.selectedTab = 0;
+      $scope.tabSeller = {
+        0: '319',
+        1: '320',
+        2: '321',
+        3: '322',
+        4: '318',
+        5: '323',
+        6: '0'
+      };
+
       self.abstract_customers = null;
 
       self.loading = false;
@@ -28,7 +39,7 @@ angular.module('gorillasauth.protected.customer')
           var active_customers = {};
           if (response.objects.length) {
             angular.forEach(response.objects, function (obj) {
-              active_customers[obj.business_code] = obj;
+              active_customers[obj.seller] = obj;
             });
           } else {
             generateReports();
@@ -92,24 +103,31 @@ angular.module('gorillasauth.protected.customer')
           page: 0,
           pageSize: 20
         },
-        "1": {
+        "319": {
           page: 0,
           pageSize: 20
         },
-        "2": {
+        "320": {
           page: 0,
           pageSize: 20
         },
-        "5": {
+        "321": {
           page: 0,
           pageSize: 20
         },
-        "6": {
+        "322": {
           page: 0,
           pageSize: 20
-        }
+        },
+        "318": {
+          page: 0,
+          pageSize: 20
+        },
+        "323": {
+          page: 0,
+          pageSize: 20
+        },
       };
- 
     }
   ])
 

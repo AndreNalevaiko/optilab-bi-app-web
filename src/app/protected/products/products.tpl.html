@@ -6,23 +6,16 @@
         </div>
 
         <div ng-if="!productsCtrl.loading" layout-align="start center" flex>
-            <md-tabs md-dynamic-height md-border-bottom>
-                <md-tab label="Curitiba">
-                    <ng-include src="'protected/products/tables/productsTableEmp1.tpl.html'"></ng-include>
-                </md-tab>
-                <md-tab label="Cascavel">
-                    <ng-include src="'protected/products/tables/productsTableEmp6.tpl.html'"></ng-include>
-                </md-tab>
-                <md-tab label="Pato Branco">
-                    <ng-include src="'protected/products/tables/productsTableEmp2.tpl.html'"></ng-include>
-                </md-tab>
-                <md-tab label="Londrina">
-                    <ng-include src="'protected/products/tables/productsTableEmp5.tpl.html'"></ng-include>
-                </md-tab>
-                <md-tab label="Global">
-                    <ng-include src="'protected/products/tables/productsTableEmp0.tpl.html'"></ng-include>
-                </md-tab>
+            <md-tabs md-dynamic-height md-border-bottom  md-selected="selectedTab">
+                <md-tab label="CWB1"></md-tab>
+                <md-tab label="CWB2"></md-tab>
+                <md-tab label="CVEL"></md-tab>
+                <md-tab label="PBO"></md-tab>
+                <md-tab label="LDNA"></md-tab>
+                <md-tab label="OPTILAB"></md-tab>
+                <md-tab label="GLOBAL"></md-tab>
             </md-tabs>
+            <ng-include src="'protected/products/productsTable.tpl.html'"></ng-include>
         </div>
     </md-card>
 </div>
