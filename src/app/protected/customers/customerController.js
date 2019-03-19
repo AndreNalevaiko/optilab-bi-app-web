@@ -8,7 +8,8 @@ angular.module('gorillasauth.protected.customer')
 
       self.filterOptions = DateFilterService.filterOptions();
 
-      self.dateFilter = DateFilterService.filterDateNow();
+      // self.dateFilter = DateFilterService.filterDateNow();
+      self.dateFilter = DateFilterService.getDateNow();
 
       $scope.selectedTab = 0;
       $scope.tabSeller = {

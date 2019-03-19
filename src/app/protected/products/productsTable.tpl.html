@@ -4,14 +4,14 @@
         <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
             ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()"></md-datepicker>
     </md-input-container>
-    <md-input-container class="md-block" style="min-width: 150px;">
+    <!-- <md-input-container class="md-block" style="min-width: 150px;">
         <label>Ano de referência</label>
         <md-select ng-model="productsCtrl.dateFilter.year" md-on-close="productsCtrl.search()">
             <md-option ng-value="year" ng-repeat="year in productsCtrl.filterOptions.years">
                 {{year}}
             </md-option>
         </md-select>
-    </md-input-container>
+    </md-input-container> -->
     <md-button class="md-primary" ng-click="productsCtrl.export(tabSeller[selectedTab])">Exportar Excel</md-button>
 </div>
 <div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>

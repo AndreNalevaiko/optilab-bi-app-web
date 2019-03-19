@@ -19,6 +19,19 @@ angular.module('gorillasauth.services.date-filter', [])
                     year: 2018,
                 };
             }; 
+            this.getDateNow = function(date) {
+                var dateNow = new Date();
+                
+                if (configuration.environment == 'development'){
+                    dateNow.setFullYear(2018);
+                    dateNow.setMonth(1);
+                    dateNow.setDate(20);
+                    dateNow.setHours(12);
+                } else {
+                    dateNow.setDate(dateNow.getDate()-1);
+                }
+                return dateNow;
+            }; 
 
             this.filterOptions = function() {
                 var filters = {

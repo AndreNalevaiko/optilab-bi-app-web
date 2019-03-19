@@ -21,8 +21,9 @@ angular.module('gorillasauth.protected.products')
       self.generating = false;
 
       self.filterOptions = DateFilterService.filterOptions();
-      self.dateFilter = new Date();
-      self.dateFilter.setDate(self.dateFilter.getDate()-1);
+      self.dateFilter = DateFilterService.getDateNow();
+      // self.dateFilter = new Date();
+      // self.dateFilter.setDate(self.dateFilter.getDate()-1);
       
       self.search = function () {
         self.loading = true;
