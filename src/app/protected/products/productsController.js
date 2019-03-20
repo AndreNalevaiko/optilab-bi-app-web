@@ -1,16 +1,29 @@
 angular.module('gorillasauth.protected.products')
 
-  .controller('productsController', ['ReportProductsService', 'DateFilterService', 'FileSaver',
-    function (ReportProductsService, DateFilterService, FileSaver) {
+  .controller('productsController', ['ReportProductsService', 'DateFilterService', 'FileSaver', '$scope',
+    function (ReportProductsService, DateFilterService, FileSaver, $scope) {
       var self = this;
 
+      $scope.selectedTab = 0;
+      $scope.tabSeller = {
+        0: '319',
+        1: '320',
+        2: '321',
+        3: '322',
+        4: '318',
+        5: '323',
+        6: '0'
+      };
+
+      self.dateNow = new Date();
       self.loading = false;
       self.orderTable = 'brand';
       self.generating = false;
 
       self.filterOptions = DateFilterService.filterOptions();
-      self.dateFilter = new Date();
-      self.dateFilter.setDate(self.dateFilter.getDate()-1);
+      self.dateFilter = DateFilterService.getDateNow();
+      // self.dateFilter = new Date();
+      // self.dateFilter.setDate(self.dateFilter.getDate()-1);
       
       self.search = function () {
         self.loading = true;
@@ -35,12 +48,12 @@ angular.module('gorillasauth.protected.products')
         });
       };
 
-      self.export = function (business_code) {
-        ReportProductsService.export(self.dateFilter, business_code).then(function (response){
+      self.export = function (seller) {
+        ReportProductsService.export(self.dateFilter, seller).then(function (response){
           var blob = new Blob([response.data], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});       
           FileSaver.saveAs(blob, 'Relatório de produtos.xlsx');
         }, function (error){
-          console.log('ERROR', error);
+          console.log('Erro ao gerar xlsx', error);
         });
       };
 

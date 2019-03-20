@@ -4,7 +4,7 @@ angular.module('gorillascode.resources.user', [
 
   .factory('User', ['configuration', 'ResourceFactory',
     function (configuration, ResourceFactory) {
-      return new ResourceFactory(configuration.apiUrl, 'user');
+      return new ResourceFactory(configuration.apiUrl, 'v1/user');
     }]
   )
 

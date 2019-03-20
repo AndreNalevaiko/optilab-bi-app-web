@@ -8,18 +8,9 @@ angular.module('gorillasauth.services.role', [
             /*
              Busca apenas as roles relativas ao gorilassauth
              */
-            this.gorillasauthRoles = function () {
-                var parameters = {
-                    filter: [[{
-                        name: "app_id",
-                        op: "is_",
-                        val: null
-                    }]],
-                    include: 'app,users'
-                };
-
-                var promise = Role.get(parameters).$promise.then(function (response) {
-                    return response.result;
+            this.getRoles = function () {
+                var promise = Role.get().$promise.then(function (response) {
+                    return response.objects;
                 });
 
                 return promise;

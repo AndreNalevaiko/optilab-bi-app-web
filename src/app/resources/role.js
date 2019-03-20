@@ -4,7 +4,7 @@ angular.module('gorillascode.resources.role', [
 
   .factory('Role', ['configuration', 'ResourceFactory',
     function (configuration, ResourceFactory) {
-      return new ResourceFactory(configuration.apiUrl, 'role');
+      return new ResourceFactory(configuration.apiUrl, 'v1/role');
     }]
   )
 

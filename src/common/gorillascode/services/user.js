@@ -34,11 +34,7 @@ angular.module('gorillascode.services.user', [
 
             this.save = function (user) {
                 if (user.id) {
-                    if (!user.roles) {
-                        return User.patch(JsonApiHelper.toRequestJsonApi(user, 'user')).$promise;
-                    } else {
-                        return User.patch({include: 'roles'}, JsonApiHelper.toRequestJsonApi(user, 'user', ['roles'])).$promise;
-                    }
+                    return User.patch(user).$promise;
                 }
                 else {
                     var url = configuration.apiUrl + '/v1/user/_signup';
