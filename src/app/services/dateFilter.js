@@ -28,6 +28,7 @@ angular.module('gorillasauth.services.date-filter', [])
                     dateNow.setDate(20);
                     dateNow.setHours(12);
                 } else {
+                    dateNow.setHours(12)
                     dateNow.setDate(dateNow.getDate()-1);
                 }
                 return dateNow;
