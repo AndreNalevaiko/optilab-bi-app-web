@@ -18,8 +18,8 @@ angular.module('gorillasauth')
       },
       production_external: {
         environment: 'production_external',
-        hostnames: ['187.95.123.144'],
-        apiUrl: 'http://187.95.123.144:5000',
+        hostnames: ['levantamentos.laboptilab.com', 'remoto.laboptilab.com'],
+        apiUrl: 'http://levantamentos.laboptilab.com:5000',
         business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel', 0: 'Global'}
       }
     };

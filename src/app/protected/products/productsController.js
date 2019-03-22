@@ -8,9 +8,9 @@ angular.module('gorillasauth.protected.products')
       $scope.tabSeller = {
         0: '319',
         1: '320',
-        2: '321',
+        2: '318',
         3: '322',
-        4: '318',
+        4: '321',
         5: '323',
         6: '0'
       };
