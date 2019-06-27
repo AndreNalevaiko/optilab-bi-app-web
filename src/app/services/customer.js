@@ -13,6 +13,25 @@ angular.module('gorillasauth.services.customer', [
         
                 return CustomerBillingReport.get(searchParameters).$promise;
             };
+
+            this.searchCustomerBillings = function (dateSelected) {
+                var data = {
+                    "date": dateSelected
+                };
+                return $http.post(configuration.apiUrl + '/customer/billings', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.searchCustomerProducts = function (dateSelected, customer) {
+                var data = {
+                    "date": dateSelected,
+                    "customer": customer
+                };
+                return $http.post(configuration.apiUrl + '/customer/products', data).then(function (response) {
+                    return response.data;
+                });
+            };
             
             this.searchNumberActiveCustomers = function (searchParameters) {
     

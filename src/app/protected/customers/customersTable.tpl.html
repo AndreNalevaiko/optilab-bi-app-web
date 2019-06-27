@@ -1,12 +1,12 @@
 <div layout="row" layout-align="space-around" layout-padding flex>
-    <md-input-container>
+    <md-input-container ng-style="tabSeller[selectedTab] == 'Others' ? {'margin-bottom': '-30px'} : {}">
         <label>Data base</label>
         <md-datepicker ng-disabled="customerCtrl.loading || customerCtrl.generating"
-            ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()"></md-datepicker>
+            ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()" md-max-date="customerCtrl.maxDate"></md-datepicker>
     </md-input-container>
 </div>
     
-<div class="customers-actives">
+<div class="customers-actives" ng-hide="tabSeller[selectedTab] == 'Others'">
     <div class="header-actives" layout="row" layout-align="center" flex>
         <span>Clientes ativos</span>
     </div>
@@ -46,11 +46,7 @@
     <div class="box-search" layout="row" layout-align="space-between center" flex>
         <md-icon>search</md-icon>
         <md-input-container flex>
-            <label>Cód do cliente</label>
-            <input type="text" ng-model="filterCod">
-        </md-input-container>
-        <md-input-container flex="66">
-            <label>Nome do cliente</label>
+            <label>Codigo ou nome do cliente</label>
             <input type="text" ng-model="filterName">
         </md-input-container>
     </div>
@@ -58,37 +54,46 @@
         <table md-table>
             <thead md-head md-order="customerCtrl.orderTable" md-on-reorder="customerCtrl.search">
                 <tr md-row>
-                    <th md-column md-order-by="cli_nome_fan">
+                    <th md-column md-order-by="customer">
                         <span>Cliente</span>
                     </th>
-                    <th md-column md-order-by="latest_value">
-                        <span>Fat. Mês Anterior</span>
+                    <th md-column md-number md-order-by="avg_month_value_last_year">
+                        <span>Média Mês Ano Anterior</span>
                     </th>
-                    <th md-column md-order-by="current_value">
-                        <span>Fat. Mês</span>
+                    <th md-column md-number md-order-by="avg_month_value_current_year">
+                        <span>Média Mês Ano Atual</span>
                     </th>
-                    <th md-column md-order-by="variation">
-                        <span>%</span>
+                    <th md-column md-number md-order-by="value_current_month">
+                        <span>Mês Atual</span>
+                    </th>
+                    <th md-column md-number md-order-by="comparison_value">
+                        <span>Comparação/Dia %</span>
                     </th>
                 </tr>
             </thead>
             <tbody md-body>
-                <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | 
-                filter: {seller: tabSeller[selectedTab], customer_name: filterName, customer_code: filterCod} | 
+                <tr ng-click="customerCtrl.openCustomerDetail($event, customer)"
+                    md-row ng-repeat="customer in customerCtrl.abstract_customers | 
+                filter: filterCustomers(selectedTab) | filter: {customer: filterName, customer: filterCod} | 
                 orderBy: customerCtrl.orderTable | limitTo: pagination[tabSeller[selectedTab]].pageSize : pagination[tabSeller[selectedTab]].page*pagination[tabSeller[selectedTab]].pageSize">
                     <td md-cell>
-                        {{customer.customer_name}}
-                        <md-tooltip>Cód: {{customer.customer_code}}</md-tooltip>
+                        {{customer.customer | limitTo: 50}}
                     </td>
-                    <td md-cell>{{customer.latest_value | currency : R$ : 2}}</td>
-                    <td md-cell>{{customer.current_value | currency : R$ : 2}}</td>
+                    <td md-cell>{{customer.avg_month_qtd_last_year | number}}pc / {{customer.avg_month_value_last_year | currency : R$ : 2}}</td>
+                    <td md-cell>{{customer.avg_month_qtd_current_year | number}}pc / {{customer.avg_month_value_current_year | currency : R$ : 2}}</td>
+                    <td md-cell>{{customer.qtd_current_month}}pc / {{customer.value_current_month | currency : R$ : 2}}</td>
                     <td md-cell>
-                        <span ng-if="customer.variation != 0" class="status-percentage" ng-class="customer.variation < 0 ? 'less' : 'greater'">
-                            {{customer.variation | percentage: 2}}
-                        </span>
-                        <span ng-if="customer.variation == 0">
-                            --
-                        </span>
+                        <span ng-if="customer.qtd_current_month == -0.0001 || customer.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                        <div class="status-percentage" layout="row"
+                            ng-if="customer.qtd_current_month != -0.0001 && customer.avg_month_qtd_current_year != -0.0001">
+                            <span ng-class="customer.comparison_qtd < 1 ? 'less' : 'greater'">
+                                {{customer.comparison_qtd | percentage: 2}}
+                            </span>
+                            <span>&nbsp/&nbsp</span>
+                            <span ng-class="customer.comparison_value < 1 ? 'less' : 'greater'">
+                                {{customer.comparison_value | percentage: 2}}
+                            </span>
+                        </div>
                     </td>
                 </tr>
             </tbody>
