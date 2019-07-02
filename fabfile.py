@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from fabric.api import task, run, local
 
-VERSION = '1.0.3'
-CONTAINER_NAME = 'optilab-bi-app-web'
-IMAGE_NAME = 'optilab-bi-app-web%s' % CONTAINER_NAME
+VERSION = '1.0.0'
+CONTAINER_NAME = 'optilab_bi_app_web'
+IMAGE_NAME = 'optilab_bi%s' % CONTAINER_NAME
 
 @task
 def run():
@@ -11,10 +11,9 @@ def run():
 
 @task
 def build():
-        
-        local('docker build -t %s:%s --rm .' % (CONTAINER_NAME, VERSION))
-            
-        local('docker tag %s:%s %s:latest' % (CONTAINER_NAME, VERSION, CONTAINER_NAME))
+    local('docker build -t %s:%s --rm .' % (CONTAINER_NAME, VERSION))
+    local('docker tag %s:%s %s:latest' % (CONTAINER_NAME, VERSION, CONTAINER_NAME))
+
 @task
 def push():
     'Contrói container docker de produção e realiza upload: call_build=True'
