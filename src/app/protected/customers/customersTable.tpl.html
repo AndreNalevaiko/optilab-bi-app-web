@@ -74,7 +74,7 @@
             <tbody md-body>
                 <tr ng-click="customerCtrl.openCustomerDetail($event, customer)"
                     md-row ng-repeat="customer in customerCtrl.abstract_customers | 
-                filter: filterCustomers(selectedTab) | filter: {customer: filterName, customer: filterCod} | 
+                filter: filterCustomers(selectedTab) | filter: {customer: filterName} | 
                 orderBy: customerCtrl.orderTable | limitTo: pagination[tabSeller[selectedTab]].pageSize : pagination[tabSeller[selectedTab]].page*pagination[tabSeller[selectedTab]].pageSize">
                     <td md-cell>
                         {{customer.customer | limitTo: 50}}
