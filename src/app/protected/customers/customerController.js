@@ -199,6 +199,9 @@ angular.module('gorillasauth.protected.customer')
       var self = this;
 
       self.customer = customer;
+      self.lineSelected = null;
+      self.selectedTab = 0;
+
       self.products = products.map(function(obj) {
         obj.product = obj.product.replace('_', ' ').toUpperCase();
 
@@ -226,7 +229,25 @@ angular.module('gorillasauth.protected.customer')
         return obj;
       });
 
-      self.orderTable = 'product';
+      self.lines = self.products.filter(function (item) {
+        return item.product == '';
+      });
+
+      angular.forEach(self.lines, function (line) {
+        line.products = self.products.filter(function (product) {
+          return product.product != '';
+        });
+      });
+
+      console.log(self.lines);
+
+      self.orderTableLine = 'product_group';
+      self.orderTableProduct = 'product';
+
+      self.selectLine = function (line) {
+        self.lineSelected = line;
+        self.selectedTab = 1;
+      };
 
       self.confirm = function () {
         $mdDialog.hide();

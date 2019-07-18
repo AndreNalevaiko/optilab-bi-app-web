@@ -102,9 +102,18 @@
         .subtitle {
             font-size: 14px;
         }
+
     }
 
     table {
+
+        tbody > .md-row:hover {
+            background-color: #EEEEEE;
+        }
+    
+        tbody .md-row {
+            cursor: pointer !important;
+        }
 
         tr.md-row, table.md-table tfoot.md-foot > tr.md-row {
             height: 38px !important;
@@ -116,6 +125,11 @@
     
         tr.md-row:focus {
           outline: none;
+        }
+
+        .disable-clickable:hover{
+            background-color: inherit !important;
+            cursor: auto !important;
         }
     }
     
@@ -129,5 +143,15 @@
         .greater{
             color: #4CAF50;
         }
+    }
+
+    md-tabs md-tabs-wrapper {
+        display: none;
+    }
+
+    .line-selected {
+        font-weight: 500;
+        background-color: #acd2ba;
+        cursor: pointer;
     }
 }

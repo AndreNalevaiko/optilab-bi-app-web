@@ -6,6 +6,7 @@ angular.module('gorillasauth.protected')
 
       $rootScope.loggedUser = user;
       self.loggedUser = user;
+      self.viewAllToolbar = false;
 
       self.userIsAdmin = user.roles.filter( function (role) { return role.name == 'admin'; }).length;
 

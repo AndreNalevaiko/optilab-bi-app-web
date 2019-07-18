@@ -1,13 +1,22 @@
 .gorillascode-sidenav {
   background-color: #FFF;
-  max-width: 250px;
+  max-width: 60px;
+  min-width: 0 !important;
 
-  md-toolbar {
-    &.header {
-      .logo {
-        height: 26px;
-        margin-right: 16px;
-      }
+  transition-property: all;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in;
+
+  .logo {
+    height: 48px;
+    display: flex;
+    padding: 8px;
+    text-align: center;
+
+    img {
+      margin: auto;
+      max-height: 50px;
+      max-width: 100%;
     }
   }
 
@@ -16,6 +25,14 @@
   }
 
   md-list-item {
+    p {
+      white-space: nowrap;
+      opacity: 0;
+
+      transition-property: all;
+      transition-duration: 0.7s;
+      transition-timing-function: ease-in;
+    }
     a.md-button {
       margin: 0;
     }
@@ -25,37 +42,45 @@
     }
   }
 
-  .profile-photo {
-    min-width: inherit;
-    margin-right: 16px !important;
-    height: 55px;
-    padding: 0;
-    border-radius: 50%;
-
-    img {
-      margin: 0;
-      height: 55px !important;
-      width: 55px !important;
+  &:not(.view-more):hover{
+    p {
+      opacity: 1;
     }
 
-    .change-photo {
-      background: rgba(0, 0, 0, 0.26);
-      border-radius: 50%;
-      display: none;
-      height: 55px;
-      position: absolute;
-      top: 0;
-      width: 55px;
-
-      md-icon {
-        color: #FFF;
+    .logo {
+      img {
+        max-height: 50px;
       }
     }
 
-    &:hover {
-      .change-photo {
-        display: flex;
+    max-width: 250px;
+  }
+
+  &.view-more {
+    p {
+      opacity: 1;
+    }
+
+    .logo {
+      img {
+        max-height: 50px;
       }
     }
+
+    max-width: 250px;
+  }
+
+  @media (max-width: 400px) {
+    p {
+      opacity: 1 !important;
+    }
+
+    .logo {
+      img {
+        max-height: 50px;
+      }
+    }
+
+    max-width: 250px;
   }
 }

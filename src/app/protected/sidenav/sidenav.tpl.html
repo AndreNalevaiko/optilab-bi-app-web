@@ -1,8 +1,7 @@
 
 <md-content flex role="navigation">
-  <div layout="row" layout-align="center" layout-padding flex>
-    <img src="/assets/images/logo-footer.png">
-
+  <div ng-click="protectedCtrl.viewAllToolbar = !protectedCtrl.viewAllToolbar" class="logo">
+      <img src="/assets/images/logo-footer.png">
   </div>
   <md-divider></md-divider>
   <md-list>
@@ -24,11 +23,11 @@
       <p>Clientes</p>
     </md-list-item>
 
-    <md-list-item ui-sref="protected.rate-service" 
+    <!-- <md-list-item ui-sref="protected.rate-service" 
                   ng-class="{ active: $state.includes('protected.rate-service') }">
       <md-icon md-font-icon="material-icons" aria-label="Usuários">timer</md-icon>
       <p>Taxa de serviço</p>
-    </md-list-item>
+    </md-list-item> -->
 
     <md-list-item ui-sref="protected.user-management" ng-if="protectedCtrl.userIsAdmin"
                   ng-class="{ active: $state.includes('protected.user-management') }">

@@ -1,6 +1,7 @@
 *.sw*
 *~
 .git
+*.pyc
 .idea/
 build/
 bin/
