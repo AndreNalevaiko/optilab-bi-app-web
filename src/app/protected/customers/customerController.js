@@ -89,32 +89,73 @@ angular.module('gorillasauth.protected.customer')
         });
       }
 
+      function normalizeBillings(billings) {
+        return billings.map(function(obj) {
+          obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
+          obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
+          obj.qtd_current_month = parseInt(obj.qtd_current_month);
+          obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
+          obj.value_current_month = Number(obj.value_current_month);
+
+          obj.comparison_qtd = (obj.qtd_current_month / self.dateFilter.getDate()) / 
+            (obj.avg_month_qtd_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));
+
+          obj.comparison_value = (obj.value_current_month / self.dateFilter.getDate()) /
+            (obj.avg_month_value_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));
+
+          obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
+          obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
+            
+          obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
+
+          obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+          return obj;
+        });
+      }
+
       function searchCustomerBilling() {
         CustomerService.searchCustomerBillings(self.dateFilter).then(function (response){
-            self.abstract_customers = response.map(function(obj) {
-              obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
-              obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
-              obj.qtd_current_month = parseInt(obj.qtd_current_month);
-              obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
-              obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
-              obj.value_current_month = Number(obj.value_current_month);
-
-              obj.comparison_qtd = (obj.qtd_current_month / self.dateFilter.getDate()) / 
-                (obj.avg_month_qtd_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));
-
-              obj.comparison_value = (obj.value_current_month / self.dateFilter.getDate()) /
-                (obj.avg_month_value_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));
-
-              obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
-              obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
-                
-              obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
-              obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
-
-              obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
-              obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
-              return obj;
+            self.abstract_customers = normalizeBillings(response);
+            
+            var groups_customer =  [];
+            angular.forEach(self.abstract_customers, function (item) {
+              if (item.group_customer != '' && groups_customer.indexOf(item.group_customer) < 0) {
+                groups_customer.push(item.group_customer);
+              }
             });
+
+            self.abstract_groups = [];
+            angular.forEach(groups_customer, function (group) {
+              var group_billing = {
+                customer: group,
+                wallet: null,
+                avg_month_qtd_current_year: 0,
+                avg_month_qtd_last_year: 0,
+                avg_month_value_current_year: 0,
+                avg_month_value_last_year: 0,
+                qtd_current_month: 0,
+                value_current_month: 0,
+              };
+              
+              angular.forEach(response, function (customer) {
+                if (customer.group_customer == group) {
+                  group_billing.wallet = customer.wallet;
+                  group_billing.avg_month_qtd_current_year += customer.avg_month_qtd_current_year;
+                  group_billing.avg_month_qtd_last_year += customer.avg_month_qtd_last_year;
+                  group_billing.avg_month_value_current_year += customer.avg_month_value_current_year;
+                  group_billing.avg_month_value_last_year += customer.avg_month_value_last_year;
+                  group_billing.qtd_current_month += customer.qtd_current_month;
+                  group_billing.value_current_month += customer.value_current_month;
+                }
+              });
+              self.abstract_groups.push(group_billing);
+            });
+
+            console.log(normalizeBillings(self.abstract_groups));
+
         });
       }
 
