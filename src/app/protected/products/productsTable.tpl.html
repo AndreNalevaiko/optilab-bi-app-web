@@ -2,17 +2,8 @@
     <md-input-container>
         <label>Data base</label>
         <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
-            ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()"></md-datepicker>
+            ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()" md-max-date="productsCtrl.maxDate"></md-datepicker>
     </md-input-container>
-    <!-- <md-input-container class="md-block" style="min-width: 150px;">
-        <label>Ano de referência</label>
-        <md-select ng-model="productsCtrl.dateFilter.year" md-on-close="productsCtrl.search()">
-            <md-option ng-value="year" ng-repeat="year in productsCtrl.filterOptions.years">
-                {{year}}
-            </md-option>
-        </md-select>
-    </md-input-container> -->
-    <md-button class="md-primary" ng-click="productsCtrl.export(tabSeller[selectedTab])">Exportar Excel</md-button>
 </div>
 <div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>
     <md-progress-circular md-diameter="40"></md-progress-circular>
@@ -25,54 +16,44 @@
     <table md-table>
         <thead md-head md-order="productsCtrl.orderTable">
             <tr md-row>
-                <th md-column md-order-by="brand">
-                    <span>Marca</span>
-                </th>
-                <th md-column md-order-by="label">
+                <th md-column md-order-by="product">
                     <span>Produto</span>
                 </th>
-                <th md-column md-order-by="qtd_latest_year">
-                    <span>Qtd Anterior</span>
+                <th md-column md-number md-order-by="avg_month_value_last_year">
+                    <span>Média Mês Ano Anterior</span>
                 </th>
-                <th md-column md-order-by="value_latest_year">
-                    <span>Fat Anterior</span>
+                <th md-column md-number md-order-by="avg_month_value_current_year">
+                    <span>Média Mês Ano Atual</span>
                 </th>
-                <th md-column md-order-by="qtd_current_year">
-                    <span>Qtd Atual</span>
+                <th md-column md-number md-order-by="value_current_month">
+                    <span>Mês Atual</span>
                 </th>
-                <th md-column md-order-by="value_current_year">
-                    <span>Fat Atual</span>
-                </th>
-                <th md-column md-order-by="var_qtd">
-                    <span>Qtd %</span>
-                </th>
-                <th md-column md-order-by="var_value">
-                    <span>Fat %</span>
+                <th md-column md-number md-order-by="comparison_value">
+                    <span>Comparação/Dia %</span>
                 </th>
             </tr>
         </thead>
         <tbody md-body>
-            <tr md-row ng-repeat="product in productsCtrl.brands  | filter: {seller: tabSeller[selectedTab]} | 
+            <tr md-row ng-repeat="product in productsCtrl.products | filter: filterProducts(selectedTab) | 
                 orderBy: productsCtrl.orderTable">
-                <td md-cell>{{product.brand | uppercase}}</td>
-                <td md-cell>{{product.label | uppercase}}</td>
-                <td md-cell>{{product.qtd_latest_year}}</td>
-                <td md-cell>{{product.value_latest_year | currency : R$ : 2}}</td>
-                <td md-cell>{{product.qtd_current_year}}</td>
-                <td md-cell>{{product.value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>
-                    <span ng-if="product.var_qtd != 0" class="percentage-value" 
-                    ng-class="product.var_qtd < 0 ? 'less' : 'greater'">
-                        {{product.var_qtd | percentage: 2}}
-                    </span>
-                    <span ng-if="product.var_qtd == 0">--</span>
+                    {{product.product | limitTo: 50}}
                 </td>
+                <td md-cell>{{product.avg_month_qtd_last_year | number}}pc / {{product.avg_month_value_last_year | currency : R$ : 2}}</td>
+                <td md-cell>{{product.avg_month_qtd_current_year | number}}pc / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
+                <td md-cell>{{product.qtd_current_month}}pc / {{product.value_current_month | currency : R$ : 2}}</td>
                 <td md-cell>
-                    <span ng-if="product.var_value != 0" class="percentage-value" 
-                    ng-class="product.var_value < 0 ? 'less' : 'greater'">
-                        {{product.var_value | percentage: 2}}
-                    </span>
-                    <span ng-if="product.var_value == 0">--</span>
+                    <span ng-if="product.qtd_current_month == -0.0001 || product.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                    <div class="status-percentage" layout="row"
+                        ng-if="product.qtd_current_month != -0.0001 && product.avg_month_qtd_current_year != -0.0001">
+                        <span ng-class="product.comparison_qtd < 1 ? 'less' : 'greater'">
+                            {{product.comparison_qtd | percentage: 2}}
+                        </span>
+                        <span>&nbsp/&nbsp</span>
+                        <span ng-class="product.comparison_value < 1 ? 'less' : 'greater'">
+                            {{product.comparison_value | percentage: 2}}
+                        </span>
+                    </div>
                 </td>
             </tr>
         </tbody>
