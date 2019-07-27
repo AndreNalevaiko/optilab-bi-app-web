@@ -31,13 +31,7 @@ angular.module('gorillasauth.protected.products')
       $scope.filterProducts = function (param) {
         var tab = param;
         return function (item) {
-          if ($scope.tabSeller[tab] == 'Global') {
-            return true;
-          } else if ($scope.tabSeller[tab] == 'Others') {
-            return self.sellerCodes.indexOf(item.wallet) < 0;
-          } else {
-            return item.wallet == $scope.tabSeller[tab];
-          }
+          return item.wallet == $scope.tabSeller[tab];
         };
       };
 
@@ -71,59 +65,12 @@ angular.module('gorillasauth.protected.products')
       self.search = function () {
         self.loading = true;
 
-        // ReportProductsService.search(searchParams).then(function (response) {
-        //   if (response.objects.length){
-        //     self.brands = consolidateReport(response.objects);
-        //     self.loading = false;          
-        //   }else{
-        //     self.loading = false;          
-        //     self.generating = true;
-
-        //     ReportProductsService.generate(self.dateFilter).then(function (response){
-        //       ReportProductsService.search(searchParams).then(function (response){
-        //         self.brands = consolidateReport(response.objects);
-        //         self.generating = false;
-        //       });
-        //     });
-        //   }
-        // });
-
-        ProductService.searchProductBillings(self.dateFilter).then(function (response) {
+        ProductService.searchProductBillings(self.dateFilter, self.sellerCodes).then(function (response) {
           self.products = normalizeBillings(response.filter(function (r) { return r.product != ''; }));
           self.brands = normalizeBillings(response.filter(function (r) { return r.product == ''; }));
           self.loading = false;
         });
       };
-
-      // self.export = function (seller) {
-      //   ReportProductsService.export(self.dateFilter, seller).then(function (response){
-      //     var blob = new Blob([response.data], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});       
-      //     FileSaver.saveAs(blob, 'Relatório de produtos.xlsx');
-      //   }, function (error){
-      //     console.log('Erro ao gerar xlsx', error);
-      //   });
-      // };
-
-      // function createSearchParams() {
-      //   var params = {
-      //     q: {
-      //       filters: [
-      //         {
-      //           name: 'date',
-      //           op: 'eq',
-      //           val: self.dateFilter
-      //         },
-      //       ],
-      //       order_by: [
-      //         {
-      //           field: self.orderTable.replace('-', ''),
-      //           direction: self.orderTable.indexOf('-') < 0 ? 'desc' : 'asc'
-      //         }
-      //       ]
-      //     }
-      //   };
-      //   return params;
-      // }
 
       function consolidateReport(objects) {
         angular.forEach(objects, function (product) {
