@@ -16,6 +16,51 @@
                 <md-tab label="GLOBAL"></md-tab>
                 <md-tab label="OUTROS"></md-tab>
             </md-tabs>
+            <div layout="row" layout-align="space-around" layout-padding flex>
+                <md-input-container ng-style="tabSeller[selectedTab] == 'Others' ? {'margin-bottom': '-30px'} : {'margin-bottom': '-20px'}">
+                    <label>Data base</label>
+                    <md-datepicker ng-disabled="customerCtrl.loading || customerCtrl.generating"
+                        ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()" md-max-date="customerCtrl.maxDate"></md-datepicker>
+                </md-input-container>
+            </div>
+                
+            <div class="customers-actives" ng-hide="tabSeller[selectedTab] == 'Others'">
+                <div class="header-actives" layout="row" layout-align="center" flex>
+                    <span>Clientes ativos</span>
+                </div>
+                <div layout="row" ng-if="customerCtrl.amounts_customers">
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Média ano passado</span>
+                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].average_latest_year | currency : '' : 2}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Mês anterior</span>
+                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_month}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Mês Atual</span>
+                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_current_month}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Dia Anterior</span>
+                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_day}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Dia Atual</span>
+                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_current_day}}</span>
+                    </div>
+                </div>
+                <div class="loading" layout="column" layout-align="center center" ng-if="!customerCtrl.amounts_customers">
+                        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+                </div>
+            </div>
+                
+            <div class="loading" layout="column" layout-align="center center" layout-padding
+                ng-if="!customerCtrl.abstract_customers || customerCtrl.generating">
+                    <md-progress-circular md-diameter="40"></md-progress-circular>
+                <span>Carregando</span>
+            </div>
+            
             <ng-include src="'protected/customers/customersTable.tpl.html'"></ng-include>
             <ng-include src="'protected/customers/groupCustomersTable.tpl.html'"></ng-include>
         </div>

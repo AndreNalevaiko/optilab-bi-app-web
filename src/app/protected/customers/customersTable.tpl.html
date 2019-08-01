@@ -1,47 +1,3 @@
-<div layout="row" layout-align="space-around" layout-padding flex>
-    <md-input-container ng-style="tabSeller[selectedTab] == 'Others' ? {'margin-bottom': '-30px'} : {'margin-bottom': '-20px'}">
-        <label>Data base</label>
-        <md-datepicker ng-disabled="customerCtrl.loading || customerCtrl.generating"
-            ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()" md-max-date="customerCtrl.maxDate"></md-datepicker>
-    </md-input-container>
-</div>
-    
-<div class="customers-actives" ng-hide="tabSeller[selectedTab] == 'Others'">
-    <div class="header-actives" layout="row" layout-align="center" flex>
-        <span>Clientes ativos</span>
-    </div>
-    <div layout="row" ng-if="customerCtrl.amounts_customers">
-        <div class="type-active" layout="column" layout-align="start center" flex>
-            <span class="header">Média ano passado</span>
-            <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].average_latest_year | currency : '' : 2}}</span>
-        </div>
-        <div class="type-active" layout="column" layout-align="start center" flex>
-            <span class="header">Mês anterior</span>
-            <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_month}}</span>
-        </div>
-        <div class="type-active" layout="column" layout-align="start center" flex>
-            <span class="header">Mês Atual</span>
-            <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_current_month}}</span>
-        </div>
-        <div class="type-active" layout="column" layout-align="start center" flex>
-            <span class="header">Dia Anterior</span>
-            <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_day}}</span>
-        </div>
-        <div class="type-active" layout="column" layout-align="start center" flex>
-            <span class="header">Dia Atual</span>
-            <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_current_day}}</span>
-        </div>
-    </div>
-    <div class="loading" layout="column" layout-align="center center" ng-if="!customerCtrl.amounts_customers">
-            <md-progress-linear md-mode="indeterminate"></md-progress-linear>
-    </div>
-</div>
-    
-<div class="loading" layout="column" layout-align="center center" layout-padding
-    ng-if="!customerCtrl.abstract_customers || customerCtrl.generating">
-        <md-progress-circular md-diameter="40"></md-progress-circular>
-    <span>Carregando</span>
-</div>
 <div ng-show="customerCtrl.abstract_customers && !customerCtrl.generating">
     <div class="box-search" layout="row" layout-align="space-between center" flex>
         <md-icon>search</md-icon>
@@ -73,17 +29,22 @@
                 </tr>
             </thead>
             <tbody md-body>
-                <tr ng-click="customerCtrl.openCustomerDetail($event, customer)"
-                    md-row ng-repeat="customer in customerCtrl.abstract_customers | 
+                <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | 
                 filter: filterCustomers(selectedTab) | filter: {customer: filterName} | 
                 orderBy: customerCtrl.orderTable | limitTo: pagination[tabSeller[selectedTab]].pageSize : pagination[tabSeller[selectedTab]].page*pagination[tabSeller[selectedTab]].pageSize">
                     <td md-cell>
                         {{customer.customer | limitTo: 50}}
                     </td>
-                    <td md-cell>{{customer.avg_month_qtd_last_year | number}}pc / {{customer.avg_month_value_last_year | currency : R$ : 2}}</td>
-                    <td md-cell>{{customer.avg_month_qtd_current_year | number}}pc / {{customer.avg_month_value_current_year | currency : R$ : 2}}</td>
-                    <td md-cell>{{customer.qtd_current_month}}pc / {{customer.value_current_month | currency : R$ : 2}}</td>
-                    <td md-cell>
+                    <td md-cell ng-click="customerCtrl.openCustomerPeriodDetail($event, customer, 'last_year')">
+                        {{customer.avg_month_qtd_last_year | number}}pc / {{customer.avg_month_value_last_year | currency : R$ : 2}}
+                    </td>
+                    <td md-cell ng-click="customerCtrl.openCustomerPeriodDetail($event, customer, 'current_period')">
+                        {{customer.avg_month_qtd_current_year | number}}pc / {{customer.avg_month_value_current_year | currency : R$ : 2}}
+                    </td>
+                    <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)">
+                        {{customer.qtd_current_month}}pc / {{customer.value_current_month | currency : R$ : 2}}
+                    </td>
+                    <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)">
                         <span ng-if="customer.qtd_current_month == -0.0001 || customer.avg_month_qtd_current_year == -0.0001"> % / %</span>
                         <div class="status-percentage" layout="row"
                             ng-if="customer.qtd_current_month != -0.0001 && customer.avg_month_qtd_current_year != -0.0001">

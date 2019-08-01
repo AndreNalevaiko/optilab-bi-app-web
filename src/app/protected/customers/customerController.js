@@ -63,7 +63,27 @@ angular.module('gorillasauth.protected.customer')
             products: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer)
           },
           parent: angular.element(document.body),
-          templateUrl: 'protected/customers/customerDetailDialog.tpl.html',
+          templateUrl: 'protected/customers/dialogs/customerDetail.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          console.log('Dialog Confirmed');
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
+      self.openCustomerPeriodDetail = function (ev, customer, period) {
+        $mdDialog.show({
+          controller: 'CustomerPeriodDetailDialogController as ctrl',
+          fullscreen: true,
+          locals: {
+            date: self.dateFilter,
+            customer: customer,
+            periods: CustomerService.searchCustomerBillsPerMonth(self.dateFilter, customer.customer, period),
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/customers/dialogs/customerPeriodDetail.tpl.html',
           targetEvent: ev,
           clickOutsideToClose: true
         }).then(function (result) {
@@ -86,7 +106,7 @@ angular.module('gorillasauth.protected.customer')
             products: GroupCustomerService.searchGroupProducts(self.dateFilter, group.customer)
           },
           parent: angular.element(document.body),
-          templateUrl: 'protected/customers/dialogs/groupCustomerDetailDialog.tpl.html',
+          templateUrl: 'protected/customers/dialogs/groupCustomerDetail.tpl.html',
           targetEvent: ev,
           clickOutsideToClose: true
         }).then(function (result) {
@@ -416,6 +436,89 @@ angular.module('gorillasauth.protected.customer')
 
       self.selectCustomer = function (customer) {
         self.customerSelected = customer;
+        self.selectedTab = 1;
+      };
+
+      self.selectLine = function (line) {
+        self.lineSelected = line;
+        self.selectedTab = 2;
+      };
+
+      self.confirm = function () {
+        $mdDialog.hide();
+      };
+
+      self.cancel = function () {
+        $mdDialog.cancel();
+      };
+    }
+])
+
+  .controller('CustomerPeriodDetailDialogController', ['$mdDialog', 'NotificationService', 'CustomerService',
+  'customer',  'periods', 
+    function ($mdDialog, NotificationService, CustomerService, customer, periods) {
+      var self = this;
+
+      self.orderTableCustomers = 'customer';
+      self.orderTableLine = 'product_group';
+      self.orderTableProduct = 'product';
+
+      self.customer = customer;
+      self.periods = periods;
+      self.periodSelected = null;
+      self.lineSelected = null;
+      self.selectedTab = 0;
+
+      angular.forEach(self.periods, function (period) {
+        var date = new Date(period.year, period.month - 1 , period.last_day_month);
+        CustomerService.searchCustomerProducts(date.toISOString(), period.customer).then(function (response) {
+          period.lines = linesAndProductsNormalized(response, date);
+        });
+      });
+
+      function linesAndProductsNormalized(products, date) {
+        var productsNormalized = products.map(function(obj) {
+          obj.product = obj.product.replace('_', ' ').toUpperCase();
+  
+          obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
+          obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
+          obj.qtd_current_month = parseInt(obj.qtd_current_month);
+          obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
+          obj.value_current_month = Number(obj.value_current_month);
+  
+          obj.comparison_qtd = (obj.qtd_current_month / date.getDate()) / 
+            (obj.avg_month_qtd_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+  
+          obj.comparison_value = (obj.value_current_month / date.getDate()) /
+            (obj.avg_month_value_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+  
+          obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
+          obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
+            
+          obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
+  
+          obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+          return obj;
+        });
+  
+        var linesNormalized = productsNormalized.filter(function (item) {
+          return item.product == '';
+        });
+  
+        angular.forEach(linesNormalized, function (line) {
+          line.products = productsNormalized.filter(function (product) {
+            return product.product != '';
+          });
+        });
+
+        return linesNormalized;
+      }
+
+      self.selectPeriod = function (period) {
+        self.periodSelected = period;
         self.selectedTab = 1;
       };
 
