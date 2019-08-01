@@ -128,8 +128,11 @@
         }
 
         .disable-clickable:hover{
-            background-color: inherit !important;
             cursor: auto !important;
+        }
+
+        .disable-hover-color:hover{
+            background-color: inherit !important;
         }
     }
     
@@ -149,9 +152,16 @@
         display: none;
     }
 
+    .view-tabs {
+        md-tabs md-tabs-wrapper {
+            display: block !important;
+        }
+    }
+
     .line-selected {
+        height: 38px !important;
         font-weight: 500;
-        background-color: #acd2ba;
+        background-color: #acd2ba !important;
         cursor: pointer;
     }
 }

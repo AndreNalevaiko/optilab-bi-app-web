@@ -1,0 +1,68 @@
+<div ng-show="customerCtrl.abstract_groups && !customerCtrl.generating">
+    <div class="box-search" layout="row" layout-align="space-between center" flex>
+        <md-icon>search</md-icon>
+        <md-input-container flex>
+            <label>Código ou nome do grupo</label>
+            <input type="text" ng-model="filterNameGroup">
+        </md-input-container>
+    </div>
+    <md-table-container ng-if="customerCtrl.abstract_groups.length" flex>
+        <table md-table>
+            <thead md-head md-order="customerCtrl.orderTableGroup">
+                <tr md-row>
+                    <th md-column md-order-by="customer">
+                        <span>Grupo</span>
+                    </th>
+                    <th md-column md-number md-order-by="avg_month_value_last_year">
+                        <span>Média Mês Ano Anterior</span>
+                    </th>
+                    <th md-column md-number md-order-by="avg_month_value_current_year">
+                        <span>Média Mês Ano Atual</span>
+                    </th>
+                    <th md-column md-number md-order-by="value_current_month">
+                        <span>Mês Atual</span>
+                    </th>
+                    <th md-column md-number md-order-by="comparison_value">
+                        <span>Tendência</span>
+                        <md-tooltip>Comparação de média dia do mês atual com média dia da média mes do ano atual</md-tooltip>
+                    </th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr ng-click="customerCtrl.openGroupDetail($event, group)"
+                    md-row ng-repeat="group in customerCtrl.abstract_groups | 
+                filter: filterCustomers(selectedTab) | filter: {customer: filterNameGroup} | 
+                orderBy: customerCtrl.orderTableGroup | limitTo: paginationGroup[tabSeller[selectedTab]].pageSize : paginationGroup[tabSeller[selectedTab]].page*paginationGroup[tabSeller[selectedTab]].pageSize">
+                    <td md-cell>
+                        {{group.customer | limitTo: 50}}
+                    </td>
+                    <td md-cell>{{group.avg_month_qtd_last_year | number}}pc / {{group.avg_month_value_last_year | currency : R$ : 2}}</td>
+                    <td md-cell>{{group.avg_month_qtd_current_year | number}}pc / {{group.avg_month_value_current_year | currency : R$ : 2}}</td>
+                    <td md-cell>{{group.qtd_current_month}}pc / {{group.value_current_month | currency : R$ : 2}}</td>
+                    <td md-cell>
+                        <span ng-if="group.qtd_current_month == -0.0001 || group.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                        <div class="status-percentage" layout="row"
+                            ng-if="group.qtd_current_month != -0.0001 && group.avg_month_qtd_current_year != -0.0001">
+                            <span ng-class="group.comparison_qtd < 1 ? 'less' : 'greater'">
+                                {{group.comparison_qtd | percentage: 2}}
+                            </span>
+                            <span>&nbsp/&nbsp</span>
+                            <span ng-class="group.comparison_value < 1 ? 'less' : 'greater'">
+                                {{group.comparison_value | percentage: 2}}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+    <div ng-hide="filterNameGroup" class="paginator" layout="row" layout-align="end center" flex>
+        <md-button class="md-icon-button" ng-click="paginationGroup[tabSeller[selectedTab]].page = paginationGroup[tabSeller[selectedTab]].page - 1" 
+        ng-disabled="paginationGroup[tabSeller[selectedTab]].page == 0">
+            <md-icon>navigate_before</md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="paginationGroup[tabSeller[selectedTab]].page = paginationGroup[tabSeller[selectedTab]].page + 1">
+            <md-icon>navigate_next</md-icon>
+        </md-button>
+    </div>
+</div>

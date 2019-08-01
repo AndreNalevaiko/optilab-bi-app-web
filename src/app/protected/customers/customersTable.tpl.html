@@ -1,5 +1,5 @@
 <div layout="row" layout-align="space-around" layout-padding flex>
-    <md-input-container ng-style="tabSeller[selectedTab] == 'Others' ? {'margin-bottom': '-30px'} : {}">
+    <md-input-container ng-style="tabSeller[selectedTab] == 'Others' ? {'margin-bottom': '-30px'} : {'margin-bottom': '-20px'}">
         <label>Data base</label>
         <md-datepicker ng-disabled="customerCtrl.loading || customerCtrl.generating"
             ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()" md-max-date="customerCtrl.maxDate"></md-datepicker>
@@ -46,13 +46,13 @@
     <div class="box-search" layout="row" layout-align="space-between center" flex>
         <md-icon>search</md-icon>
         <md-input-container flex>
-            <label>Codigo ou nome do cliente</label>
+            <label>Código ou nome do cliente</label>
             <input type="text" ng-model="filterName">
         </md-input-container>
     </div>
     <md-table-container ng-if="customerCtrl.abstract_customers.length" flex>
         <table md-table>
-            <thead md-head md-order="customerCtrl.orderTable" md-on-reorder="customerCtrl.search">
+            <thead md-head md-order="customerCtrl.orderTable">
                 <tr md-row>
                     <th md-column md-order-by="customer">
                         <span>Cliente</span>
@@ -67,7 +67,8 @@
                         <span>Mês Atual</span>
                     </th>
                     <th md-column md-number md-order-by="comparison_value">
-                        <span>Comparação/Dia %</span>
+                        <span>Tendência</span>
+                        <md-tooltip>Comparação de média dia do mês atual com média dia da média mes do ano atual</md-tooltip>
                     </th>
                 </tr>
             </thead>

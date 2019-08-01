@@ -1,10 +1,13 @@
 angular.module('gorillasauth.protected.customer')
 
-  .controller('CustomerController', ['$mdDialog', '$mdMedia', 'DateFilterService', 'CustomerService', '$scope', 'NotificationService',
-    function ($mdDialog, $mdMedia, DateFilterService, CustomerService, $scope, NotificationService) {
+  .controller('CustomerController', ['$mdDialog', '$mdMedia', 'DateFilterService', 'CustomerService', 
+    '$scope', 'NotificationService', 'GroupCustomerService',
+    function ($mdDialog, $mdMedia, DateFilterService, CustomerService, $scope, NotificationService,
+      GroupCustomerService) {
       var self = this;
 
       self.orderTable = 'customer';
+      self.orderTableGroup = 'customer';
       self.sellerCodes = ['319','320','318','322','321','323'];
 
       self.filterOptions = DateFilterService.filterOptions();
@@ -61,6 +64,29 @@ angular.module('gorillasauth.protected.customer')
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/customers/customerDetailDialog.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          console.log('Dialog Confirmed');
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
+      self.openGroupDetail = function (ev, group) {
+        $mdDialog.show({
+          controller: 'GroupCustomerDetailDialogController as ctrl',
+          fullscreen: true,
+          locals: {
+            date: self.dateFilter,
+            group: group,
+            customers: GroupCustomerService.searchCustomersBillings(self.dateFilter, group.customer).then(function (response){
+              return normalizeBillings(response);
+            }),
+            products: GroupCustomerService.searchGroupProducts(self.dateFilter, group.customer)
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/customers/dialogs/groupCustomerDetailDialog.tpl.html',
           targetEvent: ev,
           clickOutsideToClose: true
         }).then(function (result) {
@@ -154,7 +180,7 @@ angular.module('gorillasauth.protected.customer')
               self.abstract_groups.push(group_billing);
             });
 
-            console.log(normalizeBillings(self.abstract_groups));
+            self.abstract_groups = normalizeBillings(self.abstract_groups);
 
         });
       }
@@ -173,15 +199,6 @@ angular.module('gorillasauth.protected.customer')
         }
       }
 
-      function createFilterSearchCustomerBilling() {
-        return {
-          q: {
-            filters: [
-              {name: 'date', op: 'eq', val: self.dateFilter}
-            ]
-          }
-        };
-      }
       
       function createFilterSearchActiveCustomers() {
         var month = self.dateFilter.getMonth() + 1;
@@ -200,35 +217,70 @@ angular.module('gorillasauth.protected.customer')
       $scope.pagination = {
         "Others": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "Global": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "319": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "320": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "321": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "322": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "318": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
         },
         "323": {
           page: 0,
-          pageSize: 20
+          pageSize: 10
+        },
+      };
+
+      $scope.paginationGroup = {
+        "Others": {
+          page: 0,
+          pageSize: 5
+        },
+        "Global": {
+          page: 0,
+          pageSize: 5
+        },
+        "319": {
+          page: 0,
+          pageSize: 5
+        },
+        "320": {
+          page: 0,
+          pageSize: 5
+        },
+        "321": {
+          page: 0,
+          pageSize: 5
+        },
+        "322": {
+          page: 0,
+          pageSize: 5
+        },
+        "318": {
+          page: 0,
+          pageSize: 5
+        },
+        "323": {
+          page: 0,
+          pageSize: 5
         },
       };
     }
@@ -280,14 +332,96 @@ angular.module('gorillasauth.protected.customer')
         });
       });
 
-      console.log(self.lines);
-
       self.orderTableLine = 'product_group';
       self.orderTableProduct = 'product';
 
       self.selectLine = function (line) {
         self.lineSelected = line;
         self.selectedTab = 1;
+      };
+
+      self.confirm = function () {
+        $mdDialog.hide();
+      };
+
+      self.cancel = function () {
+        $mdDialog.cancel();
+      };
+    }
+])
+
+  .controller('GroupCustomerDetailDialogController', ['$mdDialog', 'NotificationService', 'CustomerService',
+  'date',  'group', 'customers', 'products',
+    function ($mdDialog, NotificationService, CustomerService, date, group, customers, products) {
+      var self = this;
+
+      self.orderTableCustomers = 'customer';
+      self.orderTableLine = 'product_group';
+      self.orderTableProduct = 'product';
+
+      self.group = group;
+      self.customers = customers;
+      self.customerSelected = null;
+      self.lineSelected = null;
+      self.selectedTab = 0;
+
+      self.group.lines = linesAndProductsNormalized(products);
+
+      angular.forEach(self.customers, function (customer) {
+        CustomerService.searchCustomerProducts(date, customer.customer).then(function (response) {
+          customer.lines = linesAndProductsNormalized(response);
+        });
+      });
+
+      function linesAndProductsNormalized(products) {
+        var productsNormalized = products.map(function(obj) {
+          obj.product = obj.product.replace('_', ' ').toUpperCase();
+  
+          obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
+          obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
+          obj.qtd_current_month = parseInt(obj.qtd_current_month);
+          obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
+          obj.value_current_month = Number(obj.value_current_month);
+  
+          obj.comparison_qtd = (obj.qtd_current_month / date.getDate()) / 
+            (obj.avg_month_qtd_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+  
+          obj.comparison_value = (obj.value_current_month / date.getDate()) /
+            (obj.avg_month_value_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+  
+          obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
+          obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
+            
+          obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
+  
+          obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+          return obj;
+        });
+  
+        var linesNormalized = productsNormalized.filter(function (item) {
+          return item.product == '';
+        });
+  
+        angular.forEach(linesNormalized, function (line) {
+          line.products = productsNormalized.filter(function (product) {
+            return product.product != '';
+          });
+        });
+
+        return linesNormalized;
+      }
+
+      self.selectCustomer = function (customer) {
+        self.customerSelected = customer;
+        self.selectedTab = 1;
+      };
+
+      self.selectLine = function (line) {
+        self.lineSelected = line;
+        self.selectedTab = 2;
       };
 
       self.confirm = function () {
