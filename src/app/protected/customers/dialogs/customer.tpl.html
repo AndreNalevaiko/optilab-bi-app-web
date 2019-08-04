@@ -1,0 +1,41 @@
+<md-dialog class="customer-dlg" aria-label="Comentarios">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h2>Detalhes</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="ctrl.cancel()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="label" layout="row">
+            <div layout="column">
+                <span class="title">{{ctrl.customer.customer}}</span>
+            </div>
+        </div>
+
+        <div class="status" ng-class="ctrl.status.is_overdue ? 'overdue' : 'none'" layout-align="center">
+            <span ng-if="ctrl.status.is_overdue">Inadimplente</span>
+            <span ng-if="!ctrl.status.is_overdue">Está em dia</span>
+        </div>
+        
+        <div class="tab-header" layout="row" layout-align="center">
+            <span>Tabelas</span>
+        </div>
+        <md-divider></md-divider>
+        <div layout="column" ng-repeat="tab in ctrl.tabs">
+            <div class="tab-item" layout="row" layout-align="center">{{tab.tab_desc}}</div>
+            <md-divider></md-divider>
+        </div>
+        
+    </md-dialog-content>
+    <md-dialog-actions flex>
+        <div layout="row" layout-align="end" flex>
+            <div flex></div>
+            <md-button  ng-click="ctrl.confirm()">
+                PRONTO
+            </md-button>
+        </div>
+    </md-dialog-actions>
+</md-dialog>

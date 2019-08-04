@@ -6,6 +6,9 @@ angular.module('gorillasauth.protected.customer')
       GroupCustomerService) {
       var self = this;
 
+      self.filterName = '';
+      self.filterNameGroup = '';
+
       self.orderTable = 'customer';
       self.orderTableGroup = 'customer';
       self.sellerCodes = ['319','320','318','322','321','323'];
@@ -53,6 +56,26 @@ angular.module('gorillasauth.protected.customer')
         searchActive();
       };
 
+      self.openCustomer = function (ev, customer) {
+        $mdDialog.show({
+          controller: 'CustomerDialogController as ctrl',
+          fullscreen: true,
+          locals: {
+            customer: customer,
+            status: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter),
+            tabs: CustomerService.getTabsPrices(customer.clicodigo)
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/customers/dialogs/customer.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          console.log('Dialog Confirmed');
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
       self.openCustomerDetail = function (ev, customer) {
         $mdDialog.show({
           controller: 'CustomerDetailDialogController as ctrl',
@@ -81,6 +104,32 @@ angular.module('gorillasauth.protected.customer')
             date: self.dateFilter,
             customer: customer,
             periods: CustomerService.searchCustomerBillsPerMonth(self.dateFilter, customer.customer, period),
+            currentPeriod: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer),
+            period: period,
+            type: 'customer',
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/customers/dialogs/customerPeriodDetail.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          console.log('Dialog Confirmed');
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
+      self.openGroupCustomerPeriodDetail = function (ev, customer, period) {
+        $mdDialog.show({
+          controller: 'CustomerPeriodDetailDialogController as ctrl',
+          fullscreen: true,
+          locals: {
+            date: self.dateFilter,
+            customer: customer,
+            periods: GroupCustomerService.searchGroupCustomerBillsPerMonth(self.dateFilter, customer.customer, period),
+            currentPeriod: GroupCustomerService.searchGroupProducts(self.dateFilter, customer.customer),
+            period: period,
+            type: 'group',
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/customers/dialogs/customerPeriodDetail.tpl.html',
@@ -137,8 +186,13 @@ angular.module('gorillasauth.protected.customer')
 
       function normalizeBillings(billings) {
         return billings.map(function(obj) {
+          var re = new RegExp(/^[1-9]+/g);
+          obj.clicodigo = obj.customer.match(re)[0];
           obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
           obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
+            if (isNaN(obj.avg_month_qtd_last_year)) {
+              obj.avg_month_qtd_last_year = 0;
+            }
           obj.qtd_current_month = parseInt(obj.qtd_current_month);
           obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
           obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
@@ -303,6 +357,26 @@ angular.module('gorillasauth.protected.customer')
           pageSize: 5
         },
       };
+
+      function clearPagination () {
+        angular.forEach($scope.pagination, function (key, val) {
+          $scope.pagination[val].page = 0;
+        });
+        angular.forEach($scope.paginationGroup, function (key, val) {
+          $scope.paginationGroup[val].page = 0;
+        });
+      }
+
+      $scope.$watch(function () {
+        return self.filterName;
+      }, function (newVal, oldVal) {
+        clearPagination();
+      });
+      $scope.$watch(function () {
+        return self.filterNameGroup;
+      }, function (newVal, oldVal) {
+        clearPagination();
+      });
     }
   ])
 
@@ -454,30 +528,56 @@ angular.module('gorillasauth.protected.customer')
     }
 ])
 
-  .controller('CustomerPeriodDetailDialogController', ['$mdDialog', 'NotificationService', 'CustomerService',
-  'customer',  'periods', 
-    function ($mdDialog, NotificationService, CustomerService, customer, periods) {
+  .controller('CustomerPeriodDetailDialogController', ['$mdDialog', 'CustomerService', 'GroupCustomerService',
+  'date', 'customer',  'currentPeriod', 'periods', 'period', 'type',
+    function ($mdDialog, CustomerService, GroupCustomerService, date, customer, currentPeriod, periods, period, type) {
       var self = this;
 
       self.orderTableCustomers = 'customer';
       self.orderTableLine = 'product_group';
       self.orderTableProduct = 'product';
 
+      self.date = date;
       self.customer = customer;
       self.periods = periods;
+      self.period = period;
       self.periodSelected = null;
+      self.currentLines = null;
       self.lineSelected = null;
       self.selectedTab = 0;
 
       angular.forEach(self.periods, function (period) {
         var date = new Date(period.year, period.month - 1 , period.last_day_month);
-        CustomerService.searchCustomerProducts(date.toISOString(), period.customer).then(function (response) {
-          period.lines = linesAndProductsNormalized(response, date);
-        });
+        if (type == 'customer') {
+          CustomerService.searchCustomerProducts(date.toISOString(), period.customer).then(function (response) {
+            self.currentLines = linesAndProductsNormalized(currentPeriod, date, false);
+            period.lines = linesAndProductsNormalized(response, date, true);
+          });
+        } else {
+          GroupCustomerService.searchGroupProducts(date.toISOString(), period.customer).then(function (response) {
+            self.currentLines = linesAndProductsNormalized(currentPeriod, date, false);
+            period.lines = linesAndProductsNormalized(response, date, true);
+          });
+        }
       });
 
-      function linesAndProductsNormalized(products, date) {
+      function linesAndProductsNormalized(products, date, addCurrent) {
         var productsNormalized = products.map(function(obj) {
+          if (addCurrent) {
+            var currentProd = self.currentLines.filter(function (item) {
+              return item.product == obj.product && obj.product_group == item.product_group;
+            });
+  
+            if (currentProd.length) {
+              obj.current_qtd = currentProd[0].qtd_current_month;
+              obj.current_value = currentProd[0].value_current_month;
+            } else {
+              obj.current_qtd = 0;
+              obj.current_value = 0;
+  
+            }
+          }
+
           obj.product = obj.product.replace('_', ' ').toUpperCase();
   
           obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
@@ -486,7 +586,9 @@ angular.module('gorillasauth.protected.customer')
           obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
           obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
           obj.value_current_month = Number(obj.value_current_month);
+
   
+          // Talvez remover possivelmente n será usado
           obj.comparison_qtd = (obj.qtd_current_month / date.getDate()) / 
             (obj.avg_month_qtd_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
   
@@ -521,11 +623,30 @@ angular.module('gorillasauth.protected.customer')
         self.periodSelected = period;
         self.selectedTab = 1;
       };
-
+      
       self.selectLine = function (line) {
         self.lineSelected = line;
         self.selectedTab = 2;
       };
+
+      self.confirm = function () {
+        $mdDialog.hide();
+      };
+
+      self.cancel = function () {
+        $mdDialog.cancel();
+      };
+    }
+])
+
+.controller('CustomerDialogController', ['$mdDialog', 'NotificationService', 'CustomerService',
+  'customer', 'status', 'tabs', 
+    function ($mdDialog, NotificationService, CustomerService, customer, status, tabs) {
+      var self = this;
+
+      self.customer = customer;
+      self.status = status;
+      self.tabs = tabs;
 
       self.confirm = function () {
         $mdDialog.hide();

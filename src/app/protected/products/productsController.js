@@ -37,6 +37,8 @@ angular.module('gorillasauth.protected.products')
 
       function normalizeBillings(billings) {
         return billings.map(function(obj) {
+          obj.product = obj.product.replace('_', ' ').toUpperCase();
+          
           obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
           obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
           obj.qtd_current_month = parseInt(obj.qtd_current_month);

@@ -23,6 +23,20 @@ angular.module('gorillasauth.services.group-customer', [])
                 });
             };
 
+            this.searchGroupCustomerBillsPerMonth = function (dateSelected, group_customer, period) {
+                var data = {
+                    "date": dateSelected,
+                    "group_customer": group_customer,
+                    "period": period
+                };
+                return $http.post(configuration.apiUrl + '/group_customer/bills_per_month', data).then(function (response) {
+                    return response.data.map(function(item) {
+                        item.customer = item.group_customer;
+                        return item;
+                    });
+                });
+            };
+
         }
     ])
 ;

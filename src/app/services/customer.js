@@ -61,6 +61,25 @@ angular.module('gorillasauth.services.customer', [
                     return response.data;
                 });
             };
+
+            this.getTabsPrices = function (clicodigo) {
+                var data = {
+                        "clicodigo": clicodigo
+                };
+                return $http.post(configuration.apiUrl + '/customers/_tabs_prices', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.getIsOverdue = function (clicodigo, date) {
+                var data = {
+                        "clicodigo": clicodigo,
+                        "date": date
+                };
+                return $http.post(configuration.apiUrl + '/customers/_overdue', data).then(function (response) {
+                    return response.data;
+                });
+            };
   
           }
       ])
