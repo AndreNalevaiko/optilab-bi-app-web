@@ -1,12 +1,13 @@
 angular.module('gorillasauth.protected')
 
   .controller('ProtectedController', ['$rootScope', '$mdSidenav', '$state', '$mdDialog', 'AuthService', 'user',
-    function ($rootScope, $mdSidenav, $state, $mdDialog, AuthService, user) {
+  '$cookies',
+    function ($rootScope, $mdSidenav, $state, $mdDialog, AuthService, user, $cookies) {
       var self = this;
 
       $rootScope.loggedUser = user;
       self.loggedUser = user;
-      self.viewAllToolbar = false;
+      self.viewMini = $cookies.get('viewMiniSidenav') == 'true' ? true : false;
 
       self.userIsAdmin = user.roles.filter( function (role) { return role.name == 'admin'; }).length;
 
@@ -30,6 +31,11 @@ angular.module('gorillasauth.protected')
             }]
           }
         });
+      };
+
+      self.toggleViewMini = function () {
+        self.viewMini = !self.viewMini;
+        $cookies.put('viewMiniSidenav', self.viewMini ? 'true' : 'false');
       };
 
       self.logout = function () {

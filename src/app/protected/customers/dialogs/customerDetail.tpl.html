@@ -8,7 +8,7 @@
             </md-button>
         </div>
     </md-toolbar>
-    <md-dialog-content>
+    <md-dialog-content flex>
         <div class="label" layout="row">
             <div layout="column">
                 <span class="title">{{ctrl.customer.customer}}</span>
@@ -140,7 +140,7 @@
         
         <md-divider></md-divider>
     </md-dialog-content>
-    <md-dialog-actions flex>
+    <md-dialog-actions>
         <div layout="row" layout-align="end" flex>
             <md-button ng-click="ctrl.selectedTab = 0" class="md-primary" 
                 ng-show="ctrl.selectedTab == 1">

@@ -1,8 +1,8 @@
 angular.module('gorillasauth.protected.products')
 
-  .controller('productsController', ['ReportProductsService', 'DateFilterService', 'FileSaver', '$scope',
-  'ProductService',
-    function (ReportProductsService, DateFilterService, FileSaver, $scope, ProductService) {
+  .controller('productsController', ['DateFilterService', '$scope',
+  'ProductService', '$mdDialog',
+    function (DateFilterService, $scope, ProductService, $mdDialog) {
       var self = this;
 
       self.sellerCodes = ['319','320','318','322','321','323'];
@@ -33,6 +33,24 @@ angular.module('gorillasauth.protected.products')
         return function (item) {
           return item.wallet == $scope.tabSeller[tab];
         };
+      };
+
+      self.openBrandDetail = function (ev, brand) {
+        $mdDialog.show({
+          controller: 'BrandDetailDetailDialogController as ctrl',
+          fullscreen: true,
+          locals: {
+            brand: brand
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/products/lineDetail.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          console.log('Dialog Confirmed');
+        }, function (){
+          console.log('Canceled Operation');
+        });
       };
 
       function normalizeBillings(billings) {
@@ -68,8 +86,13 @@ angular.module('gorillasauth.protected.products')
         self.loading = true;
 
         ProductService.searchProductBillings(self.dateFilter, self.sellerCodes).then(function (response) {
-          self.products = normalizeBillings(response.filter(function (r) { return r.product != ''; }));
           self.brands = normalizeBillings(response.filter(function (r) { return r.product == ''; }));
+          angular.forEach(self.brands, function (brand) {
+            brand.products = normalizeBillings(response.filter(function (r) { 
+              return r.product_group == brand.product_group && r.product != '' && r.wallet == brand.wallet;
+            }));
+          });
+          // self.products = normalizeBillings(response.filter(function (r) { return r.product != ''; }));
           self.loading = false;
         });
       };
@@ -83,6 +106,23 @@ angular.module('gorillasauth.protected.products')
       }
 
       self.search();
+    }
+  ])
+
+  .controller('BrandDetailDetailDialogController', ['$mdDialog', 'NotificationService', 'brand',
+    function ($mdDialog, NotificationService, brand) {
+      var self = this;
+
+      self.brand = brand;
+      self.orderTableProduct = 'product';
+
+      self.confirm = function () {
+        $mdDialog.hide();
+      };
+
+      self.cancel = function () {
+        $mdDialog.cancel();
+      };
     }
   ])
 

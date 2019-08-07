@@ -1,6 +1,6 @@
 
 <md-content flex role="navigation">
-  <div ng-click="protectedCtrl.viewAllToolbar = !protectedCtrl.viewAllToolbar" class="logo">
+  <div class="logo">
       <img src="/assets/images/logo-footer.png">
   </div>
   <md-divider></md-divider>
@@ -44,4 +44,10 @@
     
     <md-divider></md-divider>
   </md-list>
+  <div layout="column" layout-align="end end" flex>
+    <div flex></div>
+    <md-button class="md-icon-button" ng-click="protectedCtrl.toggleViewMini()">
+      <md-icon>{{protectedCtrl.viewMini ? 'keyboard_arrow_right' : 'keyboard_arrow_left'}}</md-icon>
+    </md-button>
+  </div>
 </md-content>

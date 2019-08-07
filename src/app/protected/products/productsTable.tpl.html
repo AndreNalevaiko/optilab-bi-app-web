@@ -34,24 +34,24 @@
             </tr>
         </thead>
         <tbody md-body>
-            <tr md-row ng-repeat="product in productsCtrl.products | filter: filterProducts(selectedTab) | 
-                orderBy: productsCtrl.orderTable">
+            <tr md-row ng-repeat="brand in productsCtrl.brands | filter: filterProducts(selectedTab) | 
+                orderBy: productsCtrl.orderTable" ng-click="productsCtrl.openBrandDetail($event, brand)">
                 <td md-cell>
-                    {{product.product | limitTo: 50}}
+                    {{brand.product_group | limitTo: 50}}
                 </td>
-                <td md-cell>{{product.avg_month_qtd_last_year | number}}pc / {{product.avg_month_value_last_year | currency : R$ : 2}}</td>
-                <td md-cell>{{product.avg_month_qtd_current_year | number}}pc / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
-                <td md-cell>{{product.qtd_current_month}}pc / {{product.value_current_month | currency : R$ : 2}}</td>
+                <td md-cell>{{brand.avg_month_qtd_last_year | number}}pc / {{brand.avg_month_value_last_year | currency : R$ : 2}}</td>
+                <td md-cell>{{brand.avg_month_qtd_current_year | number}}pc / {{brand.avg_month_value_current_year | currency : R$ : 2}}</td>
+                <td md-cell>{{brand.qtd_current_month}}pc / {{brand.value_current_month | currency : R$ : 2}}</td>
                 <td md-cell>
-                    <span ng-if="product.qtd_current_month == -0.0001 || product.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                    <span ng-if="brand.qtd_current_month == -0.0001 || brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
                     <div class="status-percentage" layout="row"
-                        ng-if="product.qtd_current_month != -0.0001 && product.avg_month_qtd_current_year != -0.0001">
-                        <span ng-class="product.comparison_qtd < 1 ? 'less' : 'greater'">
-                            {{product.comparison_qtd | percentage: 2}}
+                        ng-if="brand.qtd_current_month != -0.0001 && brand.avg_month_qtd_current_year != -0.0001">
+                        <span ng-class="brand.comparison_qtd < 1 ? 'less' : 'greater'">
+                            {{brand.comparison_qtd | percentage: 2}}
                         </span>
                         <span>&nbsp/&nbsp</span>
-                        <span ng-class="product.comparison_value < 1 ? 'less' : 'greater'">
-                            {{product.comparison_value | percentage: 2}}
+                        <span ng-class="brand.comparison_value < 1 ? 'less' : 'greater'">
+                            {{brand.comparison_value | percentage: 2}}
                         </span>
                     </div>
                 </td>

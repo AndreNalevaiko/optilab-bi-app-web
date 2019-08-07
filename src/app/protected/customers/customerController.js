@@ -391,6 +391,7 @@ angular.module('gorillasauth.protected.customer')
 
       self.products = products.map(function(obj) {
         obj.product = obj.product.replace('_', ' ').toUpperCase();
+        obj.product_group = obj.product_group.replace('_', ' ').toUpperCase();
 
         obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
         obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
@@ -422,7 +423,7 @@ angular.module('gorillasauth.protected.customer')
 
       angular.forEach(self.lines, function (line) {
         line.products = self.products.filter(function (product) {
-          return product.product != '';
+          return product.product != '' && product.product_group == line.product_group;
         });
       });
 
@@ -501,7 +502,7 @@ angular.module('gorillasauth.protected.customer')
   
         angular.forEach(linesNormalized, function (line) {
           line.products = productsNormalized.filter(function (product) {
-            return product.product != '';
+            return product.product != ''&& product.product_group == line.product_group;
           });
         });
 
@@ -612,7 +613,7 @@ angular.module('gorillasauth.protected.customer')
   
         angular.forEach(linesNormalized, function (line) {
           line.products = productsNormalized.filter(function (product) {
-            return product.product != '';
+            return product.product != '' && product.product_group == line.product_group;
           });
         });
 
