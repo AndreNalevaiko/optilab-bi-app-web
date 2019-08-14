@@ -6,7 +6,9 @@ ADD . /optilab-bi-app-web
 WORKDIR /optilab-bi-app-web
 
 ENV NODE_ENV=production
-
+RUN npm cache clean -f
+RUN npm install -g n
+RUN n stable
 RUN npm -g install grunt-cli bower http-server
 RUN npm install
 RUN bower install --allow-root
