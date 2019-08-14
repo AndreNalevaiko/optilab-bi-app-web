@@ -186,7 +186,7 @@ angular.module('gorillasauth.protected.customer')
 
       function normalizeBillings(billings) {
         return billings.map(function(obj) {
-          var re = new RegExp(/^[1-9]+/g);
+          var re = new RegExp(/^[0-9]+/g);
           obj.clicodigo = obj.customer.match(re)[0];
           obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
           obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
