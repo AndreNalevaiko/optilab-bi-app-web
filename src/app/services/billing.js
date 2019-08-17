@@ -5,15 +5,9 @@ angular.module('gorillasauth.services.billing', [])
 
             this.get = function (dateSelected) {
                 var data = {
-                    "period": {
-                        "month": String(dateSelected.month),
-                        "year": String(dateSelected.year)
-                    }
+                    "date": dateSelected
                 };
                 return $http.post(configuration.apiUrl + '/billing/', data).then(function (response) {
-                    angular.forEach(response.data, function(bil){
-                        bil.business_alias = configuration.business_alias[bil.business];
-                    });
                     return response.data;
                 });
             };

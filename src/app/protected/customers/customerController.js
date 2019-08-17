@@ -62,7 +62,7 @@ angular.module('gorillasauth.protected.customer')
           fullscreen: true,
           locals: {
             customer: customer,
-            status: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter),
+            status: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
             tabs: CustomerService.getTabsPrices(customer.clicodigo)
           },
           parent: angular.element(document.body),
@@ -143,6 +143,8 @@ angular.module('gorillasauth.protected.customer')
       };
 
       self.openGroupDetail = function (ev, group) {
+        var re = new RegExp(/^[0-9]+/g);
+        var groupCode = group.customer.match(re)[0];
         $mdDialog.show({
           controller: 'GroupCustomerDetailDialogController as ctrl',
           fullscreen: true,
@@ -152,6 +154,7 @@ angular.module('gorillasauth.protected.customer')
             customers: GroupCustomerService.searchCustomersBillings(self.dateFilter, group.customer).then(function (response){
               return normalizeBillings(response);
             }),
+            statusCustomers: CustomerService.getIsOverdue(groupCode, self.dateFilter, 'group'),
             products: GroupCustomerService.searchGroupProducts(self.dateFilter, group.customer)
           },
           parent: angular.element(document.body),
@@ -445,10 +448,11 @@ angular.module('gorillasauth.protected.customer')
     }
 ])
 
-  .controller('GroupCustomerDetailDialogController', ['$mdDialog', 'NotificationService', 'CustomerService',
+  .controller('GroupCustomerDetailDialogController', ['$mdDialog', 'statusCustomers', 'CustomerService',
   'date',  'group', 'customers', 'products',
-    function ($mdDialog, NotificationService, CustomerService, date, group, customers, products) {
+    function ($mdDialog, statusCustomers, CustomerService, date, group, customers, products) {
       var self = this;
+      var re = new RegExp(/^[0-9]+/g);
 
       self.orderTableCustomers = 'customer';
       self.orderTableLine = 'product_group';
@@ -456,6 +460,19 @@ angular.module('gorillasauth.protected.customer')
 
       self.group = group;
       self.customers = customers;
+      self.customersOverdued = statusCustomers.customers_overdued;
+
+      if (self.customersOverdued.length) {
+        self.group.overdue = true;
+        
+        angular.forEach(self.customers, function (customer) {
+          var custCode = customer.customer.match(re)[0];
+          if (self.customersOverdued.indexOf(parseInt(custCode)) > -1) {
+            customer.overdue = true;
+          }
+        });
+      }
+
       self.customerSelected = null;
       self.lineSelected = null;
       self.selectedTab = 0;

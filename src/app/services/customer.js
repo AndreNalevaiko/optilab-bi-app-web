@@ -71,10 +71,11 @@ angular.module('gorillasauth.services.customer', [
                 });
             };
 
-            this.getIsOverdue = function (clicodigo, date) {
+            this.getIsOverdue = function (code, date, type) {
                 var data = {
-                        "clicodigo": clicodigo,
-                        "date": date
+                        "code": code,
+                        "date": date,
+                        "type": type,
                 };
                 return $http.post(configuration.apiUrl + '/customers/_overdue', data).then(function (response) {
                     return response.data;

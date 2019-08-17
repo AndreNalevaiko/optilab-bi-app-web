@@ -5,85 +5,102 @@
             <md-tabs md-dynamic-height md-border-bottom md-selected="billingCtrl.selectedTab">
                 <md-tab>
                     <md-tab-label>
-                        <span>Curitiba</span>
-                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
-                            {{billingCtrl.getParticipationForGlobal(1) | percentage:1}}
+                        <span>CWB1</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(319) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
                 </md-tab>
                 <md-tab>
                     <md-tab-label>
-                        <span>Cascavel</span>
-                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
-                            {{billingCtrl.getParticipationForGlobal(6) | percentage:1}}
+                        <span>CWB2</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(320) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
                 </md-tab>
                 <md-tab>
                     <md-tab-label>
-                        <span>Pato Branco</span>
-                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
-                            {{billingCtrl.getParticipationForGlobal(2) | percentage:1}}
+                        <span>CVEL</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(318) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
                 </md-tab>
                 <md-tab>
                     <md-tab-label>
-                        <span>Londrina</span>
-                        <span class="chip-participation" ng-if="!billingCtrl.loading.billing">
-                            {{billingCtrl.getParticipationForGlobal(5) | percentage:1}}
+                        <span>PBO</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(322) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
                 </md-tab>
-                <md-tab label="Global">
+                <md-tab>
+                    <md-tab-label>
+                        <span>LDNA</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(321) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        <span>OPTILAB</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(323) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
+                </md-tab>
+                <md-tab label="GLOBAL">
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        <span>Outros</span>
+                        <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
+                            {{billingCtrl.getParticipationForGlobal(null) | percentage:1}}
+                            <md-tooltip>Participação no Global</md-tooltip>
+                        </span>
+                    </md-tab-label>
                 </md-tab>
             </md-tabs>
-            <div layout="row" layout-xs="column" layout-align="start center" flex>
-                <md-input-container class="md-block" style="min-width: 150px;">
-                    <label>Mês de referência</label>
-                    <md-select ng-model="billingCtrl.dateFilter.month" md-on-close="billingCtrl.search()">
-                        <md-option ng-value="month.value" ng-repeat="month in billingCtrl.filterOptions.months">
-                            {{month.label}}
-                        </md-option>
-                    </md-select>
-                </md-input-container>
-                <md-input-container class="md-block" style="min-width: 150px;">
-                    <label>Ano de referência</label>
-                    <md-select ng-model="billingCtrl.dateFilter.year" md-on-close="billingCtrl.search()">
-                        <md-option ng-value="year" ng-repeat="year in billingCtrl.filterOptions.years">
-                            {{year}}
-                        </md-option>
-                    </md-select>
+            <div layout="row" layout-xs="column" layout-align="start start" flex layout-padding>
+                <md-input-container>
+                    <label>Data base</label>
+                    <md-datepicker ng-disabled="billingCtrl.loadingBilling || billingCtrl.generating"
+                        ng-model="billingCtrl.dateFilter" ng-change="billingCtrl.search()" md-max-date="billingCtrl.maxDate"></md-datepicker>
                 </md-input-container>
 
                 <div class="business" layout="column" flex>
-                    <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loading.billing" flex>
+                    <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loadingBilling" flex>
                         <md-progress-circular md-diameter="40"></md-progress-circular>
                         <br>
-                        <span ng-if="billingCtrl.loading.billing">Carregando</span>
+                        <span ng-if="billingCtrl.loadingBilling">Carregando</span>
                     </div>
-                    <div class="loading" layout="column" layout-align="center center" 
-                        ng-if="!billingCtrl.loading.billing && !billingCtrl.checkLengthResult('billing')" flex>
+                    <div class="loading" layout="column" layout-align="center center" layout-padding
+                        ng-if="!billingCtrl.loadingBilling && !billingCtrl.checkLengthResult('billing')" flex>
                         <span>Sem resultado</span>
                     </div>
-
-                    <div ng-repeat="bil in billingCtrl.billing | filter: {business: billingCtrl.businessCodeFilter}" 
-                        ng-hide="billingCtrl.loading.billing" layout="column" flex>
+                    <div ng-repeat="bil in billingCtrl.billing | filter: billingCtrl.filterBilling()" 
+                        ng-hide="billingCtrl.loadingBilling" layout="column" flex>
                         <div class="alias" layout="row" layout-align="center" flex>
-                            <span>Faturamento {{bil.business_alias}}</span>
+                            <span ng-if="billingCtrl.walletCodeFilter == 'Global'">Faturamento Global</span>
+                            <span ng-if="billingCtrl.walletCodeFilter != 'Global' && bil.wallet != null">Faturamento Carteira {{bil.wallet | walletName}}</span>
+                            <span ng-if="bil.wallet == null">Faturamento clientes sem carteira</span>
                         </div>
                         <div class="info" layout="row" layout-align="space-between center">
                             <span>Budget</span>
-                            <span ng-if="bil.budget" ng-click="billingCtrl.insertBudget($event, bil.business, bil.budget)">
+                            <span ng-if="bil.budget" ng-click="billingCtrl.insertBudget($event, bil.wallet, bil.budget)">
                                 {{bil.budget.value | currency : R$ : 2}}
                             </span>
                             <span ng-if="!bil.budget">
                                 <md-button class="md-primary btn-budget" 
-                                            ng-click="billingCtrl.insertBudget($event, bil.business)">
+                                            ng-click="billingCtrl.insertBudget($event, bil.wallet)">
                                     Inserir budget
                                 </md-button>
                             </span>
@@ -100,7 +117,7 @@
                 </div>
             </div>
             
-            <div class="table-kpi">
+            <!-- <div class="table-kpi">
                 <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loading.kpi || billingCtrl.loading.generating_kpi" flex>
                     <md-progress-circular md-diameter="40"></md-progress-circular>
                     <br>
@@ -112,7 +129,7 @@
                     <span>Sem resultado</span>
                 </div>
 
-                <md-table-container ng-repeat="kpi in billingCtrl.kpis | filter: {business_code: billingCtrl.businessCodeFilter == 'Global' ? 0 : billingCtrl.businessCodeFilter}" 
+                <md-table-container ng-repeat="kpi in billingCtrl.kpis | filter: {business_code: billingCtrl.walletCodeFilter == 'Global' ? 0 : billingCtrl.walletCodeFilter}" 
                     ng-hide="billingCtrl.loading.kpi" flex>
                     <table md-table>
                         <thead md-head>
@@ -266,7 +283,8 @@
                         </tbody>
                     </table>
                 </md-table-container>
-            </div>
+            </div> -->
+            <!-- <md-chart data="{{ {teste: 'teste'} }}" style="width: 100%; height: 500px"></md-chart> -->
         </div>
     </md-card>
 </div>

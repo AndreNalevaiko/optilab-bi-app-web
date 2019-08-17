@@ -41,7 +41,9 @@
                         <tbody md-body>
                             <tr class="line-selected" ng-click="ctrl.selectCustomer(ctrl.group)">
                                 <td md-cell>
-                                    {{ctrl.group.customer | limitTo: 50}}
+                                    {{ctrl.group.customer | limitTo: 40}}
+                                    <md-tooltip>{{ctrl.group.customer}}</md-tooltip>
+                                    <md-icon class="icon-warn" ng-if="ctrl.customersOverdued.length">warning</md-icon>
                                 </td>
                                 <td md-cell>{{ctrl.group.avg_month_qtd_last_year | number}}pc / {{ctrl.group.avg_month_value_last_year | currency : R$ : 2}}</td>
                                 <td md-cell>{{ctrl.group.avg_month_qtd_current_year | number}}pc / {{ctrl.group.avg_month_value_current_year | currency : R$ : 2}}</td>
@@ -63,7 +65,9 @@
                             <tr ng-click="ctrl.selectCustomer(customer)"
                                 md-row ng-repeat="customer in ctrl.customers | orderBy: ctrl.orderTableCustomers">
                                 <td md-cell>
-                                    {{customer.customer | limitTo: 50}}
+                                    {{customer.customer | limitTo: 40}}
+                                    <md-tooltip>{{customer.customer}}</md-tooltip>
+                                    <md-icon class="icon-warn" ng-if="customer.overdue">warning</md-icon>
                                 </td>
                                 <td md-cell>{{customer.avg_month_qtd_last_year | number}}pc / {{customer.avg_month_value_last_year | currency : R$ : 2}}</td>
                                 <td md-cell>{{customer.avg_month_qtd_current_year | number}}pc / {{customer.avg_month_value_current_year | currency : R$ : 2}}</td>
@@ -92,6 +96,9 @@
                         <span class="title">{{ctrl.customerSelected.customer}}</span>
                         <span class="subtitle">Carteira: {{ctrl.customerSelected.wallet}}</span>
                     </div>
+                </div>
+                <div class="status" ng-if="ctrl.customerSelected.overdue" class="overdue" layout="row" layout-align="center" flex>
+                    <span>Inadimplente</span>
                 </div>
                 <md-table-container ng-if="ctrl.customerSelected.lines.length" flex>
                     <table md-table>
