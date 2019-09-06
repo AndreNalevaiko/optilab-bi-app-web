@@ -5,6 +5,12 @@
   </div>
   <md-divider></md-divider>
   <md-list>
+    <md-list-item ui-sref="protected.home" 
+                  ng-class="{ active: $state.includes('protected.home') }">
+      <md-icon md-font-icon="material-icons" aria-label="Meus Apps">search</md-icon>
+      <p>Busca</p>
+    </md-list-item>
+
     <md-list-item ui-sref="protected.billing" 
                   ng-class="{ active: $state.includes('protected.billing') }">
       <md-icon md-font-icon="material-icons" aria-label="Meus Apps">attach_money</md-icon>

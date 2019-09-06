@@ -14,6 +14,7 @@ angular.module('gorillasauth', [
   'idf.br-filters',
   'ngFileSaver',
   'ui.utils.masks',
+  'chart',
   'gorillascode',
   'gorillascode.services.upload',
   'gorillascode.services.user',
@@ -38,7 +39,7 @@ angular.module('gorillasauth', [
   .config(['$urlRouterProvider', '$httpProvider', '$mdThemingProvider', 'cfpLoadingBarProvider',
     '$mdDateLocaleProvider',
     function ($urlRouterProvider, $httpProvider, $mdThemingProvider, cfpLoadingBarProvider, $mdDateLocaleProvider) {
-      $urlRouterProvider.otherwise('/billing');
+      $urlRouterProvider.otherwise('/home');
       $httpProvider.interceptors.push('AuthInterceptor');
       cfpLoadingBarProvider.includeSpinner = false;
 

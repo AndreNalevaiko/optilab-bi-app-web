@@ -16,7 +16,27 @@
                 <md-tab label="GLOBAL"></md-tab>
                 <md-tab label="OUTROS"></md-tab>
             </md-tabs>
-            <ng-include src="'protected/products/productsTable.tpl.html'"></ng-include>
+            <div layout="row" layout-align="space-around" layout-padding flex>
+                <md-input-container style="margin-bottom: 0;">
+                    <label>Data base</label>
+                    <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
+                        ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()" md-max-date="productsCtrl.maxDate"></md-datepicker>
+                </md-input-container>
+            </div>
+            <md-tabs md-dynamic-height md-center-tabs md-border-bottom md-selected="tabView">
+                <md-tab label="Dados">
+                    <ng-include src="'protected/products/productsTable.tpl.html'"></ng-include>
+                </md-tab>
+                <md-tab label="Charts">
+                    <div ng-repeat="wallet in productsCtrl.productsBillingYear | filter: productsCtrl.filterWallet(selectedTab)"
+                        layout="row" layout-align="space-around center" flex layout-wrap>
+                        <md-chart ng-if="wallet.products.length" data="product.periods" options="{type: 'ColumnLine', title: product.name}"
+                            ng-repeat="product in wallet.products"
+                            style="width: 100%; height: 320px; margin: 10px; border: 2px solid whitesmoke;"></md-chart>
+                    </div>
+                </md-tab>
+            </md-tabs>
+            
         </div>
     </md-card>
 </div>

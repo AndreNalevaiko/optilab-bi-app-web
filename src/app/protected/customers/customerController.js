@@ -1,8 +1,8 @@
 angular.module('gorillasauth.protected.customer')
 
-  .controller('CustomerController', ['$mdDialog', '$mdMedia', 'DateFilterService', 'CustomerService', 
+  .controller('CustomerController', ['$mdDialog', 'configuration', 'DateFilterService', 'CustomerService', 
     '$scope', 'NotificationService', 'GroupCustomerService',
-    function ($mdDialog, $mdMedia, DateFilterService, CustomerService, $scope, NotificationService,
+    function ($mdDialog, configuration, DateFilterService, CustomerService, $scope, NotificationService,
       GroupCustomerService) {
       var self = this;
 
@@ -11,25 +11,24 @@ angular.module('gorillasauth.protected.customer')
 
       self.orderTable = 'customer';
       self.orderTableGroup = 'customer';
-      self.sellerCodes = ['319','320','318','322','321','323'];
+
+      self.sellerCodes = Object.keys(configuration.wallets);
+      self.sellerCodes.push('Global');
+      self.sellerCodes.push('Others');
+
+      $scope.tabSeller = {};
+      self.sellerCodes.forEach(function (value, i) {
+        $scope.tabSeller[i] = value;
+      });
+      $scope.tabSeller[6] = 'Global';
+      $scope.tabSeller[7] = 'Others';
 
       self.filterOptions = DateFilterService.filterOptions();
 
-      // self.dateFilter = DateFilterService.filterDateNow();
       self.dateFilter = DateFilterService.getDateNow();
       self.maxDate = self.dateFilter;
 
       $scope.selectedTab = 0;
-      $scope.tabSeller = {
-        0: '319',
-        1: '320',
-        2: '318',
-        3: '322',
-        4: '321',
-        5: '323',
-        6: 'Global',
-        7: 'Others'
-      };
 
       $scope.filterCustomers = function (param) {
         var tab = param;
@@ -63,7 +62,7 @@ angular.module('gorillasauth.protected.customer')
           locals: {
             customer: customer,
             status: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
-            tabs: CustomerService.getTabsPrices(customer.clicodigo)
+            info: CustomerService.getInfos(customer.clicodigo)
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/customers/dialogs/customer.tpl.html',
@@ -83,7 +82,8 @@ angular.module('gorillasauth.protected.customer')
           locals: {
             date: self.dateFilter,
             customer: customer,
-            products: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer)
+            products: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer_code),
+            productsAllYear: CustomerService.searchCustomerProductsAllYear(self.dateFilter, customer.customer_code),
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/customers/dialogs/customerDetail.tpl.html',
@@ -103,8 +103,8 @@ angular.module('gorillasauth.protected.customer')
           locals: {
             date: self.dateFilter,
             customer: customer,
-            periods: CustomerService.searchCustomerBillsPerMonth(self.dateFilter, customer.customer, period),
-            currentPeriod: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer),
+            periods: CustomerService.searchCustomerBillsPerMonth(self.dateFilter, customer.customer_code, period),
+            currentPeriod: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer_code),
             period: period,
             type: 'customer',
           },
@@ -189,8 +189,8 @@ angular.module('gorillasauth.protected.customer')
 
       function normalizeBillings(billings) {
         return billings.map(function(obj) {
-          var re = new RegExp(/^[0-9]+/g);
-          obj.clicodigo = obj.customer.match(re)[0];
+          // var re = new RegExp(/^[0-9]+/g);
+          obj.clicodigo = obj.customer_code;
           obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
           obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
             if (isNaN(obj.avg_month_qtd_last_year)) {
@@ -291,75 +291,12 @@ angular.module('gorillasauth.protected.customer')
 
       self.search();
 
-      $scope.pagination = {
-        "Others": {
-          page: 0,
-          pageSize: 10
-        },
-        "Global": {
-          page: 0,
-          pageSize: 10
-        },
-        "319": {
-          page: 0,
-          pageSize: 10
-        },
-        "320": {
-          page: 0,
-          pageSize: 10
-        },
-        "321": {
-          page: 0,
-          pageSize: 10
-        },
-        "322": {
-          page: 0,
-          pageSize: 10
-        },
-        "318": {
-          page: 0,
-          pageSize: 10
-        },
-        "323": {
-          page: 0,
-          pageSize: 10
-        },
-      };
-
-      $scope.paginationGroup = {
-        "Others": {
-          page: 0,
-          pageSize: 5
-        },
-        "Global": {
-          page: 0,
-          pageSize: 5
-        },
-        "319": {
-          page: 0,
-          pageSize: 5
-        },
-        "320": {
-          page: 0,
-          pageSize: 5
-        },
-        "321": {
-          page: 0,
-          pageSize: 5
-        },
-        "322": {
-          page: 0,
-          pageSize: 5
-        },
-        "318": {
-          page: 0,
-          pageSize: 5
-        },
-        "323": {
-          page: 0,
-          pageSize: 5
-        },
-      };
+      $scope.pagination = {};
+      $scope.paginationGroup = {};
+      angular.forEach(self.sellerCodes, function (seller) {
+        $scope.pagination[seller.toString()] = {page: 0, pageSize: 10};
+        $scope.paginationGroup[seller.toString()] = {page: 0, pageSize: 5};
+      });
 
       function clearPagination () {
         angular.forEach($scope.pagination, function (key, val) {
@@ -383,14 +320,18 @@ angular.module('gorillasauth.protected.customer')
     }
   ])
 
-  .controller('CustomerDetailDialogController', ['$mdDialog', 'NotificationService', 'date', 'products',
-  'customer',
-    function ($mdDialog, NotificationService, date, products, customer) {
+  .controller('CustomerDetailDialogController', ['$scope','$mdDialog', 'CustomerService', 
+  'date', 'products', 'productsAllYear', 'customer',
+    function ($scope, $mdDialog, CustomerService, date, products, productsAllYear, customer) {
       var self = this;
 
       self.customer = customer;
+      self.productsAllYear = productsAllYear;
       self.lineSelected = null;
-      self.selectedTab = 0;
+
+      self.activeValueChart = 'value';
+
+      $scope.selectedTab = 0;
 
       self.products = products.map(function(obj) {
         obj.product = obj.product.replace('_', ' ').toUpperCase();
@@ -428,14 +369,17 @@ angular.module('gorillasauth.protected.customer')
         line.products = self.products.filter(function (product) {
           return product.product != '' && product.product_group == line.product_group;
         });
+        CustomerService.searchCustomerProductsAllYear(date, customer.customer_code, line.product_group).then(function (response){
+          line.productsAllYear = response;
+        });
       });
 
-      self.orderTableLine = 'product_group';
-      self.orderTableProduct = 'product';
+      self.orderTableLine = null;
+      self.orderTableProduct = null;
 
       self.selectLine = function (line) {
         self.lineSelected = line;
-        self.selectedTab = 1;
+        $scope.selectedTab = 1;
       };
 
       self.confirm = function () {
@@ -445,6 +389,12 @@ angular.module('gorillasauth.protected.customer')
       self.cancel = function () {
         $mdDialog.cancel();
       };
+
+      $scope.$watch('selectedTab', function (newVal) {
+        if (newVal == 0) {
+          self.lineSelected = null;
+        }
+      });
     }
 ])
 
@@ -466,7 +416,8 @@ angular.module('gorillasauth.protected.customer')
         self.group.overdue = true;
         
         angular.forEach(self.customers, function (customer) {
-          var custCode = customer.customer.match(re)[0];
+          // var custCode = customer.customer.match(re)[0];
+          var custCode = customer.customer_code;
           if (self.customersOverdued.indexOf(parseInt(custCode)) > -1) {
             customer.overdue = true;
           }
@@ -480,7 +431,7 @@ angular.module('gorillasauth.protected.customer')
       self.group.lines = linesAndProductsNormalized(products);
 
       angular.forEach(self.customers, function (customer) {
-        CustomerService.searchCustomerProducts(date, customer.customer).then(function (response) {
+        CustomerService.searchCustomerProducts(date, customer.customer_code).then(function (response) {
           customer.lines = linesAndProductsNormalized(response);
         });
       });
@@ -567,7 +518,7 @@ angular.module('gorillasauth.protected.customer')
       angular.forEach(self.periods, function (period) {
         var date = new Date(period.year, period.month - 1 , period.last_day_month);
         if (type == 'customer') {
-          CustomerService.searchCustomerProducts(date.toISOString(), period.customer).then(function (response) {
+          CustomerService.searchCustomerProducts(date.toISOString(), period.customer_code).then(function (response) {
             self.currentLines = linesAndProductsNormalized(currentPeriod, date, false);
             period.lines = linesAndProductsNormalized(response, date, true);
           });
@@ -657,14 +608,16 @@ angular.module('gorillasauth.protected.customer')
     }
 ])
 
-.controller('CustomerDialogController', ['$mdDialog', 'NotificationService', 'CustomerService',
-  'customer', 'status', 'tabs', 
-    function ($mdDialog, NotificationService, CustomerService, customer, status, tabs) {
+.controller('CustomerDialogController', ['$mdDialog', 'customer', 'status', 'info', 
+    function ($mdDialog, customer, status, info) {
       var self = this;
 
       self.customer = customer;
+      self.address = info.address;
+      self.addressUrl = 'https://maps.google.com/maps?q='+encodeURIComponent(info.address.search)+'&t=&z=13&ie=UTF8&iwloc=&output=embed';
+      // self.addressUrl = 'https://maps.google.com/maps?q='+encodeURIComponent('SANTO ANTONIO 21 centro tangara sc  89642000')+'&t=&z=13&ie=UTF8&iwloc=&output=embed';
+      self.tables = info.tables;
       self.status = status;
-      self.tabs = tabs;
 
       self.confirm = function () {
         $mdDialog.hide();

@@ -18,7 +18,13 @@
             <md-tab label="Clientes">
                 <div class="label" layout="row">
                     <div layout="column">
-                        <span class="title">{{ctrl.customer.customer}}</span>
+                        <span class="title">
+                            <span class="title">
+                                {{ctrl.customer.customer_code}}
+                                <span>&nbsp-&nbsp</span>
+                                {{ctrl.customer.customer_name | limitTo: 50}}
+                            </span>
+                        </span>
                     </div>
                 </div>
                 <md-table-container ng-if="ctrl.periods.length" flex>
@@ -29,7 +35,7 @@
                                     <span>Mês</span>
                                 </th>
                                 <th md-column md-number>
-                                    <span>Peças</span>
+                                    <span>Pares</span>
                                 </th>
                                 <th md-column md-number>
                                     <span>Faturamento</span>
@@ -93,12 +99,12 @@
                                     {{line.product_group | limitTo: 50}}
                                 </td>
                                 <td md-cell>
-                                    {{line.qtd_current_month | number}}pçs
+                                    {{line.qtd_current_month | number}} p
                                     <span>&nbsp/&nbsp</span>
                                     {{line.value_current_month | currency : R$ : 2}}
                                 </td>
                                 <td md-cell>
-                                    {{line.current_qtd | number}}pçs
+                                    {{line.current_qtd | number}} p
                                     <span>&nbsp/&nbsp</span>
                                     {{line.current_value | currency : R$ : 2}}
                                 </td>
@@ -132,12 +138,12 @@
                                     {{ctrl.lineSelected.product_group | limitTo: 50}}
                                 </td>
                                 <td md-cell>
-                                    {{ctrl.lineSelected.qtd_current_month | number}}pçs
+                                    {{ctrl.lineSelected.qtd_current_month | number}} p
                                     <span>&nbsp/&nbsp</span>
                                     {{ctrl.lineSelected.value_current_month | currency : R$ : 2}}
                                 </td>
                                 <td md-cell>
-                                    {{ctrl.lineSelected.current_qtd | number}}pçs
+                                    {{ctrl.lineSelected.current_qtd | number}} p
                                     <span>&nbsp/&nbsp</span>
                                     {{ctrl.lineSelected.current_value | currency : R$ : 2}}
                                 </td>
@@ -150,12 +156,12 @@
                                     {{product.product | limitTo: 50}}
                                 </td>
                                 <td md-cell>
-                                    {{product.qtd_current_month | number}}pçs
+                                    {{product.qtd_current_month | number}} p
                                     <span>&nbsp/&nbsp</span>
                                     {{product.value_current_month | currency : R$ : 2}}
                                 </td>
                                 <td md-cell>
-                                    {{product.current_qtd | number}}pçs
+                                    {{product.current_qtd | number}} p
                                     <span>&nbsp/&nbsp</span>
                                     {{product.current_value | currency : R$ : 2}}
                                 </td>

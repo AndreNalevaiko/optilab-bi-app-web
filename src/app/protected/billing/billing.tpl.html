@@ -7,7 +7,7 @@
                     <md-tab-label>
                         <span>CWB1</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(319) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[0]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -16,7 +16,7 @@
                     <md-tab-label>
                         <span>CWB2</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(320) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[1]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -25,7 +25,7 @@
                     <md-tab-label>
                         <span>CVEL</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(318) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[2]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -34,7 +34,7 @@
                     <md-tab-label>
                         <span>PBO</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(322) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[3]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -43,7 +43,7 @@
                     <md-tab-label>
                         <span>LDNA</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(321) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[4]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -52,7 +52,7 @@
                     <md-tab-label>
                         <span>OPTILAB</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(323) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[5]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -63,7 +63,7 @@
                     <md-tab-label>
                         <span>Outros</span>
                         <span class="chip-participation" ng-if="!billingCtrl.loadingBilling">
-                            {{billingCtrl.getParticipationForGlobal(null) | percentage:1}}
+                            {{billingCtrl.getParticipationForGlobal(billingCtrl.tabToWallet[7]) | percentage:1}}
                             <md-tooltip>Participação no Global</md-tooltip>
                         </span>
                     </md-tab-label>
@@ -117,174 +117,10 @@
                 </div>
             </div>
             
-            <!-- <div class="table-kpi">
-                <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loading.kpi || billingCtrl.loading.generating_kpi" flex>
-                    <md-progress-circular md-diameter="40"></md-progress-circular>
-                    <br>
-                    <span ng-if="billingCtrl.loading.kpi || billingCtrl.loading.generating_kpi">Carregando</span>
-                    <span ng-if="billingCtrl.loading.generating_kpi">Os dados do mes e ano de referência ainda não haviam sido processados. Aguarde mais um momento.</span>
-                </div>
-                <div class="loading" layout="column" layout-align="center center" 
-                    ng-if="!billingCtrl.loading.kpi && !billingCtrl.checkLengthResult('kpi')" flex>
-                    <span>Sem resultado</span>
-                </div>
-
-                <md-table-container ng-repeat="kpi in billingCtrl.kpis | filter: {business_code: billingCtrl.walletCodeFilter == 'Global' ? 0 : billingCtrl.walletCodeFilter}" 
-                    ng-hide="billingCtrl.loading.kpi" flex>
-                    <table md-table>
-                        <thead md-head>
-                            <tr md-row>
-                                <th md-column>
-                                    <span class="kpi-label">KPI</span>
-                                </th>
-                                <th md-column>
-                                    <span>Média Budget</span>
-                                </th>
-                                <th md-column>
-                                    <span>Média Realizada</span>
-                                </th>
-                                <th md-column>
-                                    <span>Dia Anterior</span>
-                                </th>
-                                <th md-column>
-                                    <span>Tendência</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody md-body>
-                            <tr md-row>
-                                <td md-cell>
-                                    <span>Fat. Diário</span>
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="kpi.budget_billing">
-                                        {{kpi.budget_billing | currency : R$ : 2}}
-                                        <md-icon class="edit-budget-icon" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                            edit
-                                            <md-tooltip>Editar Budget</md-tooltip>
-                                        </md-icon>
-                                    </span>
-                                    <md-button class="md-primary btn-budget" ng-if="!kpi.budget_billing" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                        Inserir Budget
-                                    </md-button>
-                                </td>
-                                <td md-cell>
-                                    {{kpi.average_billing | currency : R$ : 2}}
-                                </td>
-                                <td md-cell>
-                                    {{kpi.last_day_billing | currency : R$ : 2}}
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="!kpi.average_billing || !kpi.budget_billing">
-                                        --
-                                    </span>
-                                    <span ng-if="kpi.average_billing && kpi.budget_billing" class="percentage-value" 
-                                        ng-class="(kpi.average_billing / kpi.budget_billing) > 1 ? 'greater' : 'less'">
-                                        {{kpi.average_billing / kpi.budget_billing | percentage: 2}}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr md-row>
-                                <td md-cell>
-                                    <span>Núm. de Pedidos</span>
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="kpi.budget_order_quantity">
-                                        {{kpi.budget_order_quantity}}
-                                        <md-icon class="edit-budget-icon" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                            edit
-                                            <md-tooltip>Editar Budget</md-tooltip>
-                                        </md-icon>
-                                    </span>
-                                    <md-button class="md-primary btn-budget" ng-if="!kpi.budget_order_quantity" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                        Inserir Budget
-                                    </md-button>
-                                </td>
-                                <td md-cell>
-                                    {{kpi.average_order_quantity}}
-                                </td>
-                                <td md-cell>
-                                    {{kpi.last_day_order_quantity}}
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="!kpi.average_order_quantity || !kpi.budget_order_quantity">
-                                        --
-                                    </span>
-                                    <span ng-if="kpi.average_order_quantity && kpi.budget_order_quantity" class="percentage-value" 
-                                    ng-class="(kpi.average_order_quantity / kpi.budget_order_quantity) > 1 ? 'greater' : 'less'">
-                                        {{kpi.average_order_quantity / kpi.budget_order_quantity | percentage: 2}}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr md-row>
-                                <td md-cell>
-                                    <span>TM</span>
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="kpi.budget_tm">
-                                        {{kpi.budget_tm | currency : R$ : 2}}
-                                        <md-icon class="edit-budget-icon" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                            edit
-                                            <md-tooltip>Editar Budget</md-tooltip>
-                                        </md-icon>
-                                    </span>
-                                    <md-button class="md-primary btn-budget" ng-if="!kpi.budget_tm" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                        Inserir Budget
-                                    </md-button>
-                                </td>
-                                <td md-cell>
-                                    {{kpi.average_tm | currency : R$ : 2}}
-                                </td>
-                                <td md-cell>
-                                    {{kpi.last_day_tm | currency : R$ : 2}}
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="!kpi.average_tm || !kpi.budget_tm">
-                                        --
-                                    </span>
-                                    <span ng-if="kpi.average_tm && kpi.budget_tm"  class="percentage-value" 
-                                    ng-class="(kpi.average_tm / kpi.budget_tm) > 1 ? 'greater' : 'less'">
-                                        {{kpi.average_tm / kpi.budget_tm | percentage: 2}}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr md-row>
-                                <td md-cell>
-                                    <span>Núm. de Peças</span>
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="kpi.budget_quantity_pieces">
-                                        {{kpi.budget_quantity_pieces}}
-                                        <md-icon class="edit-budget-icon" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                            edit
-                                            <md-tooltip>Editar Budget</md-tooltip>
-                                        </md-icon>
-                                    </span>
-                                    <md-button class="md-primary btn-budget" ng-if="!kpi.budget_quantity_pieces" ng-click="billingCtrl.editKpiBudget($event, kpi)">
-                                        Inserir Budget
-                                    </md-button>
-                                </td>
-                                <td md-cell>
-                                    {{kpi.average_quantity_pieces}}
-                                </td>
-                                <td md-cell>
-                                    {{kpi.last_day_quantity_pieces}}
-                                </td>
-                                <td md-cell>
-                                    <span ng-if="!kpi.average_quantity_pieces || !kpi.budget_quantity_pieces">
-                                        --
-                                    </span>
-                                    <span ng-if="kpi.average_quantity_pieces && kpi.budget_quantity_pieces" class="percentage-value" 
-                                    ng-class="(kpi.average_quantity_pieces / kpi.budget_quantity_pieces) > 1 ? 'greater' : 'less'">
-                                        {{kpi.average_quantity_pieces / kpi.budget_quantity_pieces | percentage: 2}}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </md-table-container>
-            </div> -->
-            <!-- <md-chart data="{{ {teste: 'teste'} }}" style="width: 100%; height: 500px"></md-chart> -->
+            
+            <md-chart ng-if="billingCtrl.billingYearWallet.length" data="billingCtrl.billingYearWallet"
+                options="{type: 'ColumnLine'}"
+                style="width: 100%; height: 370px"></md-chart>
         </div>
     </md-card>
 </div>

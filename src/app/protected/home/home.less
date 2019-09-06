@@ -1,0 +1,75 @@
+.optilab-bi-home {
+    padding: 8px;
+
+    md-card {
+        padding: 16px;
+
+        .title {
+            color: #5f5f5f;
+            font-size: 30px;
+            padding: 20px;
+        }
+
+        .search-bar {
+            border: 1px solid #efefef;
+            border-radius: 2px;
+            padding: 10px 30px 0;
+
+            md-input-container {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    table {
+
+        tbody > .md-row:hover {
+            background-color: #EEEEEE;
+        }
+    
+        tbody .md-row {
+            cursor: pointer !important;
+        }
+
+        tr.md-row, table.md-table tfoot.md-foot > tr.md-row {
+            height: 38px !important;
+        }
+    
+        td.md-cell:nth-child(n+2):nth-last-child(n+2), th.md-column:nth-child(n+2):nth-last-child(n+2) {
+          padding: 0 24px 0 0 !important;
+        }
+    
+        tr.md-row:focus {
+          outline: none;
+        }
+
+        .disable-clickable:hover{
+            cursor: auto !important;
+        }
+
+        .disable-hover-color:hover{
+            background-color: inherit !important;
+        }
+    }
+
+    .status-percentage{
+        font-weight: 500;
+
+        .less{
+            color: #f44336;
+        }
+
+        .greater{
+            color: #4CAF50;
+        }
+    }
+
+    md-tabs md-tabs-wrapper {
+        display: none;
+    }
+
+    .num-results {
+        padding: 20px 0;
+        color: gray;
+    }
+}
