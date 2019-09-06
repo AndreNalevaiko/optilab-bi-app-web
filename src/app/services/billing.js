@@ -5,7 +5,7 @@ angular.module('gorillasauth.services.billing', [])
             var wallets = [];
             angular.forEach(configuration.wallets, function (w) {
                 var key = Object.keys(w)[0];
-                self.wallets.push(key);
+                wallets.push(key);
             });
 
             this.get = function (dateSelected) {
