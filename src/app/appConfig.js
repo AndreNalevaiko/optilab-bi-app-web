@@ -12,7 +12,7 @@ angular.module('gorillasauth')
       },
       production_internal: {
         environment: 'production_internal',
-        hostnames: ['192.168.10.41'],
+        hostnames: ['192.168.10.41','192.168.10.41:8080'],
         apiUrl: 'http://192.168.10.41:5000',
         business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel', 0: 'Global'}
       },
@@ -21,7 +21,7 @@ angular.module('gorillasauth')
         hostnames: ['levantamentos.laboptilab.com', 'remoto.laboptilab.com'],
         apiUrl: 'http://levantamentos.laboptilab.com:5000',
         business_alias: {1: 'Curitiba', 2: 'Pato Branco', 5: 'Londrina', 6: 'Cascavel', 0: 'Global'}
-      }
+      },
     };
 
     angular.forEach(configs, function (configItem) {
