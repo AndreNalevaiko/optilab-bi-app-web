@@ -5,7 +5,13 @@ angular.module('gorillasauth.protected.products')
     function (configuration, DateFilterService, $scope, ProductService, $mdDialog) {
       var self = this;
 
-      self.sellerCodes = Object.keys(configuration.wallets);
+      // self.sellerCodes = Object.keys(configuration.wallets);
+      self.sellerCodes = [];
+      angular.forEach(configuration.wallets, function (w) {
+        var key = Object.keys(w)[0];
+        self.sellerCodes.push(key);
+      });
+      console.log(self.sellerCodes);
 
       $scope.tabSeller = {};
       self.sellerCodes.forEach(function (value, i) {

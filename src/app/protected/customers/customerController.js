@@ -12,7 +12,13 @@ angular.module('gorillasauth.protected.customer')
       self.orderTable = 'customer';
       self.orderTableGroup = 'customer';
 
-      self.sellerCodes = Object.keys(configuration.wallets);
+      // self.sellerCodes = Object.keys(configuration.wallets);
+      self.sellerCodes = [];
+      angular.forEach(configuration.wallets, function (w) {
+        var key = Object.keys(w)[0];
+        self.sellerCodes.push(key);
+      });
+      console.log(self.sellerCodes);
       self.sellerCodes.push('Global');
       self.sellerCodes.push('Others');
 
