@@ -1,23 +1,32 @@
 angular.module('gorillasauth.protected.products')
 
-  .controller('productsController', ['DateFilterService', '$scope',
+  .controller('productsController', ['configuration', 'DateFilterService', '$scope',
   'ProductService', '$mdDialog',
-    function (DateFilterService, $scope, ProductService, $mdDialog) {
+    function (configuration, DateFilterService, $scope, ProductService, $mdDialog) {
       var self = this;
 
-      self.sellerCodes = ['319','320','318','322','321','323'];
+      self.sellerCodes = Object.keys(configuration.wallets);
 
-      $scope.selectedTab = 0;
-      $scope.tabSeller = {
-        0: '319',
-        1: '320',
-        2: '318',
-        3: '322',
-        4: '321',
-        5: '323',
-        6: 'Global',
-        7: 'Others'
-      };
+      $scope.tabSeller = {};
+      self.sellerCodes.forEach(function (value, i) {
+        $scope.tabSeller[i] = value;
+      });
+      $scope.tabSeller[6] = '0';
+      $scope.tabSeller[7] = '';
+
+      // self.sellerCodes = ['319','320','318','322','321','323'];
+
+      // $scope.selectedTab = 0;
+      // $scope.tabSeller = {
+      //   0: '319',
+      //   1: '320',
+      //   2: '318',
+      //   3: '322',
+      //   4: '321',
+      //   5: '323',
+      //   6: 'Global',
+      //   7: 'Others'
+      // };
 
       self.dateNow = new Date();
       self.loading = false;
@@ -92,25 +101,27 @@ angular.module('gorillasauth.protected.products')
               return r.product_group == brand.product_group && r.product != '' && r.wallet == brand.wallet;
             }));
           });
-          // self.products = normalizeBillings(response.filter(function (r) { return r.product != ''; }));
           self.loading = false;
+        });
+
+        ProductService.searchProductBillingsAllYear(self.dateFilter, self.sellerCodes).then(function (response) {
+          self.productsBillingYear = response;
         });
       };
 
-      function consolidateReport(objects) {
-        angular.forEach(objects, function (product) {
-          product.var_qtd = (product.qtd_current_year / product.qtd_latest_year) - 1;
-          product.var_value = (product.value_current_year / product.value_latest_year) - 1;
-        });
-        return objects;
-      }
+      self.filterWallet = function (tab) {
+        return function (item) {
+          var wallet = $scope.tabSeller[tab];
+          return item.wallet == wallet;
+        };
+      };
 
       self.search();
     }
   ])
 
-  .controller('BrandDetailDetailDialogController', ['$mdDialog', 'NotificationService', 'brand',
-    function ($mdDialog, NotificationService, brand) {
+  .controller('BrandDetailDetailDialogController', ['$mdDialog', 'brand',
+    function ($mdDialog, brand) {
       var self = this;
 
       self.brand = brand;

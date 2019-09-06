@@ -13,6 +13,16 @@ angular.module('gorillasauth.services.product', [])
                 });
             };
 
+            this.searchProductBillingsAllYear = function (dateSelected, wallets) {
+                var data = {
+                    "date": dateSelected,
+                    "wallets": wallets
+                };
+                return $http.post(configuration.apiUrl + '/product/pillars/all_year', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
         }
     ])
 ;

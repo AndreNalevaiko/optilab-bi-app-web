@@ -1,0 +1,60 @@
+<md-table-containerflex>
+    <table md-table>
+        <thead md-head>
+            <tr md-row>
+                <th md-column>
+                    <span>Cliente</span>
+                </th>
+                <th md-column md-number>
+                    <span>Média Mês Ano Anterior</span>
+                </th>
+                <th md-column md-number>
+                    <span>Média Mês Ano Atual</span>
+                </th>
+                <th md-column md-number>
+                    <span>Mês Atual</span>
+                </th>
+                <th md-column md-number>
+                    <span>
+                        Tendência
+                        <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
+                            help_outline
+                            <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
+                        </md-icon>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody md-body>
+            <tr md-row>
+                <td md-cell ng-click="homeCtrl.openCustomerInfo($event)">
+                    {{homeCtrl.customerSelected.customer_code}}
+                    <span>&nbsp-&nbsp</span>
+                    {{homeCtrl.customerSelected.customer_name | limitTo: 50}}
+                </td>
+                <td md-cell ng-click="homeCtrl.openCustomerPeriodDetail($event, 'last_year')">
+                    {{homeCtrl.customerSelected.avg_month_qtd_last_year | number}} p / {{homeCtrl.customerSelected.avg_month_value_last_year | currency : R$ : 2}}
+                </td>
+                <td md-cell ng-click="homeCtrl.openCustomerPeriodDetail($event, 'current_period')">
+                    {{homeCtrl.customerSelected.avg_month_qtd_current_year | number}} p / {{homeCtrl.customerSelected.avg_month_value_current_year | currency : R$ : 2}}
+                </td>
+                <td md-cell ng-click="homeCtrl.openCustomerDetail($event)">
+                    {{homeCtrl.customerSelected.qtd_current_month}} p / {{homeCtrl.customerSelected.value_current_month | currency : R$ : 2}}
+                </td>
+                <td md-cell ng-click="homeCtrl.openCustomerDetail($event)">
+                    <span ng-if="homeCtrl.customerSelected.qtd_current_month == -0.0001 || homeCtrl.customerSelected.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                    <div class="status-percentage" layout="row"
+                        ng-if="homeCtrl.customerSelected.qtd_current_month != -0.0001 && homeCtrl.customerSelected.avg_month_qtd_current_year != -0.0001">
+                        <span ng-class="homeCtrl.customerSelected.comparison_qtd < 1 ? 'less' : 'greater'">
+                            {{homeCtrl.customerSelected.comparison_qtd | percentage: 2}}
+                        </span>
+                        <span>&nbsp/&nbsp</span>
+                        <span ng-class="homeCtrl.customerSelected.comparison_value < 1 ? 'less' : 'greater'">
+                            {{homeCtrl.customerSelected.comparison_value | percentage: 2}}
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</md-table-container>

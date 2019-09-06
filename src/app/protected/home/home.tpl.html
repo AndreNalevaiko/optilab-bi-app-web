@@ -1,0 +1,82 @@
+<div class="optilab-bi-home"flex>
+    <md-card>
+        <md-tabs md-dynamic-height md-border-bottom md-selected="homeCtrl.selectedTab">
+            <md-tab label="Busca">
+                <div class="title" layout="row" layout-align="center" flex>Busca</div>
+                <div class="search-bar" layout="row" layout-align="center center" flex>
+                    <md-input-container flex="15">
+                        <label>Código</label>
+                        <input type="text" ng-model="homeCtrl.search.code" name="c_code"
+                            ng-keyup="$event.keyCode == 13 && homeCtrl.searchCustomers()">
+                    </md-input-container>
+                    <md-input-container flex="70">
+                        <label>Nome Fantasia</label>
+                        <input type="text" ng-model="homeCtrl.search.name" name="c_name"
+                            ng-keyup="$event.keyCode == 13 && homeCtrl.searchCustomers()">
+                    </md-input-container>
+                    <md-input-container flex="15">
+                        <label>Grupo</label>
+                        <input type="text" ng-model="homeCtrl.search.group" name="c_group"
+                            ng-keyup="$event.keyCode == 13 && homeCtrl.searchCustomers()">
+                    </md-input-container>
+                    
+                    <md-button class="md-icon-button md-primary" ng-click="homeCtrl.searchCustomers()">
+                        <md-icon>search</md-icon>
+                        <md-tooltip>Procurar</md-tooltip>
+                    </md-button>
+                </div>
+        
+                <div layout="row" layout-align="center" flex>
+                    <md-progress-circular ng-if="!homeCtrl.customers.length && homeCtrl.loading" 
+                        class="md-accent" md-diameter="60"></md-progress-circular>
+                </div>
+        
+                <div ng-if="homeCtrl.customers.length" class="results" layout="column" flex>
+                    <div class="num-results" layout="row" layout-align="end" flex>
+                        <span>
+                            {{homeCtrl.customers.length}}
+                            {{homeCtrl.customers.length >  1 ? 'clientes encontrados' : 'cliente encontrado'}}
+                        </span>
+                    </div>
+                    <md-table-container flex>
+                        <table md-table>
+                            <thead md-head md-order="homeCtrl.orderTable">
+                                <tr md-row>
+                                    <th md-column md-order-by="customer_code">
+                                        <span>Código</span>
+                                    </th>
+                                    <th md-column md-order-by="customer_name">
+                                        <span>Nome Fantasia</span>
+                                    </th>
+                                    <th md-column md-order-by="group_customer">
+                                        <span>Grupo</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody md-body>
+                                <tr md-row ng-repeat="customer in homeCtrl.customers"  ng-click="homeCtrl.openCustomer($event, customer)">
+                                    <td md-cell>
+                                        {{customer.customer_code}}
+                                    </td>
+                                    <td md-cell>
+                                        {{customer.customer_name}}
+                                    </td>
+                                    <td md-cell>
+                                        {{customer.group_customer}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+                </div>
+            </md-tab>
+            <md-tab label="Detalhes">
+
+                <ng-include src="'protected/home/customerTable.tpl.html'"></ng-include>
+                <div layout="row">
+                    <md-button class="md-primary" ng-click="homeCtrl.selectedTab = 0;">Voltar</md-button>
+                </div>
+            </md-tab>
+        </md-tabs>
+    </md-card>
+</div>

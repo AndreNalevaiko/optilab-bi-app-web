@@ -14,19 +14,26 @@ angular.module('gorillasauth.services.customer', [
                 return CustomerBillingReport.get(searchParameters).$promise;
             };
 
-            this.searchCustomerBillings = function (dateSelected) {
+            this.search = function (filters) {
+                return $http.get(configuration.apiUrl + '/customer/search', {params: filters}).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.searchCustomerBillings = function (dateSelected, customer_code) {
                 var data = {
-                    "date": dateSelected
+                    "date": dateSelected,
+                    "customer_code": customer_code,
                 };
                 return $http.post(configuration.apiUrl + '/customer/billings', data).then(function (response) {
                     return response.data;
                 });
             };
 
-            this.searchCustomerBillsPerMonth = function (dateSelected, customer, period) {
+            this.searchCustomerBillsPerMonth = function (dateSelected, customer_code, period) {
                 var data = {
                     "date": dateSelected,
-                    "customer": customer,
+                    "customer_code": customer_code,
                     "period": period
                 };
                 return $http.post(configuration.apiUrl + '/customer/bills_per_month', data).then(function (response) {
@@ -34,12 +41,23 @@ angular.module('gorillasauth.services.customer', [
                 });
             };
 
-            this.searchCustomerProducts = function (dateSelected, customer) {
+            this.searchCustomerProducts = function (dateSelected, customer_code) {
                 var data = {
                     "date": dateSelected,
-                    "customer": customer
+                    "customer_code": customer_code
                 };
                 return $http.post(configuration.apiUrl + '/customer/products', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.searchCustomerProductsAllYear = function (dateSelected, customer_code, type) {
+                var data = {
+                    "date": dateSelected,
+                    "customer_code": customer_code,
+                    "type": type,
+                };
+                return $http.post(configuration.apiUrl + '/customer/products_all_year', data).then(function (response) {
                     return response.data;
                 });
             };
@@ -62,19 +80,17 @@ angular.module('gorillasauth.services.customer', [
                 });
             };
 
-            this.getTabsPrices = function (clicodigo) {
-                var data = {
-                        "clicodigo": clicodigo
-                };
-                return $http.post(configuration.apiUrl + '/customers/_tabs_prices', data).then(function (response) {
+            this.getInfos = function (customer_code) {
+                return $http.get(configuration.apiUrl + '/customers/'+customer_code+'/_info').then(function (response) {
                     return response.data;
                 });
             };
 
-            this.getIsOverdue = function (clicodigo, date) {
+            this.getIsOverdue = function (code, date, type) {
                 var data = {
-                        "clicodigo": clicodigo,
-                        "date": date
+                        "code": code,
+                        "date": date,
+                        "type": type,
                 };
                 return $http.post(configuration.apiUrl + '/customers/_overdue', data).then(function (response) {
                     return response.data;

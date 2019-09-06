@@ -10,7 +10,7 @@ angular.module('gorillasauth.public.login')
 
             self.doLogin = function () {
                 UserService.signin(self.user.email, self.user.password).then(function (response) {
-                    $state.go('protected.billing');
+                    $state.go('protected.home');
                 }, function(response) {
                     if (response.data && response.data.errors) {
                         var error = response.data.errors[0];
@@ -63,13 +63,6 @@ angular.module('gorillasauth.public.login')
                         self.emailRecoverMessage = 'Um e-mail foi enviado com as instruções para você recuperar a sua senha.';
                     }
 
-                });
-            };
-
-
-            self.loginFacebook = function () {
-                AuthService.loginFacebook(null, function (data) {
-                    $state.go('protected.my-apps');
                 });
             };
 

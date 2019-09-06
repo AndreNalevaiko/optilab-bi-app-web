@@ -5,15 +5,20 @@ angular.module('gorillasauth.services.billing', [])
 
             this.get = function (dateSelected) {
                 var data = {
-                    "period": {
-                        "month": String(dateSelected.month),
-                        "year": String(dateSelected.year)
-                    }
+                    date: dateSelected,
+                    wallets: Object.keys(configuration.wallets)
                 };
-                return $http.post(configuration.apiUrl + '/billing/', data).then(function (response) {
-                    angular.forEach(response.data, function(bil){
-                        bil.business_alias = configuration.business_alias[bil.business];
-                    });
+                return $http.post(configuration.apiUrl + '/billings/', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.getAllYear = function (dateSelected) {
+                var data = {
+                    date: dateSelected,
+                    wallets: Object.keys(configuration.wallets)
+                };
+                return $http.post(configuration.apiUrl + '/billings/all_year', data).then(function (response) {
                     return response.data;
                 });
             };

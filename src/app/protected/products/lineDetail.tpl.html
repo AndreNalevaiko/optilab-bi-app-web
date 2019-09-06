@@ -33,9 +33,9 @@
                         <td md-cell>
                             {{ctrl.brand.product_group | limitTo: 50}}
                         </td>
-                        <td md-cell>{{ctrl.brand.avg_month_qtd_last_year | number}}pc / {{ctrl.brand.avg_month_value_last_year | currency : R$ : 2}}</td>
-                        <td md-cell>{{ctrl.brand.avg_month_qtd_current_year | number}}pc / {{ctrl.brand.avg_month_value_current_year | currency : R$ : 2}}</td>
-                        <td md-cell>{{ctrl.brand.qtd_current_month}}pc / {{ctrl.brand.value_current_month | currency : R$ : 2}}</td>
+                        <td md-cell>{{ctrl.brand.avg_month_qtd_last_year | number}} p / {{ctrl.brand.avg_month_value_last_year | currency : R$ : 2}}</td>
+                        <td md-cell>{{ctrl.brand.avg_month_qtd_current_year | number}} p / {{ctrl.brand.avg_month_value_current_year | currency : R$ : 2}}</td>
+                        <td md-cell>{{ctrl.brand.qtd_current_month}} p / {{ctrl.brand.value_current_month | currency : R$ : 2}}</td>
                         <td md-cell>
                             <span ng-if="ctrl.brand.qtd_current_month == -0.0001 || ctrl.brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
                             <div class="status-percentage" layout="row"
@@ -56,9 +56,9 @@
                         <td md-cell>
                             {{product.product | limitTo: 50}}
                         </td>
-                        <td md-cell>{{product.avg_month_qtd_last_year | number}}pc / {{product.avg_month_value_last_year | currency : R$ : 2}}</td>
-                        <td md-cell>{{product.avg_month_qtd_current_year | number}}pc / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
-                        <td md-cell>{{product.qtd_current_month}}pc / {{product.value_current_month | currency : R$ : 2}}</td>
+                        <td md-cell>{{product.avg_month_qtd_last_year | number}} p / {{product.avg_month_value_last_year | currency : R$ : 2}}</td>
+                        <td md-cell>{{product.avg_month_qtd_current_year | number}} p / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
+                        <td md-cell>{{product.qtd_current_month}} p / {{product.value_current_month | currency : R$ : 2}}</td>
                         <td md-cell>
                             <span ng-if="product.qtd_current_month == -0.0001 || product.avg_month_qtd_current_year == -0.0001"> % / %</span>
                             <div class="status-percentage" layout="row"

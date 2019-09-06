@@ -121,6 +121,33 @@ angular.module('gorillascode.filters', [])
   }
 ])
 
+.filter('walletName', [
+  function() {
+    return function(value) {
+      switch (value) {
+        case '319':
+          return 'CWB1';
+        case '320':
+          return 'CWB2';
+        case '318':
+          return 'CVEL';
+        case '322':
+          return 'PBO';
+        case '321':
+          return 'LDNA';
+        case '323':
+          return 'OPTILAB';
+        case 'Global':
+          return 'GLOBAL';
+        case 'Others':
+          return 'OUTROS';
+        default:
+          return value;
+      }
+    };
+  }
+])
+
 .filter('percentage', ['$filter', function ($filter) {
   return function (input, decimals) {
     return $filter('number')(input * 100, decimals) + '%';

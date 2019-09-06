@@ -10,7 +10,7 @@
         <table md-table>
             <thead md-head md-order="customerCtrl.orderTable">
                 <tr md-row>
-                    <th md-column md-order-by="customer">
+                    <th md-column md-order-by="customer_code">
                         <span>Cliente</span>
                     </th>
                     <th md-column md-number md-order-by="avg_month_value_last_year">
@@ -23,26 +23,33 @@
                         <span>Mês Atual</span>
                     </th>
                     <th md-column md-number md-order-by="comparison_value">
-                        <span>Tendência</span>
-                        <md-tooltip>Comparação de média dia do mês atual com média dia da média mes do ano atual</md-tooltip>
+                        <span>
+                            Tendência
+                            <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
+                                help_outline
+                                <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
+                            </md-icon>
+                        </span>
                     </th>
                 </tr>
             </thead>
             <tbody md-body>
                 <tr md-row ng-repeat="customer in customerCtrl.abstract_customers | 
-                filter: filterCustomers(selectedTab) | filter: {customer: customerCtrl.filterName} | 
+                filter: filterCustomers(selectedTab) | filter: customerCtrl.filterName | 
                 orderBy: customerCtrl.orderTable | limitTo: pagination[tabSeller[selectedTab]].pageSize : pagination[tabSeller[selectedTab]].page*pagination[tabSeller[selectedTab]].pageSize">
                     <td md-cell ng-click="customerCtrl.openCustomer($event, customer)">
-                        {{customer.customer | limitTo: 50}}
+                        {{customer.customer_code}}
+                        <span>&nbsp-&nbsp</span>
+                        {{customer.customer_name | limitTo: 50}}
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerPeriodDetail($event, customer, 'last_year')">
-                        {{customer.avg_month_qtd_last_year | number}}pc / {{customer.avg_month_value_last_year | currency : R$ : 2}}
+                        {{customer.avg_month_qtd_last_year | number}} p / {{customer.avg_month_value_last_year | currency : R$ : 2}}
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerPeriodDetail($event, customer, 'current_period')">
-                        {{customer.avg_month_qtd_current_year | number}}pc / {{customer.avg_month_value_current_year | currency : R$ : 2}}
+                        {{customer.avg_month_qtd_current_year | number}} p / {{customer.avg_month_value_current_year | currency : R$ : 2}}
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)">
-                        {{customer.qtd_current_month}}pc / {{customer.value_current_month | currency : R$ : 2}}
+                        {{customer.qtd_current_month}} p / {{customer.value_current_month | currency : R$ : 2}}
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)">
                         <span ng-if="customer.qtd_current_month == -0.0001 || customer.avg_month_qtd_current_year == -0.0001"> % / %</span>
@@ -61,7 +68,7 @@
             </tbody>
         </table>
     </md-table-container>
-    <div ng-hide="customerCtrl.filterName" class="paginator" layout="row" layout-align="end center" flex>
+    <div class="paginator" layout="row" layout-align="end center" flex>
         <md-button class="md-icon-button" ng-click="pagination[tabSeller[selectedTab]].page = pagination[tabSeller[selectedTab]].page - 1" 
         ng-disabled="pagination[tabSeller[selectedTab]].page == 0">
             <md-icon>navigate_before</md-icon>

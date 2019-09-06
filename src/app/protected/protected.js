@@ -1,5 +1,6 @@
 angular.module('gorillasauth.protected', [
   'ui.router',
+  'gorillasauth.protected.home',
   'gorillasauth.protected.products',
   'gorillasauth.protected.rate-service',
   'gorillasauth.protected.billing',

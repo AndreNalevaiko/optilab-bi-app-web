@@ -1,10 +1,3 @@
-<div layout="row" layout-align="space-around" layout-padding flex>
-    <md-input-container>
-        <label>Data base</label>
-        <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
-            ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()" md-max-date="productsCtrl.maxDate"></md-datepicker>
-    </md-input-container>
-</div>
 <div class="loading" layout="column" layout-align="center center" ng-if="productsCtrl.loading || productsCtrl.generating" flex>
     <md-progress-circular md-diameter="40"></md-progress-circular>
     <br>
@@ -29,7 +22,13 @@
                     <span>Mês Atual</span>
                 </th>
                 <th md-column md-number md-order-by="comparison_value">
-                    <span>Comparação/Dia %</span>
+                    <span>
+                        Tendência
+                        <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
+                            help_outline
+                            <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
+                        </md-icon>
+                    </span>
                 </th>
             </tr>
         </thead>
@@ -39,9 +38,9 @@
                 <td md-cell>
                     {{brand.product_group | limitTo: 50}}
                 </td>
-                <td md-cell>{{brand.avg_month_qtd_last_year | number}}pc / {{brand.avg_month_value_last_year | currency : R$ : 2}}</td>
-                <td md-cell>{{brand.avg_month_qtd_current_year | number}}pc / {{brand.avg_month_value_current_year | currency : R$ : 2}}</td>
-                <td md-cell>{{brand.qtd_current_month}}pc / {{brand.value_current_month | currency : R$ : 2}}</td>
+                <td md-cell>{{brand.avg_month_qtd_last_year | number}} p / {{brand.avg_month_value_last_year | currency : R$ : 2}}</td>
+                <td md-cell>{{brand.avg_month_qtd_current_year | number}} p / {{brand.avg_month_value_current_year | currency : R$ : 2}}</td>
+                <td md-cell>{{brand.qtd_current_month}} p / {{brand.value_current_month | currency : R$ : 2}}</td>
                 <td md-cell>
                     <span ng-if="brand.qtd_current_month == -0.0001 || brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
                     <div class="status-percentage" layout="row"
