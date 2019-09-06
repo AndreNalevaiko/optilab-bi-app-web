@@ -14,9 +14,9 @@ angular.module('gorillasauth.protected.billing')
       self.walletsAvailable = [];
       angular.forEach(configuration.wallets, function (w) {
         var key = Object.keys(w)[0];
-        self.sellerCodes.push(key);
+        self.walletsAvailable.push(key);
       });
-      console.log(self.sellerCodes);
+      console.log(self.walletsAvailable);
 
       self.tabToWallet = {};
       self.walletsAvailable.forEach(function (value, i) {
