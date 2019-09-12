@@ -53,7 +53,7 @@ angular.module('gorillasauth.protected.home')
         };
 
         self.openCustomer = function (event, customer) {
-            CustomerService.searchCustomerBillings(self.dateFilter, customer.customer_code).then(function (response){
+            CustomerService.searchCustomerBillings(self.dateFilter, customer.customer_code, 'created').then(function (response){
                 self.customerSelected = normalizeBillings(response)[0];
                 self.selectedTab = 1;
             });
