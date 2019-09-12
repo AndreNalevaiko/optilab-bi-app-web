@@ -45,11 +45,11 @@
                     <span ng-if="brand.qtd_current_month == -0.0001 || brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
                     <div class="status-percentage" layout="row"
                         ng-if="brand.qtd_current_month != -0.0001 && brand.avg_month_qtd_current_year != -0.0001">
-                        <span ng-class="brand.comparison_qtd < 1 ? 'less' : 'greater'">
+                        <span ng-class="brand.comparison_qtd < productsCtrl.minimumRate ? 'less' : 'greater'">
                             {{brand.comparison_qtd | percentage: 2}}
                         </span>
                         <span>&nbsp/&nbsp</span>
-                        <span ng-class="brand.comparison_value < 1 ? 'less' : 'greater'">
+                        <span ng-class="brand.comparison_value < productsCtrl.minimumRate ? 'less' : 'greater'">
                             {{brand.comparison_value | percentage: 2}}
                         </span>
                     </div>

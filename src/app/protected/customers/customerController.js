@@ -27,6 +27,8 @@ angular.module('gorillasauth.protected.customer')
 
       self.dateFilter = DateFilterService.getDateNow();
       self.maxDate = self.dateFilter;
+      self.minimumRate = self.dateFilter.getDate() / 30;
+      self.dateType = 'billed';
 
       $scope.selectedTab = 0;
 
@@ -81,9 +83,11 @@ angular.module('gorillasauth.protected.customer')
           fullscreen: true,
           locals: {
             date: self.dateFilter,
+            dateType: self.dateType,
             customer: customer,
-            products: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer_code),
-            productsAllYear: CustomerService.searchCustomerProductsAllYear(self.dateFilter, customer.customer_code),
+            products: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer_code, self.dateType),
+            productsAllYear: CustomerService.searchCustomerProductsAllYear(self.dateFilter, customer.customer_code, null, self.dateType),
+            minimumRate: self.minimumRate
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/customers/dialogs/customerDetail.tpl.html',
@@ -151,11 +155,13 @@ angular.module('gorillasauth.protected.customer')
           locals: {
             date: self.dateFilter,
             group: group,
-            customers: GroupCustomerService.searchCustomersBillings(self.dateFilter, group.customer).then(function (response){
+            customers: GroupCustomerService.searchCustomersBillings(self.dateFilter, group.customer, self.dateType).then(function (response){
               return normalizeBillings(response);
             }),
             statusCustomers: CustomerService.getIsOverdue(groupCode, self.dateFilter, 'group'),
-            products: GroupCustomerService.searchGroupProducts(self.dateFilter, group.customer)
+            products: GroupCustomerService.searchGroupProducts(self.dateFilter, group.customer, self.dateType),
+            minimumRate: self.minimumRate,
+            dateType: self.dateType,
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/customers/dialogs/groupCustomerDetail.tpl.html',
@@ -187,25 +193,34 @@ angular.module('gorillasauth.protected.customer')
         });
       }
 
+
+      function parseNumberOrZero(value, round) {
+        function roundNumber(value) {
+          var step = 0.5; 
+          var inv = 1.0 / step;
+          return Math.round(value * inv) / inv;
+        }
+
+        if (round) {
+          return value ? roundNumber(Number(value)) : 0;
+        }
+        return value ? Number(value) : 0;
+      }
+
       function normalizeBillings(billings) {
         return billings.map(function(obj) {
-          // var re = new RegExp(/^[0-9]+/g);
           obj.clicodigo = obj.customer_code;
-          obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
-          obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
-            if (isNaN(obj.avg_month_qtd_last_year)) {
-              obj.avg_month_qtd_last_year = 0;
-            }
-          obj.qtd_current_month = parseInt(obj.qtd_current_month);
-          obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
-          obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
-          obj.value_current_month = Number(obj.value_current_month);
+          obj.avg_month_qtd_current_year = parseNumberOrZero(obj.avg_month_qtd_current_year, true);
+          obj.avg_month_qtd_last_year = parseNumberOrZero(obj.avg_month_qtd_last_year, true);
+          obj.qtd_current_month = parseNumberOrZero(obj.qtd_current_month, true);
+          obj.avg_month_value_current_year = parseNumberOrZero(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = parseNumberOrZero(obj.avg_month_value_last_year);
+          obj.value_current_month = parseNumberOrZero(obj.value_current_month);
 
-          obj.comparison_qtd = (obj.qtd_current_month / self.dateFilter.getDate()) / 
-            (obj.avg_month_qtd_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));
+          obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
 
-          obj.comparison_value = (obj.value_current_month / self.dateFilter.getDate()) /
-            (obj.avg_month_value_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));
+          obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
+
 
           obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
           obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
@@ -220,7 +235,7 @@ angular.module('gorillasauth.protected.customer')
       }
 
       function searchCustomerBilling() {
-        CustomerService.searchCustomerBillings(self.dateFilter).then(function (response){
+        CustomerService.searchCustomerBillings(self.dateFilter, null, self.dateType).then(function (response){
             self.abstract_customers = normalizeBillings(response);
             
             var groups_customer =  [];
@@ -308,10 +323,17 @@ angular.module('gorillasauth.protected.customer')
       }
 
       $scope.$watch(function () {
+        return self.dateFilter;
+      }, function (newVal, oldVal) {
+        self.minimumRate = newVal.getDate() / 30;
+      });
+
+      $scope.$watch(function () {
         return self.filterName;
       }, function (newVal, oldVal) {
         clearPagination();
       });
+
       $scope.$watch(function () {
         return self.filterNameGroup;
       }, function (newVal, oldVal) {
@@ -321,9 +343,11 @@ angular.module('gorillasauth.protected.customer')
   ])
 
   .controller('CustomerDetailDialogController', ['$scope','$mdDialog', 'CustomerService', 
-  'date', 'products', 'productsAllYear', 'customer',
-    function ($scope, $mdDialog, CustomerService, date, products, productsAllYear, customer) {
+  'date', 'products', 'productsAllYear', 'customer', 'dateType', 'minimumRate',
+    function ($scope, $mdDialog, CustomerService, date, products, productsAllYear, customer, dateType, minimumRate) {
       var self = this;
+
+      self.minimumRate = minimumRate;
 
       self.customer = customer;
       self.productsAllYear = productsAllYear;
@@ -344,11 +368,15 @@ angular.module('gorillasauth.protected.customer')
         obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
         obj.value_current_month = Number(obj.value_current_month);
 
-        obj.comparison_qtd = (obj.qtd_current_month / date.getDate()) / 
-          (obj.avg_month_qtd_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+        obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
 
-        obj.comparison_value = (obj.value_current_month / date.getDate()) /
-          (obj.avg_month_value_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+        obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
+
+        // obj.comparison_qtd = (obj.qtd_current_month / date.getDate()) / 
+        //   (obj.avg_month_qtd_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
+
+        // obj.comparison_value = (obj.value_current_month / date.getDate()) /
+        //   (obj.avg_month_value_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
 
         obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
         obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
@@ -369,7 +397,7 @@ angular.module('gorillasauth.protected.customer')
         line.products = self.products.filter(function (product) {
           return product.product != '' && product.product_group == line.product_group;
         });
-        CustomerService.searchCustomerProductsAllYear(date, customer.customer_code, line.product_group).then(function (response){
+        CustomerService.searchCustomerProductsAllYear(date, customer.customer_code, line.product_group, dateType).then(function (response){
           line.productsAllYear = response;
         });
       });
@@ -399,14 +427,15 @@ angular.module('gorillasauth.protected.customer')
 ])
 
   .controller('GroupCustomerDetailDialogController', ['$mdDialog', 'statusCustomers', 'CustomerService',
-  'date',  'group', 'customers', 'products',
-    function ($mdDialog, statusCustomers, CustomerService, date, group, customers, products) {
+  'date',  'group', 'customers', 'products', 'minimumRate', 'dateType',
+    function ($mdDialog, statusCustomers, CustomerService, date, group, customers, products, minimumRate, dateType) {
       var self = this;
-      var re = new RegExp(/^[0-9]+/g);
 
       self.orderTableCustomers = 'customer';
-      self.orderTableLine = 'product_group';
-      self.orderTableProduct = 'product';
+      self.orderTableLine = null;
+      self.orderTableProduct = null;
+
+      self.minimumRate = minimumRate;
 
       self.group = group;
       self.customers = customers;
@@ -416,7 +445,6 @@ angular.module('gorillasauth.protected.customer')
         self.group.overdue = true;
         
         angular.forEach(self.customers, function (customer) {
-          // var custCode = customer.customer.match(re)[0];
           var custCode = customer.customer_code;
           if (self.customersOverdued.indexOf(parseInt(custCode)) > -1) {
             customer.overdue = true;
@@ -431,7 +459,7 @@ angular.module('gorillasauth.protected.customer')
       self.group.lines = linesAndProductsNormalized(products);
 
       angular.forEach(self.customers, function (customer) {
-        CustomerService.searchCustomerProducts(date, customer.customer_code).then(function (response) {
+        CustomerService.searchCustomerProducts(date, customer.customer_code, dateType).then(function (response) {
           customer.lines = linesAndProductsNormalized(response);
         });
       });

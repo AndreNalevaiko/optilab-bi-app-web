@@ -9,6 +9,7 @@ angular.module('gorillasauth.protected.home')
 
         self.dateFilter = DateFilterService.getDateNow();
         self.maxDate = self.dateFilter;
+        self.minimumRate = self.dateFilter.getDate() / 30;
 
         self.search = {
             code: null,
@@ -99,46 +100,55 @@ angular.module('gorillasauth.protected.home')
             }, function (){
               console.log('Canceled Operation');
             });
-          };
-    
-          self.openCustomerPeriodDetail = function (ev, period) {
+        };
+
+        self.openCustomerPeriodDetail = function (ev, period) {
             var customer = self.customerSelected;
             $mdDialog.show({
-              controller: 'CustomerPeriodDetailDialogController as ctrl',
-              fullscreen: true,
-              locals: {
+                controller: 'CustomerPeriodDetailDialogController as ctrl',
+                fullscreen: true,
+                locals: {
                 date: self.dateFilter,
                 customer: customer,
                 periods: CustomerService.searchCustomerBillsPerMonth(self.dateFilter, customer.customer_code, period),
                 currentPeriod: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer_code),
                 period: period,
                 type: 'customer',
-              },
-              parent: angular.element(document.body),
-              templateUrl: 'protected/customers/dialogs/customerPeriodDetail.tpl.html',
-              targetEvent: ev,
-              clickOutsideToClose: true
+                },
+                parent: angular.element(document.body),
+                templateUrl: 'protected/customers/dialogs/customerPeriodDetail.tpl.html',
+                targetEvent: ev,
+                clickOutsideToClose: true
             }).then(function (result) {
-              console.log('Dialog Confirmed');
+                console.log('Dialog Confirmed');
             }, function (){
-              console.log('Canceled Operation');
+                console.log('Canceled Operation');
             });
-          };
+        };
+
+        function parseNumberOrZero(value, round) {
+            function roundNumber(value) {
+              var step = 0.5; 
+              var inv = 1.0 / step;
+              return Math.round(value * inv) / inv;
+            }
+    
+            if (round) {
+              return value ? roundNumber(Number(value)) : 0;
+            }
+            return value ? Number(value) : 0;
+        }
 
 
         function normalizeBillings(billings) {
             return billings.map(function(obj) {
-                // var re = new RegExp(/^[0-9]+/g);
                 obj.clicodigo = obj.customer_code;
-                obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
-                obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
-                if (isNaN(obj.avg_month_qtd_last_year)) {
-                    obj.avg_month_qtd_last_year = 0;
-                }
-                obj.qtd_current_month = parseInt(obj.qtd_current_month);
-                obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
-                obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
-                obj.value_current_month = Number(obj.value_current_month);
+                obj.avg_month_qtd_current_year = parseNumberOrZero(obj.avg_month_qtd_current_year, true);
+                obj.avg_month_qtd_last_year = parseNumberOrZero(obj.avg_month_qtd_last_year, true);
+                obj.qtd_current_month = parseNumberOrZero(obj.qtd_current_month, true);
+                obj.avg_month_value_current_year = parseNumberOrZero(obj.avg_month_value_current_year);
+                obj.avg_month_value_last_year = parseNumberOrZero(obj.avg_month_value_last_year);
+                obj.value_current_month = parseNumberOrZero(obj.value_current_month);
 
                 obj.comparison_qtd = (obj.qtd_current_month / self.dateFilter.getDate()) / 
                 (obj.avg_month_qtd_current_year / (self.dateFilter.getMonth() != 0 ? 30 : self.dateFilter.getDate()));

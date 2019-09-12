@@ -3,20 +3,22 @@ angular.module('gorillasauth.services.group-customer', [])
     .service('GroupCustomerService', ['configuration', '$http',
         function (configuration, $http) {
  
-            this.searchCustomersBillings = function (dateSelected, group) {
+            this.searchCustomersBillings = function (dateSelected, group, date_type) {
                 var data = {
                     "date": dateSelected,
                     "group": group,
+                    "date_type": date_type,
                 };
                 return $http.post(configuration.apiUrl + '/group_customer/customers', data).then(function (response) {
                     return response.data;
                 });
             };
 
-            this.searchGroupProducts = function (dateSelected, group) {
+            this.searchGroupProducts = function (dateSelected, group, date_type) {
                 var data = {
                     "date": dateSelected,
                     "group": group,
+                    "date_type": date_type,
                 };
                 return $http.post(configuration.apiUrl + '/group_customer/products', data).then(function (response) {
                     return response.data;
