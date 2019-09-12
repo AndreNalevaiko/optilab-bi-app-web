@@ -10,7 +10,13 @@ angular.module('gorillasauth.protected.billing')
       self.dateFilter = DateFilterService.getDateNow();
       self.maxDate = self.dateFilter;
       
-      self.walletsAvailable = Object.keys(configuration.wallets);
+      // self.walletsAvailable = Object.keys(configuration.wallets);
+      self.walletsAvailable = [];
+      angular.forEach(configuration.wallets, function (w) {
+        var key = Object.keys(w)[0];
+        self.walletsAvailable.push(key);
+      });
+      console.log(self.walletsAvailable);
 
       self.tabToWallet = {};
       self.walletsAvailable.forEach(function (value, i) {
