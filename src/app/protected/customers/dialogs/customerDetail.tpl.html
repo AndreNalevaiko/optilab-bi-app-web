@@ -98,7 +98,7 @@
                 <div class="view-tabs" flex>
                     <md-tabs md-selected="tabViz" md-dynamic-height md-border-bottom md-center-tabs>
                         <md-tab label="Dados">
-                            <md-table-container ng-if="ctrl.lineSelected.products.length" flex>
+                            <md-table-container flex>
                                 <table md-table>
                                     <thead md-head md-order="ctrl.orderTableProduct" md-on-reorder="ctrl.search">
                                         <tr md-row>
@@ -146,7 +146,7 @@
                                             </td>
                                         </tr>
                                     </thead>
-                                    <tbody md-body>
+                                    <tbody ng-if="ctrl.lineSelected.products.length" md-body>
                                         <tr md-row ng-repeat="product in ctrl.lineSelected.products | orderBy: ctrl.orderTableProduct" class="disable-clickable">
                                             <td md-cell>
                                                 {{product.product | limitTo: 50}}

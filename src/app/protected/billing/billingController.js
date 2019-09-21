@@ -163,7 +163,8 @@ angular.module('gorillasauth.protected.billing')
               {name: 'month', op: 'eq', val: self.dateFilter.getMonth() > 10 ? 1 : self.dateFilter.getMonth() + 1},
               {name: 'year', op: 'eq', val: self.dateFilter.getFullYear()},
             ]
-          }
+          },  
+          results_per_page: 999
         };
         return BudgetService.search(params);
       }
