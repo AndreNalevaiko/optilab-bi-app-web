@@ -149,7 +149,7 @@ angular.module('gorillasauth.protected.billing')
       function setEmpBudget (){
         angular.forEach(self.billing, function (bil){
           angular.forEach(self.budget, function (item){
-            if (bil.wallet == item.business_code){
+            if (bil.wallet == item.ref){
               bil.budget = item;
             }
           });
@@ -162,6 +162,7 @@ angular.module('gorillasauth.protected.billing')
             filters: [
               {name: 'month', op: 'eq', val: self.dateFilter.getMonth() > 10 ? 1 : self.dateFilter.getMonth() + 1},
               {name: 'year', op: 'eq', val: self.dateFilter.getFullYear()},
+              {name: 'type_ref', op: 'eq', val: 'BILLING'},
             ]
           },  
           results_per_page: 999
@@ -209,10 +210,11 @@ angular.module('gorillasauth.protected.billing')
         self.budget = angular.copy(budget);
       }else{
         self.budget = {
-          business_code: self.wallet,
+          ref: self.wallet,
           value: null,
           month: self.dateToSave.getMonth() > 10 ? 1 : self.dateToSave.getMonth() + 1,
-          year: self.dateToSave.getFullYear()
+          year: self.dateToSave.getFullYear(),
+          type_ref: 'BILLING'
         };
       }
       

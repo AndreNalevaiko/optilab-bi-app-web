@@ -12,22 +12,28 @@
                 <th md-column md-order-by="product">
                     <span>Produto</span>
                 </th>
-                <th md-column md-number md-order-by="avg_month_value_last_year">
-                    <span>Média Mês Ano Anterior</span>
-                </th>
                 <th md-column md-number md-order-by="avg_month_value_current_year">
                     <span>Média Mês Ano Atual</span>
                 </th>
                 <th md-column md-number md-order-by="value_current_month">
                     <span>Mês Atual</span>
                 </th>
-                <th md-column md-number md-order-by="comparison_value">
+                <th md-column md-number md-order-by="budget_value.value">
                     <span>
-                        Tendência
-                        <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
+                        Meta
+                        <!-- <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
                             help_outline
                             <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
-                        </md-icon>
+                        </md-icon> -->
+                    </span>
+                </th>
+                <th md-column md-number md-order-by="comparison_value">
+                    <span>
+                        Alcançado
+                        <!-- <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
+                            help_outline
+                            <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
+                        </md-icon> -->
                     </span>
                 </th>
             </tr>
@@ -38,9 +44,15 @@
                 <td md-cell>
                     {{brand.product_group | limitTo: 50}}
                 </td>
-                <td md-cell>{{brand.avg_month_qtd_last_year | number}} p / {{brand.avg_month_value_last_year | currency : R$ : 2}}</td>
                 <td md-cell>{{brand.avg_month_qtd_current_year | number}} p / {{brand.avg_month_value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>{{brand.qtd_current_month}} p / {{brand.value_current_month | currency : R$ : 2}}</td>
+                <td md-cell ng-click="productsCtrl.insertBudget($event, brand)">
+                    <span class="budget-span" ng-if="brand.budget_amount && brand.budget_value">
+                        {{brand.budget_amount.value}} p / {{brand.budget_value.value | currency : R$ : 2}}
+                        <md-tooltip>Editar</md-tooltip>
+                    </span>
+                    <md-button class="md-button md-primary btn-budget" ng-if="!brand.budget_amount || !brand.budget_value">Inserir meta</md-button>
+                </td>
                 <td md-cell>
                     <span ng-if="brand.qtd_current_month == -0.0001 || brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
                     <div class="status-percentage" layout="row"

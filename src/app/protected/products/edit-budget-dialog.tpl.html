@@ -1,0 +1,42 @@
+<md-dialog class="edit-budget-dialog" aria-label="Comentarios">
+    <md-toolbar class="md-primary">
+        <div class="md-toolbar-tools">
+            <h2>{{ctrl.title}}</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="ctrl.close()">
+                <md-icon>close</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content class="md-dialog-content">
+        <div layout="column" class="label">
+            <span>Linha: {{ctrl.product}}</span>
+            <span>Referência: 
+                {{ctrl.budget.month | month}}<span>&nbsp/&nbsp</span>{{ctrl.budget.year}}
+            </span>
+        </div>
+        <form name="manageForm">
+            <div class="pattern-input">
+                <md-input-container class="md-block no-margin-top down-payment">
+                    <label>Quantidade de pares</label>
+                    <input type="tel" ng-model="ctrl.budget_amount.value" name="downPayment"
+                            autocomplete="off" required min="1" md-auto-focus>
+                </md-input-container>
+                <md-input-container class="md-block no-margin-top down-payment">
+                    <label>Valor</label>
+                    <input type="tel" ng-model="ctrl.budget_value.value" name="downPayment"
+                            autocomplete="off" ui-money-mask="2" required min="1">
+                </md-input-container>
+            </div>
+                
+            <div layout="row" layout-align="end">
+                <md-button ng-click="ctrl.close()">
+                    Cancelar
+                </md-button>
+                <md-button class="md-accent" ng-click="ctrl.save()" ng-disabled="manageForm.$invalid">
+                    Salvar
+                </md-button>
+            </div>
+        </form>
+    </md-dialog-content>
+</md-dialog>
