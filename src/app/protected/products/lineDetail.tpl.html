@@ -9,15 +9,12 @@
         </div>
     </md-toolbar>
     <md-dialog-content flex>
-        <md-table-container ng-if="ctrl.brand.products.length" flex>
+        <md-table-container flex>
             <table md-table>
                 <thead md-head md-order="ctrl.orderTableProduct" md-on-reorder="ctrl.search">
                     <tr md-row>
                         <th md-column md-order-by="product">
                             <span>Produto</span>
-                        </th>
-                        <th md-column md-number md-order-by="avg_month_value_last_year">
-                            <span>Média Mês Ano Anterior</span>
                         </th>
                         <th md-column md-number md-order-by="avg_month_value_current_year">
                             <span>Média Mês Ano Atual</span>
@@ -33,7 +30,6 @@
                         <td md-cell>
                             {{ctrl.brand.product_group | limitTo: 50}}
                         </td>
-                        <td md-cell>{{ctrl.brand.avg_month_qtd_last_year | number}} p / {{ctrl.brand.avg_month_value_last_year | currency : R$ : 2}}</td>
                         <td md-cell>{{ctrl.brand.avg_month_qtd_current_year | number}} p / {{ctrl.brand.avg_month_value_current_year | currency : R$ : 2}}</td>
                         <td md-cell>{{ctrl.brand.qtd_current_month}} p / {{ctrl.brand.value_current_month | currency : R$ : 2}}</td>
                         <td md-cell>
@@ -51,12 +47,11 @@
                         </td>
                     </tr>
                 </thead>
-                <tbody md-body>
+                <tbody ng-if="ctrl.brand.products.length" md-body>
                     <tr md-row ng-repeat="product in ctrl.brand.products | orderBy: ctrl.orderTableProduct" class="disable-clickable">
                         <td md-cell>
                             {{product.product | limitTo: 50}}
                         </td>
-                        <td md-cell>{{product.avg_month_qtd_last_year | number}} p / {{product.avg_month_value_last_year | currency : R$ : 2}}</td>
                         <td md-cell>{{product.avg_month_qtd_current_year | number}} p / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
                         <td md-cell>{{product.qtd_current_month}} p / {{product.value_current_month | currency : R$ : 2}}</td>
                         <td md-cell>
