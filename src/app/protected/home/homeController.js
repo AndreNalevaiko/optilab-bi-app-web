@@ -8,6 +8,7 @@ angular.module('gorillasauth.protected.home')
         self.customers= [];
 
         self.dateFilter = DateFilterService.getDateNow();
+        self.dateType = 'billed';
         self.maxDate = self.dateFilter;
         self.minimumRate = self.dateFilter.getDate() / 30;
 
@@ -87,9 +88,11 @@ angular.module('gorillasauth.protected.home')
               fullscreen: true,
               locals: {
                 date: self.dateFilter,
+                dateType: self.dateType,
                 customer: customer,
                 products: CustomerService.searchCustomerProducts(self.dateFilter, customer.customer_code),
                 productsAllYear: CustomerService.searchCustomerProductsAllYear(self.dateFilter, customer.customer_code),
+                minimumRate: self.minimumRate,
               },
               parent: angular.element(document.body),
               templateUrl: 'protected/customers/dialogs/customerDetail.tpl.html',
