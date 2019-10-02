@@ -28,7 +28,7 @@
                     </tr>
                     <tr class="line-selected" md-row  ng-click="ctrl.selectedTab = 0">
                         <td md-cell>
-                            {{ctrl.brand.product_group | limitTo: 50}}
+                            {{ctrl.brand.product_group | underscoreToSpace | limitTo: 50}}
                         </td>
                         <td md-cell>{{ctrl.brand.avg_month_qtd_current_year | number}} p / {{ctrl.brand.avg_month_value_current_year | currency : R$ : 2}}</td>
                         <td md-cell>{{ctrl.brand.qtd_current_month}} p / {{ctrl.brand.value_current_month | currency : R$ : 2}}</td>
@@ -50,7 +50,7 @@
                 <tbody ng-if="ctrl.brand.products.length" md-body>
                     <tr md-row ng-repeat="product in ctrl.brand.products | orderBy: ctrl.orderTableProduct" class="disable-clickable">
                         <td md-cell>
-                            {{product.product | limitTo: 50}}
+                            {{product.product | underscoreToSpace | limitTo: 50}}
                         </td>
                         <td md-cell>{{product.avg_month_qtd_current_year | number}} p / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
                         <td md-cell>{{product.qtd_current_month}} p / {{product.value_current_month | currency : R$ : 2}}</td>

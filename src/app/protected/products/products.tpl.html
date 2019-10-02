@@ -1,11 +1,11 @@
 <div class="optilab-bi-products" layout-padding flex>
     <md-card>
-        <div ng-if="productsCtrl.loading" flex>
+        <div ng-if="productsCtrl.loading || productsCtrl.loadingYear" flex>
             <span>Carregando o relatórios de produtos</span>
             <md-progress-linear md-mode="indeterminate"></md-progress-linear>
         </div>
 
-        <div ng-if="!productsCtrl.loading" layout-align="start center" flex>
+        <div ng-show="!productsCtrl.loading && !productsCtrl.loadingYear" layout-align="start center" flex>
             <md-tabs md-dynamic-height md-border-bottom  md-selected="selectedTab">
                 <md-tab label="CWB1"></md-tab>
                 <md-tab label="CWB2"></md-tab>
@@ -16,19 +16,25 @@
                 <md-tab label="GLOBAL"></md-tab>
                 <md-tab label="OUTROS"></md-tab>
             </md-tabs>
-            <div layout="row" layout-align="space-around" layout-padding flex>
+            <div layout="column" layout-align="center center" layout-padding flex>
                 <md-input-container style="margin-bottom: 0;">
                     <label>Data base</label>
-                    <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.generating"
+                    <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.loadingYear || productsCtrl.generating"
                         ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()" md-max-date="productsCtrl.maxDate"></md-datepicker>
                 </md-input-container>
+
+                <md-radio-group class="md-primary" ng-model="productsCtrl.dateType" ng-change="productsCtrl.search()"
+                    ng-disabled="productsCtrl.loading || productsCtrl.loadingYear || productsCtrl.generating">
+                    <md-radio-button ng-value="'billed'">Baixa</md-radio-button>
+                    <md-radio-button ng-value="'created'">Emissao</md-radio-button>
+                </md-radio-group>
             </div>
             <md-tabs md-dynamic-height md-center-tabs md-border-bottom md-selected="tabView">
                 <md-tab label="Dados">
                     <ng-include src="'protected/products/productsTable.tpl.html'"></ng-include>
                 </md-tab>
                 <md-tab label="Charts">
-                    <div ng-repeat="wallet in productsCtrl.productsBillingYear | filter: productsCtrl.filterWallet(selectedTab)"
+                    <div ng-if="!productsCtrl.loadingYear" ng-repeat="wallet in productsCtrl.productsBillingYear | filter: productsCtrl.filterWallet(selectedTab)"
                         layout="row" layout-align="space-around center" flex layout-wrap>
                         <md-chart ng-if="wallet.products.length" data="product.periods" options="{type: 'ColumnLine', title: product.name}"
                             ng-repeat="product in wallet.products"

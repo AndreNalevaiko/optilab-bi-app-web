@@ -96,7 +96,7 @@
                         <tbody md-body>
                             <tr md-row ng-repeat="line in ctrl.periodSelected.lines | orderBy: ctrl.orderTableLine" ng-click="ctrl.selectLine(line)">
                                 <td md-cell>
-                                    {{line.product_group | limitTo: 50}}
+                                    {{line.product_group | underscoreToSpace | limitTo: 50}}
                                 </td>
                                 <td md-cell>
                                     {{line.qtd_current_month | number}} p
@@ -135,7 +135,7 @@
                             </tr>
                             <tr class="line-selected" md-row  ng-click="ctrl.selectedTab = 0">
                                 <td md-cell>
-                                    {{ctrl.lineSelected.product_group | limitTo: 50}}
+                                    {{ctrl.lineSelected.product_group | underscoreToSpace | limitTo: 50}}
                                 </td>
                                 <td md-cell>
                                     {{ctrl.lineSelected.qtd_current_month | number}} p
@@ -153,7 +153,7 @@
                             <tr md-row ng-repeat="product in ctrl.lineSelected.products | orderBy: ctrl.orderTableProduct" 
                                 class="disable-clickable disable-hover-color">
                                 <td md-cell>
-                                    {{product.product | limitTo: 50}}
+                                    {{product.product | underscoreToSpace | limitTo: 50}}
                                 </td>
                                 <td md-cell>
                                     {{product.qtd_current_month | number}} p

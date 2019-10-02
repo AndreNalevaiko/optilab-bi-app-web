@@ -19,27 +19,16 @@ angular.module('gorillasauth.protected.products')
       $scope.tabSeller[6] = '0';
       $scope.tabSeller[7] = '';
 
-      // self.sellerCodes = ['319','320','318','322','321','323'];
-
-      // $scope.selectedTab = 0;
-      // $scope.tabSeller = {
-      //   0: '319',
-      //   1: '320',
-      //   2: '318',
-      //   3: '322',
-      //   4: '321',
-      //   5: '323',
-      //   6: 'Global',
-      //   7: 'Others'
-      // };
-
+      $scope.selectedTab = 0;
       self.dateNow = new Date();
       self.loading = false;
+      self.loadingYear = false;
       self.orderTable = 'product';
       self.generating = false;
 
       self.filterOptions = DateFilterService.filterOptions();
       self.dateFilter = DateFilterService.getDateNow();
+      self.dateType = 'billed';
       self.minimumRate = self.dateFilter.getDate() / 30;
       self.maxDate = self.dateFilter;
 
@@ -59,6 +48,32 @@ angular.module('gorillasauth.protected.products')
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/products/lineDetail.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          console.log('Dialog Confirmed');
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
+      self.openBrandYearDetail = function (ev, lineSelected) {
+        ev.stopPropagation();
+        $mdDialog.show({
+          controller: 'BrandDetailYearDetailDialogController as ctrl',
+          fullscreen: true,
+          locals: {
+            date: self.dateFilter,
+            lineSelected: lineSelected,
+            periods: ProductService.searchProductBillingsPerMonth(
+              self.dateFilter, $scope.tabSeller[$scope.selectedTab], lineSelected.product_group, self.dateType).then(function (response) {
+              return response;
+            }, function (error) {
+              console.log(error);
+            })
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/products/lineYearDetail.tpl.html',
           targetEvent: ev,
           clickOutsideToClose: true
         }).then(function (result) {
@@ -147,7 +162,8 @@ angular.module('gorillasauth.protected.products')
       self.search = function () {
         self.loading = true;
 
-        ProductService.searchProductBillings(self.dateFilter, self.sellerCodes).then(function (response) {
+        self.brands = [];
+        ProductService.searchProductBillings(self.dateFilter, self.sellerCodes, self.dateType).then(function (response) {
           searchBudget().then (function (respBdg) {
             self.brands = normalizeBillings(response.filter(function (r) { return r.product == ''; }), respBdg.objects);
             
@@ -160,8 +176,10 @@ angular.module('gorillasauth.protected.products')
           self.loading = false;
         });
 
-        ProductService.searchProductBillingsAllYear(self.dateFilter, self.sellerCodes).then(function (response) {
+        self.productsBillingYear = [];
+        ProductService.searchProductBillingsAllYear(self.dateFilter, self.sellerCodes, self.dateType).then(function (response) {
           self.productsBillingYear = response;
+          self.loadingYear = false;
         });
       };
 
@@ -258,6 +276,43 @@ angular.module('gorillasauth.protected.products')
       }
     }
   ])
+
+  .controller('BrandDetailYearDetailDialogController', ['$mdDialog', 'date', 'lineSelected',  'periods',
+    function ($mdDialog, date, lineSelected, periods) {
+      var self = this;
+
+      self.orderTableProduct = 'product';
+
+      self.date = date;
+      self.lineSelected = lineSelected;
+      self.periodSelected = null;
+      self.periods = normalizeMonths(periods);
+      self.selectedTab = 0;
+
+      function normalizeMonths(periods) {
+        var months = periods.filter(function (period) {return period.product_name == '';});
+        angular.forEach(months, function (month) {
+          month.products = periods.filter(function (period) {
+            return period.month == month.month && period.year == month.year && period.product_name != '';
+          });
+        });
+        return months;
+      }
+
+      self.selectPeriod = function (period) {
+        self.periodSelected = period;
+        self.selectedTab = 1;
+      };
+
+      self.confirm = function () {
+        $mdDialog.hide();
+      };
+
+      self.cancel = function () {
+        $mdDialog.cancel();
+      };
+    }
+])
   
 
 ;

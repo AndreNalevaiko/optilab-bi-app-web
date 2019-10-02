@@ -164,4 +164,13 @@ angular.module('gorillascode.filters', [])
       return [];
   };
 })
+
+.filter('underscoreToSpace', function() {
+  return function(value) {
+    if (value) {
+      return value.replace(new RegExp('_', 'g'), ' ');
+    }
+    return value;
+  };
+})
 ;

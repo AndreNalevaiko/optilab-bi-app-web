@@ -58,7 +58,7 @@
                                     <tbody md-body>
                                         <tr md-row ng-repeat="line in ctrl.lines | orderBy: ctrl.orderTableLine" ng-click="ctrl.selectLine(line)">
                                             <td md-cell>
-                                                {{line.product_group | limitTo: 50}}
+                                                {{line.product_group | underscoreToSpace | limitTo: 50}}
                                             </td>
                                             <td md-cell>{{line.avg_month_qtd_last_year | number}} p / {{line.avg_month_value_last_year | currency : R$ : 2}}</td>
                                             <td md-cell>{{line.avg_month_qtd_current_year | number}} p / {{line.avg_month_value_current_year | currency : R$ : 2}}</td>
@@ -126,7 +126,7 @@
                                         </tr>
                                         <tr class="line-selected" md-row  ng-click="ctrl.selectedTab = 0">
                                             <td md-cell>
-                                                {{ctrl.lineSelected.product_group | limitTo: 50}}
+                                                {{ctrl.lineSelected.product_group | underscoreToSpace | limitTo: 50}}
                                             </td>
                                             <td md-cell>{{ctrl.lineSelected.avg_month_qtd_last_year | number}} p / {{ctrl.lineSelected.avg_month_value_last_year | currency : R$ : 2}}</td>
                                             <td md-cell>{{ctrl.lineSelected.avg_month_qtd_current_year | number}} p / {{ctrl.lineSelected.avg_month_value_current_year | currency : R$ : 2}}</td>
@@ -149,7 +149,7 @@
                                     <tbody ng-if="ctrl.lineSelected.products.length" md-body>
                                         <tr md-row ng-repeat="product in ctrl.lineSelected.products | orderBy: ctrl.orderTableProduct" class="disable-clickable">
                                             <td md-cell>
-                                                {{product.product | limitTo: 50}}
+                                                {{product.product | underscoreToSpace | limitTo: 50}}
                                             </td>
                                             <td md-cell>{{product.avg_month_qtd_last_year | number}} p / {{product.avg_month_value_last_year | currency : R$ : 2}}</td>
                                             <td md-cell>{{product.avg_month_qtd_current_year | number}} p / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>

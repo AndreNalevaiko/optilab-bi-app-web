@@ -44,7 +44,7 @@
                 <td md-cell>
                     {{brand.product_group | limitTo: 50}}
                 </td>
-                <td md-cell>{{brand.avg_month_qtd_current_year | number}} p / {{brand.avg_month_value_current_year | currency : R$ : 2}}</td>
+                <td md-cell ng-click="productsCtrl.openBrandYearDetail($event, brand)">{{brand.avg_month_qtd_current_year | number}} p / {{brand.avg_month_value_current_year | currency : R$ : 2}}</td>
                 <td md-cell>{{brand.qtd_current_month}} p / {{brand.value_current_month | currency : R$ : 2}}</td>
                 <td md-cell ng-click="productsCtrl.insertBudget($event, brand)">
                     <span class="budget-span" ng-if="brand.budget_amount && brand.budget_value">
