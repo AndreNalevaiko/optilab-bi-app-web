@@ -66,9 +66,9 @@ angular.module('gorillasauth.protected.home')
                 controller: 'CustomerDialogController as ctrl',
                 fullscreen: true,
                 locals: {
-                customer: customer,
-                status: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
-                info: CustomerService.getInfos(customer.clicodigo)
+                    customer: customer,
+                    overdue: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
+                    info: CustomerService.getInfos(customer.clicodigo)
                 },
                 parent: angular.element(document.body),
                 templateUrl: 'protected/customers/dialogs/customer.tpl.html',

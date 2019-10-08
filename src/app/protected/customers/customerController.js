@@ -69,7 +69,7 @@ angular.module('gorillasauth.protected.customer')
           fullscreen: true,
           locals: {
             customer: customer,
-            status: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
+            overdue: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
             info: CustomerService.getInfos(customer.clicodigo)
           },
           parent: angular.element(document.body),
@@ -164,7 +164,9 @@ angular.module('gorillasauth.protected.customer')
             customers: GroupCustomerService.searchCustomersBillings(self.dateFilter, group.customer, self.dateType).then(function (response){
               return normalizeBillings(response);
             }),
-            statusCustomers: CustomerService.getIsOverdue(groupCode, self.dateFilter, 'group'),
+            billings_overdued: CustomerService.getIsOverdue(groupCode, self.dateFilter, 'group').then(function (response) {
+              return response.billings_overdued;
+            }),
             products: GroupCustomerService.searchGroupProducts(self.dateFilter, group.customer, self.dateType),
             minimumRate: self.minimumRate,
             dateType: self.dateType,
@@ -255,6 +257,7 @@ angular.module('gorillasauth.protected.customer')
             angular.forEach(groups_customer, function (group) {
               var group_billing = {
                 customer: group,
+                customer_name: group,
                 wallet: null,
                 avg_month_qtd_current_year: 0,
                 avg_month_qtd_last_year: 0,
@@ -432,9 +435,9 @@ angular.module('gorillasauth.protected.customer')
     }
 ])
 
-  .controller('GroupCustomerDetailDialogController', ['$mdDialog', 'statusCustomers', 'CustomerService',
+  .controller('GroupCustomerDetailDialogController', ['$mdDialog', 'billings_overdued', 'CustomerService',
   'date',  'group', 'customers', 'products', 'minimumRate', 'dateType',
-    function ($mdDialog, statusCustomers, CustomerService, date, group, customers, products, minimumRate, dateType) {
+    function ($mdDialog, billings_overdued, CustomerService, date, group, customers, products, minimumRate, dateType) {
       var self = this;
 
       self.orderTableCustomers = 'customer';
@@ -444,15 +447,16 @@ angular.module('gorillasauth.protected.customer')
       self.minimumRate = minimumRate;
 
       self.group = group;
-      self.customers = customers;
-      self.customersOverdued = statusCustomers.customers_overdued;
 
-      if (self.customersOverdued.length) {
+      self.customers = customers;
+      self.billings_overdued = billings_overdued;
+
+      if (self.billings_overdued.length) {
         self.group.overdue = true;
         
         angular.forEach(self.customers, function (customer) {
           var custCode = customer.customer_code;
-          if (self.customersOverdued.indexOf(parseInt(custCode)) > -1) {
+          if (self.billings_overdued.filter(function (bill){return bill.clicodigo == custCode;}).length) {
             customer.overdue = true;
           }
         });
@@ -513,12 +517,12 @@ angular.module('gorillasauth.protected.customer')
 
       self.selectCustomer = function (customer) {
         self.customerSelected = customer;
-        self.selectedTab = 1;
+        self.selectedTab = 2;
       };
 
       self.selectLine = function (line) {
         self.lineSelected = line;
-        self.selectedTab = 2;
+        self.selectedTab = 3;
       };
 
       self.confirm = function () {
@@ -642,16 +646,19 @@ angular.module('gorillasauth.protected.customer')
     }
 ])
 
-.controller('CustomerDialogController', ['$mdDialog', 'customer', 'status', 'info', 
-    function ($mdDialog, customer, status, info) {
+.controller('CustomerDialogController', ['$mdDialog', 'customer', 'overdue', 'info', 
+    function ($mdDialog, customer, overdue, info) {
       var self = this;
+
+      self.selectedTab = 1;
 
       self.customer = customer;
       self.address = info.address;
       self.addressUrl = 'https://maps.google.com/maps?q='+encodeURIComponent(info.address.search)+'&t=&z=13&ie=UTF8&iwloc=&output=embed';
       // self.addressUrl = 'https://maps.google.com/maps?q='+encodeURIComponent('SANTO ANTONIO 21 centro tangara sc  89642000')+'&t=&z=13&ie=UTF8&iwloc=&output=embed';
       self.tables = info.tables;
-      self.status = status;
+      self.is_overdue = overdue.is_overdue;
+      self.billings = overdue.billings_overdued;
 
       self.confirm = function () {
         $mdDialog.hide();

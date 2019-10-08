@@ -18,15 +18,59 @@
                 </span>
             </div>
             <span flex></span>
-            <div class="status circle" ng-class="ctrl.status.is_overdue ? 'overdue' : 'none'">
-                <md-tooltip>{{ctrl.status.is_overdue ? 'Inadimplente' : 'Em dia'}}</md-tooltip>
+            <div class="status circle" ng-class="ctrl.is_overdue ? 'overdue' : 'none'"
+                ng-click="ctrl.is_overdue ? ctrl.selectedTab = 0 : null">
+                <md-tooltip>{{ctrl.is_overdue ? 'Inadimplente' : 'Em dia'}}</md-tooltip>
             </div>
         </div>
 
-        <md-tabs md-selected="selectedTab" md-dynamic-height md-border-bottom>
+        <md-tabs md-selected="ctrl.selectedTab" md-dynamic-height md-border-bottom>
+            <md-tab label="Adimplencia">
+                <div class="tab-header" layout="row" layout-align="center">
+                    <span>Faturas em aberto</span>
+                </div>
+                <md-divider></md-divider>
+
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head>
+                            <tr md-row>
+                                <th md-column>
+                                    <span>Doc</span>
+                                </th>
+                                <th md-column>
+                                    <span>Parcela</span>
+                                </th>
+                                <th md-column>
+                                    <span>Vencto</span>
+                                </th>
+                                <th md-column>
+                                    <span>Valor</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row ng-repeat="bill in ctrl.billings | orderBy: 'overdue_date'">
+                                <td md-cell>
+                                    {{bill.document_number}}
+                                </td>
+                                <td md-cell>
+                                    {{bill.installment}}
+                                </td>
+                                <td md-cell>
+                                    {{bill.overdue_date | strToDate | date : 'shortDate'}}
+                                </td>
+                                <td md-cell>
+                                    {{bill.value | currency : R$ : 2}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </md-tab>
             <md-tab label="Tabelas">
 
-                <div class="link-address" ng-click="selectedTab = 1;">Ver endereço</div>
+                <div class="link-address" ng-click="ctrl.selectedTab = 2;">Ver endereço</div>
                 
                 <div class="tab-header" layout="row" layout-align="center">
                     <span>Tabelas</span>
@@ -67,7 +111,7 @@
     </md-dialog-content>
     <md-dialog-actions flex>
         <div layout="row" layout-align="end" flex>
-            <md-button ng-show="selectedTab == 1" ng-click="selectedTab = 0;">
+            <md-button ng-show="ctrl.selectedTab != 1" ng-click="ctrl.selectedTab = 1;">
                 VOLTAR
             </md-button>
             <div flex></div>

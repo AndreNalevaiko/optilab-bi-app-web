@@ -173,4 +173,13 @@ angular.module('gorillascode.filters', [])
     return value;
   };
 })
+
+.filter('strToDate', function() {
+  return function(value) {
+    if (value) {
+      return new Date(value).toISOString();
+    }
+    return value;
+  };
+})
 ;

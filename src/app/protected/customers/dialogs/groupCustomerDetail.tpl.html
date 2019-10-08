@@ -46,9 +46,9 @@
                         <tbody md-body>
                             <tr class="line-selected" ng-click="ctrl.selectCustomer(ctrl.group)">
                                 <td md-cell>
-                                    {{ctrl.group.customer | limitTo: 40}}
-                                    <md-tooltip>{{ctrl.group.customer}}</md-tooltip>
-                                    <md-icon class="icon-warn" ng-if="ctrl.customersOverdued.length">warning</md-icon>
+                                    {{ctrl.group.customer_name | limitTo: 40}}
+                                    <md-tooltip>{{ctrl.group.customer_name}}</md-tooltip>
+                                    <md-icon class="icon-warn" ng-if="ctrl.billings_overdued.length">warning</md-icon>
                                 </td>
                                 <td md-cell>{{ctrl.group.avg_month_qtd_last_year | number}} p / {{ctrl.group.avg_month_value_last_year | currency : R$ : 2}}</td>
                                 <td md-cell>{{ctrl.group.avg_month_qtd_current_year | number}} p / {{ctrl.group.avg_month_value_current_year | currency : R$ : 2}}</td>
@@ -75,7 +75,6 @@
                                         <span>&nbsp-&nbsp</span>
                                         {{customer.customer_name | limitTo: 50}}
                                     </span>
-                                    <md-tooltip>{{customer.customer}}</md-tooltip>
                                     <md-icon class="icon-warn" ng-if="customer.overdue">warning</md-icon>
                                 </td>
                                 <td md-cell>{{customer.avg_month_qtd_last_year | number}} p / {{customer.avg_month_value_last_year | currency : R$ : 2}}</td>
@@ -100,15 +99,65 @@
                 </md-table-container>
             </md-tab>
             <md-tab label="Linhas">
-                <div class="label" layout="row">
+                <div class="tab-header" layout="row" layout-align="center">
+                    <span>Faturas em aberto</span>
+                </div>
+                <md-divider></md-divider>
+
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head>
+                            <tr md-row>
+                                <th md-column>
+                                    <span>Doc</span>
+                                </th>
+                                <th md-column>
+                                    <span>Parcela</span>
+                                </th>
+                                <th md-column>
+                                    <span>Vencto</span>
+                                </th>
+                                <th md-column>
+                                    <span>Valor</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row ng-repeat="bill in ctrl.billings_overdued | filter: {clicodigo: ctrl.selectCustomer.clicodigo} |orderBy: 'overdue_date'">
+                                <td md-cell>
+                                    {{bill.document_number}}
+                                </td>
+                                <td md-cell>
+                                    {{bill.installment}}
+                                </td>
+                                <td md-cell>
+                                    {{bill.overdue_date | strToDate | date : 'shortDate'}}
+                                </td>
+                                <td md-cell>
+                                    {{bill.value | currency : R$ : 2}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </md-tab>
+            <md-tab label="Linhas">
+                <div class="label" layout="row" flex>
                     <div layout="column">
-                        <span class="title">{{ctrl.customerSelected.customer}}</span>
+                        <span class="title">
+                            {{ctrl.customerSelected.clicodigo ? ctrl.customerSelected.clicodigo + ' - ' : ''}}
+                            {{ctrl.customerSelected.customer_name}}</span>
                         <span class="subtitle">Carteira: {{ctrl.customerSelected.wallet}}</span>
                     </div>
+                    <span flex></span>
+                    <div class="status-cli circle" ng-class="ctrl.customerSelected && ctrl.customerSelected.overdue ? 'overdue' : 'none'"
+                        ng-click="ctrl.customerSelected && ctrl.customerSelected.overdue ? ctrl.selectedTab = 1 : null">
+                        <md-tooltip>{{ctrl.customerSelected && ctrl.customerSelected.overdue ? 'Inadimplente' : 'Em dia'}}</md-tooltip>
+                    </div>
                 </div>
-                <div class="status" ng-if="ctrl.customerSelected.overdue" class="overdue" layout="row" layout-align="center" flex>
+                <!-- <div class="status" ng-if="ctrl.customerSelected.overdue" class="overdue" layout="row" layout-align="center" flex>
                     <span>Inadimplente</span>
-                </div>
+                </div> -->
                 <md-table-container ng-if="ctrl.customerSelected.lines.length" flex>
                     <table md-table>
                         <thead md-head md-order="ctrl.orderTableLine" md-on-reorder="ctrl.search">

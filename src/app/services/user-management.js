@@ -16,6 +16,7 @@ angular.module('gorillasauth.services.user-management', [])
 
         var parameters = {
             q: {filters: filters},
+            results_per_page: '999'
         };
 
         var url = configuration.apiUrl + '/v1/user';
