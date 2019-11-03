@@ -40,7 +40,7 @@
         </thead>
         <tbody md-body>
             <tr md-row ng-repeat="brand in productsCtrl.brands | filter: filterProducts(selectedTab) |
-                filterIn: {'product_group': ['VARILUX/NIKKON', 'CRIZAL*', 'TRANSITIONS*', 'KODAK/ITOP']} | orderBy: productsCtrl.orderTable"
+                filterIn: {'product_group': ['VARILUX/NIKON', 'CRIZAL*', 'TRANSITIONS*', 'KODAK/ITOP']} | orderBy: productsCtrl.orderTable"
                 ng-click="productsCtrl.openBrandDetail($event, brand)">
                 <td md-cell>
                     {{brand.product_group | limitTo: 50}}
