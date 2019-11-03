@@ -182,4 +182,40 @@ angular.module('gorillascode.filters', [])
     return value;
   };
 })
+
+.filter('unique', function() {
+  return function(collection, keyname) {
+     var output = [], 
+         keys = [];
+
+     angular.forEach(collection, function(item) {
+         var key = item[keyname];
+         if(keys.indexOf(key) === -1) {
+             keys.push(key);
+             output.push(item);
+         }
+     });
+
+     return output;
+  };
+})
+
+.filter('filterIn', function() {
+  return function(collection, obj) {
+    var result = collection;
+    angular.forEach(obj, function (values, key) {
+      result = result.filter(function (item) {
+        if (values && values.length) {
+          if (values.indexOf(item[key]) > -1) {
+            return true;
+          }
+        } else {
+          return item[key] != '' && item[key] != null;
+        }
+      });
+    });
+
+     return result;
+  };
+})
 ;

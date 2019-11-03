@@ -16,19 +16,55 @@
                 <md-tab label="GLOBAL"></md-tab>
                 <md-tab label="OUTROS"></md-tab>
             </md-tabs>
-            <div layout="column" layout-align="center center" layout-padding flex>
+            <div layout="row" layout-align="center center" layout-padding flex>
+                <span flex></span>
                 <md-input-container style="margin-bottom: 0;">
                     <label>Data base</label>
                     <md-datepicker ng-disabled="productsCtrl.loading || productsCtrl.loadingYear || productsCtrl.generating"
                         ng-model="productsCtrl.dateFilter" ng-change="productsCtrl.search()" md-max-date="productsCtrl.maxDate"></md-datepicker>
                 </md-input-container>
 
+                <span flex></span>
+                
                 <md-radio-group class="md-primary" ng-model="productsCtrl.dateType" ng-change="productsCtrl.search()"
                     ng-disabled="productsCtrl.loading || productsCtrl.loadingYear || productsCtrl.generating">
                     <md-radio-button ng-value="'billed'">Baixa</md-radio-button>
                     <md-radio-button ng-value="'created'">Emissao</md-radio-button>
                 </md-radio-group>
+                <span flex></span>
             </div>
+
+             <div class="customers-actives" ng-hide="tabSeller[selectedTab] == ''">
+                <div class="header-actives" layout="row" layout-align="center" flex>
+                    <span>Clientes ativos</span>
+                </div>
+                <div layout="row" ng-if="productsCtrl.amounts_customers">
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Média ano passado</span>
+                        <span>{{productsCtrl.amounts_customers[tabSeller[selectedTab]].average_latest_year | currency : '' : 2}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Mês anterior</span>
+                        <span>{{productsCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_month}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Mês Atual</span>
+                        <span>{{productsCtrl.amounts_customers[tabSeller[selectedTab]].number_current_month}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Dia Anterior</span>
+                        <span>{{productsCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_day}}</span>
+                    </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Dia Atual</span>
+                        <span>{{productsCtrl.amounts_customers[tabSeller[selectedTab]].number_current_day}}</span>
+                    </div>
+                </div>
+                <div class="loading" layout="column" layout-align="center center" ng-if="!productsCtrl.amounts_customers">
+                        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+                </div>
+            </div>
+
             <md-tabs md-dynamic-height md-center-tabs md-border-bottom md-selected="tabView">
                 <md-tab label="Dados">
                     <ng-include src="'protected/products/productsTable.tpl.html'"></ng-include>

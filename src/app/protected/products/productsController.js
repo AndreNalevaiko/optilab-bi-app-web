@@ -1,11 +1,11 @@
 angular.module('gorillasauth.protected.products')
 
-  .controller('productsController', ['configuration', 'DateFilterService', '$scope',
-  'ProductService', '$mdDialog', 'BudgetService', '$mdMedia',
-    function (configuration, DateFilterService, $scope, ProductService, $mdDialog, BudgetService, $mdMedia) {
+  .controller('productsController', ['configuration', 'DateFilterService', '$scope', 'CustomerService',
+  'ProductService', '$mdDialog', 'BudgetService', '$mdMedia', 'NotificationService',
+    function (configuration, DateFilterService, $scope, CustomerService, ProductService, $mdDialog, 
+      BudgetService, $mdMedia, NotificationService) {
       var self = this;
-
-      // self.sellerCodes = Object.keys(configuration.wallets);
+      
       self.sellerCodes = [];
       angular.forEach(configuration.wallets, function (w) {
         var key = Object.keys(w)[0];
@@ -31,6 +31,8 @@ angular.module('gorillasauth.protected.products')
       self.dateType = 'billed';
       self.minimumRate = self.dateFilter.getDate() / 30;
       self.maxDate = self.dateFilter;
+
+      self.amounts_customers = null;
 
       $scope.filterProducts = function (param) {
         var tab = param;
@@ -107,6 +109,51 @@ angular.module('gorillasauth.protected.products')
         });
       };
 
+      function searchActive() {
+        var filterActiveCustomers = createFilterSearchActiveCustomers();
+        CustomerService.searchNumberActiveCustomers(filterActiveCustomers).then(function (response){
+          var active_customers = {};
+          if (response.objects.length) {
+            angular.forEach(response.objects, function (obj) {
+              var seller = obj.seller;
+              if (obj.seller == 0) {
+                seller = '0';
+              }
+              active_customers[seller] = obj;
+            });
+          } else {
+            generateReports();
+          }
+          self.amounts_customers = active_customers;
+        });
+      }
+
+      function createFilterSearchActiveCustomers() {
+        var month = self.dateFilter.getMonth() + 1;
+        var dateFormated = self.dateFilter.getFullYear() + '-' + month + '-' + self.dateFilter.getDate();
+        return {
+          q: {
+            filters: [
+              {name: 'date', op: 'eq', val: dateFormated}
+            ]
+          }
+        };
+      }
+
+      function generateReports() {
+        if (!self.generating) {
+          self.generating = true;
+          NotificationService.success('Gerando os dados!');
+
+          CustomerService.generate(self.dateFilter).then(function (response) {
+            self.generating = false;
+            self.search();
+          }, function (error) {
+            NotificationService.error('Ocorreu um erro ao gerar os dados!');
+          });
+        }
+      }
+
       function parseNumberOrZero(value, round) {
         function roundNumber(value) {
           var step = 0.5; 
@@ -176,7 +223,10 @@ angular.module('gorillasauth.protected.products')
           self.loading = false;
         });
 
+        searchActive();
+
         self.productsBillingYear = [];
+
         ProductService.searchProductBillingsAllYear(self.dateFilter, self.sellerCodes, self.dateType).then(function (response) {
           self.productsBillingYear = response;
           self.loadingYear = false;

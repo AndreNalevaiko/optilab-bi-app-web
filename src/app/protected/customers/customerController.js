@@ -12,13 +12,15 @@ angular.module('gorillasauth.protected.customer')
       self.orderTable = 'customer';
       self.orderTableGroup = 'customer';
 
-      // self.sellerCodes = Object.keys(configuration.wallets);
+      self.totalFat = {};
+
       self.sellerCodes = [];
+
       angular.forEach(configuration.wallets, function (w) {
         var key = Object.keys(w)[0];
         self.sellerCodes.push(key);
       });
-      console.log(self.sellerCodes);
+
       self.sellerCodes.push('Global');
       self.sellerCodes.push('Others');
 
@@ -30,6 +32,12 @@ angular.module('gorillasauth.protected.customer')
       $scope.tabSeller[7] = 'Others';
 
       self.filterOptions = DateFilterService.filterOptions();
+
+      self.searchFilters = {
+        states: [],
+        cities: [],
+        neighborhoods: []
+      };
 
       self.dateFilter = DateFilterService.getDateNow();
       self.maxDate = self.dateFilter;
@@ -58,9 +66,16 @@ angular.module('gorillasauth.protected.customer')
       self.generating = false;
 
       self.search = function () {
-        self.amounts_customers = null;
         searchCustomerBilling();
-        searchActive();
+      };
+
+      self.cleanFilters = function () {
+        self.searchFilters = {
+          states: [],
+          cities: [],
+          neighborhoods: []
+        };
+        self.search();
       };
 
       self.openCustomer = function (ev, customer) {
@@ -182,26 +197,6 @@ angular.module('gorillasauth.protected.customer')
         });
       };
 
-      function searchActive() {
-        var filterActiveCustomers = createFilterSearchActiveCustomers();
-        CustomerService.searchNumberActiveCustomers(filterActiveCustomers).then(function (response){
-          var active_customers = {};
-          if (response.objects.length) {
-            angular.forEach(response.objects, function (obj) {
-              var seller = obj.seller;
-              if (obj.seller == 0) {
-                seller = 'Global';
-              }
-              active_customers[seller] = obj;
-            });
-          } else {
-            generateReports();
-          }
-          self.amounts_customers = active_customers;
-        });
-      }
-
-
       function parseNumberOrZero(value, round) {
         function roundNumber(value) {
           var step = 0.5; 
@@ -243,8 +238,10 @@ angular.module('gorillasauth.protected.customer')
       }
 
       function searchCustomerBilling() {
-        CustomerService.searchCustomerBillings(self.dateFilter, null, self.dateType).then(function (response){
+        CustomerService.searchCustomerBillings(self.dateFilter, null, self.dateType, self.searchFilters).then(function (response){
             self.abstract_customers = normalizeBillings(response);
+
+            getTotals(self.abstract_customers);
             
             var groups_customer =  [];
             angular.forEach(self.abstract_customers, function (item) {
@@ -286,31 +283,29 @@ angular.module('gorillasauth.protected.customer')
         });
       }
 
-      function generateReports() {
-        if (!self.generating) {
-          self.generating = true;
-          NotificationService.success('Gerando os dados!');
-
-          CustomerService.generate(self.dateFilter).then(function (response) {
-            self.generating = false;
-            self.search();
-          }, function (error) {
-            NotificationService.error('Ocorreu um erro ao gerar os dados!');
-          });
-        }
-      }
-
-      
-      function createFilterSearchActiveCustomers() {
-        var month = self.dateFilter.getMonth() + 1;
-        var dateFormated = self.dateFilter.getFullYear() + '-' + month + '-' + self.dateFilter.getDate();
-        return {
-          q: {
-            filters: [
-              {name: 'date', op: 'eq', val: dateFormated}
-            ]
-          }
+      function getTotals(items) {
+        var totals = {
+          Others: [],
+          Global: []
         };
+        angular.forEach(items, function (item) {
+          if (!totals[item.wallet]) {
+            totals[item.wallet] = [item.value_current_month];
+          } else {
+            totals[item.wallet].push(item.value_current_month);
+          }
+          if (self.sellerCodes.indexOf(item.wallet) < 0) {
+            totals['Others'].push(item.value_current_month);
+          }
+          totals['Global'].push(item.value_current_month);
+        });
+        angular.forEach(totals, function (value, key) {
+          if (value.length) {
+            self.totalFat[key] = value.reduce(function (a, b){return a + b;});
+          } else {
+            self.totalFat[key] = 0;
+          }
+        });
       }
 
       self.search();
@@ -380,12 +375,6 @@ angular.module('gorillasauth.protected.customer')
         obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
 
         obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
-
-        // obj.comparison_qtd = (obj.qtd_current_month / date.getDate()) / 
-        //   (obj.avg_month_qtd_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
-
-        // obj.comparison_value = (obj.value_current_month / date.getDate()) /
-        //   (obj.avg_month_value_current_year / (date.getMonth() != 0 ? 30 : date.getDate()));
 
         obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
         obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;

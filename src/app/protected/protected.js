@@ -30,6 +30,12 @@ angular.module('gorillasauth.protected', [
                 });
               }
             });
+          }],
+          filters: ['FiltersService', '$rootScope', function (FiltersService, $rootScope) {
+            return FiltersService.get().then(function (response) {
+              $rootScope.filters = response.data;
+              return response.data;
+            });
           }]
         }
       });

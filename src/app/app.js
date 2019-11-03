@@ -29,6 +29,7 @@ angular.module('gorillasauth', [
   'gorillasauth.services.role',
   'gorillasauth.services.budget',
   'gorillasauth.services.kpi',
+  'gorillasauth.services.filters',
   'gorillasauth.services.customer',
   'gorillasauth.services.group-customer',
   'gorillasauth.services.date-filter',

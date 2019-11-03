@@ -15,50 +15,75 @@
                 <md-tab label="GLOBAL"></md-tab>
                 <md-tab label="OUTROS"></md-tab>
             </md-tabs>
-            <div layout="column" layout-align="center center" layout-padding flex>
+            <div layout="row" layout-align="center center" layout-padding flex>
+                <span flex></span>
+
                 <md-input-container ng-style="tabSeller[selectedTab] == 'Others' ? {'margin-bottom': '-30px'} : {'margin-bottom': '-20px'}">
                     <label>Data base</label>
                     <md-datepicker ng-disabled="customerCtrl.loading || customerCtrl.generating"
-                        ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()" md-max-date="customerCtrl.maxDate"></md-datepicker>
+                    ng-model="customerCtrl.dateFilter" ng-change="customerCtrl.search()" md-max-date="customerCtrl.maxDate"></md-datepicker>
                 </md-input-container>
 
+                <span flex></span>
+                
                 <md-radio-group class="md-primary" ng-model="customerCtrl.dateType" ng-change="customerCtrl.search()">
                     <md-radio-button ng-value="'billed'">Baixa</md-radio-button>
                     <md-radio-button ng-value="'created'">Emissao</md-radio-button>
                 </md-radio-group>
+
+                <span flex></span>
             </div>
-                
-            <div class="customers-actives" ng-hide="tabSeller[selectedTab] == 'Others'">
-                <div class="header-actives" layout="row" layout-align="center" flex>
-                    <span>Clientes ativos</span>
-                </div>
-                <div layout="row" ng-if="customerCtrl.amounts_customers">
-                    <div class="type-active" layout="column" layout-align="start center" flex>
-                        <span class="header">Média ano passado</span>
-                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].average_latest_year | currency : '' : 2}}</span>
-                    </div>
-                    <div class="type-active" layout="column" layout-align="start center" flex>
-                        <span class="header">Mês anterior</span>
-                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_month}}</span>
-                    </div>
-                    <div class="type-active" layout="column" layout-align="start center" flex>
-                        <span class="header">Mês Atual</span>
-                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_current_month}}</span>
-                    </div>
-                    <div class="type-active" layout="column" layout-align="start center" flex>
-                        <span class="header">Dia Anterior</span>
-                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_latest_day}}</span>
-                    </div>
-                    <div class="type-active" layout="column" layout-align="start center" flex>
-                        <span class="header">Dia Atual</span>
-                        <span>{{customerCtrl.amounts_customers[tabSeller[selectedTab]].number_current_day}}</span>
-                    </div>
-                </div>
-                <div class="loading" layout="column" layout-align="center center" ng-if="!customerCtrl.amounts_customers">
-                        <md-progress-linear md-mode="indeterminate"></md-progress-linear>
-                </div>
+
+
+            <div layout="row" layout-align="space-around center" flex>
+                <span flex></span>
+                <md-input-container flex="25">
+                    <label>Estado</label>
+                    <md-select ng-model="customerCtrl.searchFilters.states" multiple>
+                        <md-option ng-repeat="filter in $root.filters | 
+                            filterIn: {neighborhood: customerCtrl.searchFilters.neighborhoods, city: customerCtrl.searchFilters.cities} | 
+                            unique: 'state' | orderBy: 'state'"
+                            ng-value="filter.state">
+                            {{filter.state}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="25">
+                    <label>Cidade</label>
+                    <md-select ng-model="customerCtrl.searchFilters.cities" multiple>
+                        <md-option ng-repeat="filter in $root.filters | 
+                            filterIn: {state: customerCtrl.searchFilters.states, neighborhood: customerCtrl.searchFilters.neighborhoods} | 
+                            unique: 'city' | orderBy: 'city'"
+                            ng-value="filter.city">
+                            {{filter.city}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex="25">
+                    <label>Bairro</label>
+                    <md-select ng-model="customerCtrl.searchFilters.neighborhoods" multiple>
+                        <md-option ng-repeat="filter in $root.filters | 
+                            filterIn: {state: customerCtrl.searchFilters.states, city: customerCtrl.searchFilters.cities} | 
+                            unique: 'neighborhood' | orderBy: 'neighborhood'" 
+                            ng-value="filter.neighborhood">
+                            {{filter.neighborhood}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <span flex></span>
+
+                <md-button class="md-primary" ng-click="customerCtrl.cleanFilters()">Limpar</md-button>
+
+                <md-button class="md-icon-button" ng-click="customerCtrl.search()">
+                    <md-icon>search</md-icon>
+                </md-button>
             </div>
-                
+
+            <div class="total-fat" layout="row" layout-align="end" flex>
+                {{customerCtrl.totalFat[tabSeller[selectedTab]] | currency : R$ : 2}}
+            </div>
+            
             <div class="loading" layout="column" layout-align="center center" layout-padding
                 ng-if="!customerCtrl.abstract_customers || customerCtrl.generating">
                     <md-progress-circular md-diameter="40"></md-progress-circular>
