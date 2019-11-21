@@ -453,7 +453,7 @@ angular.module('gorillasauth.protected.customer')
 
       self.customerSelected = null;
       self.lineSelected = null;
-      self.selectedTab = 0;
+      self.selectedTab = 1;
 
       self.group.lines = linesAndProductsNormalized(products);
 
