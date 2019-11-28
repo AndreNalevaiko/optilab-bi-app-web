@@ -1,9 +1,8 @@
 angular.module('gorillasauth.protected.customer')
 
   .controller('CustomerController', ['$mdDialog', 'configuration', 'DateFilterService', 'CustomerService', 
-    '$scope', 'NotificationService', 'GroupCustomerService',
-    function ($mdDialog, configuration, DateFilterService, CustomerService, $scope, NotificationService,
-      GroupCustomerService) {
+    '$scope', 'GroupCustomerService',
+    function ($mdDialog, configuration, DateFilterService, CustomerService, $scope, GroupCustomerService) {
       var self = this;
 
       self.filterName = '';
@@ -151,7 +150,7 @@ angular.module('gorillasauth.protected.customer')
           locals: {
             date: self.dateFilter,
             customer: customer,
-            periods: GroupCustomerService.searchGroupCustomerBillsPerMonth(self.dateFilter, customer.customer, period),
+            periods: GroupCustomerService.searchGroupCustomerBillsPerMonth(self.dateFilter, customer.customer, period, self.dateType),
             currentPeriod: GroupCustomerService.searchGroupProducts(self.dateFilter, customer.customer),
             period: period,
             type: 'group',
@@ -242,43 +241,12 @@ angular.module('gorillasauth.protected.customer')
             self.abstract_customers = normalizeBillings(response);
 
             getTotals(self.abstract_customers);
-            
-            var groups_customer =  [];
-            angular.forEach(self.abstract_customers, function (item) {
-              if (item.group_customer != '' && groups_customer.indexOf(item.group_customer) < 0) {
-                groups_customer.push(item.group_customer);
-              }
-            });
 
-            self.abstract_groups = [];
-            angular.forEach(groups_customer, function (group) {
-              var group_billing = {
-                customer: group,
-                customer_name: group,
-                wallet: null,
-                avg_month_qtd_current_year: 0,
-                avg_month_qtd_last_year: 0,
-                avg_month_value_current_year: 0,
-                avg_month_value_last_year: 0,
-                qtd_current_month: 0,
-                value_current_month: 0,
-              };
-              
-              angular.forEach(response, function (customer) {
-                if (customer.group_customer == group) {
-                  group_billing.wallet = customer.wallet;
-                  group_billing.avg_month_qtd_current_year += customer.avg_month_qtd_current_year;
-                  group_billing.avg_month_qtd_last_year += customer.avg_month_qtd_last_year;
-                  group_billing.avg_month_value_current_year += customer.avg_month_value_current_year;
-                  group_billing.avg_month_value_last_year += customer.avg_month_value_last_year;
-                  group_billing.qtd_current_month += customer.qtd_current_month;
-                  group_billing.value_current_month += customer.value_current_month;
-                }
-              });
-              self.abstract_groups.push(group_billing);
+            GroupCustomerService.searchGroupBillings(self.dateFilter, self.searchFilters, self.dateType).then(function (response) {
+              self.abstract_groups = normalizeBillings(response);
+            }, function (error) {
+              console.log('Ocorreu um erro ao buscar os billings dos grupos', error);
             });
-
-            self.abstract_groups = normalizeBillings(self.abstract_groups);
 
         });
       }
@@ -541,6 +509,9 @@ angular.module('gorillasauth.protected.customer')
       self.currentLines = null;
       self.lineSelected = null;
       self.selectedTab = 0;
+
+      self.qtd_ytd = self.periods.map(function (i){ return Number(i.month_qtd); }).reduce(function(acc, val) { return acc + val; }, 0);
+      self.value_ytd = self.periods.map(function (i){ return Number(i.month_value); }).reduce(function(acc, val) { return acc + val; }, 0);
 
       angular.forEach(self.periods, function (period) {
         var date = new Date(period.year, period.month - 1 , period.last_day_month);

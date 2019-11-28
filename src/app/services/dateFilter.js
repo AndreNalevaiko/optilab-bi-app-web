@@ -23,7 +23,7 @@ angular.module('gorillasauth.services.date-filter', [])
                 var dateNow = new Date();
                 
                 if (configuration.environment == 'development'){
-                    dateNow = new Date('2018-02-20 12:00:00');
+                    dateNow = new Date('2019-11-26 12:00:00');
                 } else {
                     dateNow.setHours(12);
                     dateNow.setDate(dateNow.getDate()-1);

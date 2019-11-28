@@ -25,11 +25,23 @@ angular.module('gorillasauth.services.group-customer', [])
                 });
             };
 
-            this.searchGroupCustomerBillsPerMonth = function (dateSelected, group_customer, period) {
+            this.searchGroupBillings = function (dateSelected, searchFilters, date_type) {
+                var data = {
+                    "date": dateSelected,
+                    "date_type": date_type,
+                    "searchFilters": searchFilters
+                };
+                return $http.post(configuration.apiUrl + '/group_customer/billings', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.searchGroupCustomerBillsPerMonth = function (dateSelected, group_customer, period, date_type) {
                 var data = {
                     "date": dateSelected,
                     "group_customer": group_customer,
-                    "period": period
+                    "period": period,
+                    "date_type": date_type,
                 };
                 return $http.post(configuration.apiUrl + '/group_customer/bills_per_month', data).then(function (response) {
                     return response.data.map(function(item) {

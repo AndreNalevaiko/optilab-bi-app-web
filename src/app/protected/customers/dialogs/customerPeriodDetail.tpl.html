@@ -41,22 +41,21 @@
                                     <span>Faturamento</span>
                                 </th>
                             </tr>
-                            <tr ng-if="ctrl.period == 'last_year'" class="line-selected disable-clickable" md-row>
+                            <tr class="line-selected disable-clickable" md-row>
                                 <td md-cell>
-                                    {{ctrl.date.getMonth() + 1 | month}} /  {{ctrl.date.getFullYear()}}
+                                    YTD /  {{ctrl.period == 'last_year' ? ctrl.date.getFullYear() - 1 : ctrl.date.getFullYear()}}
                                 </td>
                                 <td md-cell>
-                                    {{ctrl.customer.qtd_current_month | number}}
+                                    {{ctrl.qtd_ytd | number}}
                                 </td>
                                 <td md-cell>
-                                    {{ctrl.customer.value_current_month | currency : R$ : 2}}
+                                    {{ctrl.value_ytd | currency : R$ : 2}}
                                 </td>
                             </tr>
                         </thead>
                         <tbody md-body>
                             <tr md-row ng-repeat="period in ctrl.periods | orderBy: 'month'"
-                                ng-click="ctrl.selectPeriod(period)" 
-                                ng-class="period.month == (ctrl.date.getMonth() + 1) && period.year == ctrl.date.getFullYear() ? 'line-selected' : 'none'">
+                                ng-click="ctrl.selectPeriod(period)">
                                 <td md-cell>
                                     {{period.month | month}} / {{period.year}}
                                 </td>

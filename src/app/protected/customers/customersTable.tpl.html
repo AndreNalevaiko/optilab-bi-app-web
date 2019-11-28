@@ -5,6 +5,12 @@
             <label>Código ou nome do cliente</label>
             <input type="text" ng-model="customerCtrl.filterName">
         </md-input-container>
+        <div layout="row" layout-align="end">
+            <div layout="column" layout-align="center center">
+                <span class="total-fat">{{customerCtrl.totalFat[tabSeller[selectedTab]] | currency : R$ : 2}} </span>
+                <span class="minimum-rate">{{customerCtrl.minimumRate | percentage:2}}</span>
+            </div>
+        </div>
     </div>
     <md-table-container ng-if="customerCtrl.abstract_customers.length" flex>
         <table md-table>
