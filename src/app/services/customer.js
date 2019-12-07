@@ -100,6 +100,16 @@ angular.module('gorillasauth.services.customer', [
                     return response.data;
                 });
             };
+
+            this.getBrokes = function (clicodigo, date) {
+                var data = {
+                        "clicodigo": clicodigo,
+                        "date": date
+                };
+                return $http.post(configuration.apiUrl + '/customers/_brokes', data).then(function (response) {
+                    return response.data;
+                });
+            };
   
           }
       ])

@@ -84,6 +84,7 @@ angular.module('gorillasauth.protected.customer')
           locals: {
             customer: customer,
             overdue: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
+            brokes: CustomerService.getBrokes(customer.clicodigo, self.dateFilter),
             info: CustomerService.getInfos(customer.clicodigo)
           },
           parent: angular.element(document.body),
@@ -606,8 +607,8 @@ angular.module('gorillasauth.protected.customer')
     }
 ])
 
-.controller('CustomerDialogController', ['$mdDialog', 'customer', 'overdue', 'info', 
-    function ($mdDialog, customer, overdue, info) {
+.controller('CustomerDialogController', ['$mdDialog', 'customer', 'overdue', 'info', 'brokes',
+    function ($mdDialog, customer, overdue, info, brokes) {
       var self = this;
 
       self.selectedTab = 1;
@@ -617,6 +618,8 @@ angular.module('gorillasauth.protected.customer')
       self.addressUrl = 'https://maps.google.com/maps?q='+encodeURIComponent(info.address.search)+'&t=&z=13&ie=UTF8&iwloc=&output=embed';
       // self.addressUrl = 'https://maps.google.com/maps?q='+encodeURIComponent('SANTO ANTONIO 21 centro tangara sc  89642000')+'&t=&z=13&ie=UTF8&iwloc=&output=embed';
       self.tables = info.tables;
+      self.payment_method = info.payment_method;
+      self.brokes = brokes;
       self.is_overdue = overdue.is_overdue;
       self.billings = overdue.billings_overdued;
 

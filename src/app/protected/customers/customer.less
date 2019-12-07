@@ -79,6 +79,12 @@
 }
 
 .customer-dlg {
+    .no-results {
+        color: gray;
+        text-align: center;
+        margin: auto;
+    }
+
     .label {
         padding: 5px 16px;
         background-color: #c1c1c1;
@@ -135,8 +141,22 @@
         padding: 6px;
     }
 
-    md-tabs md-tabs-wrapper {
-        display: none;
+    .invisible-tabs {
+        md-tabs-wrapper {
+            display: none;
+        }
+    }
+
+    .disable-invisible-tabs {
+        md-tabs-wrapper {
+            display: block !important;
+        }
+    }
+
+    .broke-obser {
+        font-size: 12px;
+        font-weight: 300;
+        max-width: 355px;
     }
 }
 

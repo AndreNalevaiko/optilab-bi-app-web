@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <md-tabs md-selected="ctrl.selectedTab" md-dynamic-height md-border-bottom>
+        <md-tabs class="invisible-tabs" md-selected="ctrl.selectedTab" md-dynamic-height md-border-bottom>
             <md-tab label="Adimplencia">
                 <div class="tab-header" layout="row" layout-align="center">
                     <span>Faturas em aberto</span>
@@ -68,43 +68,88 @@
                     </table>
                 </md-table-container>
             </md-tab>
-            <md-tab label="Tabelas">
+            <md-tab label="Infos">
+                <md-tabs class="disable-invisible-tabs" md-dynamic-height md-border-bottom md-center-tabs>
+                    <md-tab label="Tabelas/Fechamento">
+                        <div class="tab-header" layout="row" layout-align="center">
+                            <span>Fechamento {{ctrl.payment_method.tab_fechamento}} / {{ctrl.payment_method.plano_pag}}</span>
+                        </div>
+                        <md-divider></md-divider>
+                        <div class="tab-header" layout="row" layout-align="center">
+                            <span>Tabelas</span>
+                        </div>
+                        <md-divider></md-divider>
+                        <div layout="column" ng-repeat="tab in ctrl.tables">
+                            <div class="tab-item" layout="row" layout-align="center">{{tab.tab_desc}}</div>
+                            <md-divider></md-divider>
+                        </div>
+                    </md-tab>
+                    <md-tab label="Endereço">
+                        <div class="address">{{ctrl.address.view}}</div>
+                        <div class="mapouter">
+                            <div class="gmap_canvas">
+                                <iframe width="600" height="440" id="gmap_canvas" 
+                                    ng-src="{{ctrl.addressUrl | trustAsResourceUrl}}" 
+                                    frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                                </iframe>
+                            </div>
+                            <style>
+                                .mapouter{
+                                    position: relative;
+                                    text-align:right;
+                                    height: 440px;
+                                    width: 600px;
+                                }
+                                .gmap_canvas {
+                                    overflow: hidden;
+                                    background: none!important;
+                                    height: 440px;
+                                    width: 600px;
+                                }
+                            </style>
+                        </div>
+                    </md-tab>
+                    <md-tab label="Quebras">
+                        <div class="no-results" ng-if="!ctrl.brokes.length" layout-padding flex>
+                            Nenhuma quebra no periodo selecionado
+                        </div>
+                        <md-table-container ng-if="ctrl.brokes.length" flex>
+                            <table md-table>
+                                <thead md-head>
+                                    <tr md-row>
+                                        <th md-column>
+                                            <span>Ped. Origem</span>
+                                        </th>
+                                        <th md-column>
+                                            <span>Ped. Perda</span>
+                                        </th>
+                                        <th md-column>
+                                            <span>Produto</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody md-body>
+                                    <tr md-row ng-repeat="broke in ctrl.brokes | orderBy: 'overdue_date'">
+                                        <td md-cell>
+                                            {{broke.ped_origem}}
+                                        </td>
+                                        <td md-cell>
+                                            {{broke.ped_perda}}
+                                        </td>
+                                        <td md-cell>
+                                            <div layout="column">
+                                                <span>{{broke.product}}</span>
+                                                <span class="broke-obser">{{broke.obser}}</span>
+                                            </div>
+                                        </td>
 
-                <div class="link-address" ng-click="ctrl.selectedTab = 2;">Ver endereço</div>
-                
-                <div class="tab-header" layout="row" layout-align="center">
-                    <span>Tabelas</span>
-                </div>
-                <md-divider></md-divider>
-                <div layout="column" ng-repeat="tab in ctrl.tables">
-                    <div class="tab-item" layout="row" layout-align="center">{{tab.tab_desc}}</div>
-                    <md-divider></md-divider>
-                </div>
-            </md-tab>
-            <md-tab label="Endereço">
-                <div class="address">{{ctrl.address.view}}</div>
-                <div class="mapouter">
-                    <div class="gmap_canvas">
-                        <iframe width="600" height="440" id="gmap_canvas" 
-                            ng-src="{{ctrl.addressUrl | trustAsResourceUrl}}" 
-                            frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
-                        </iframe>
-                    </div>
-                    <style>
-                        .mapouter{
-                            position: relative;
-                            text-align:right;
-                            height: 440px;
-                            width: 600px;
-                        }
-                        .gmap_canvas {
-                            overflow: hidden;
-                            background: none!important;
-                            height: 440px;
-                            width: 600px;
-                        }
-                    </style>
-                </div>
+                                        <!-- <md-tooltip>{{broke.obser}}</md-tooltip> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </md-table-container>
+                    </md-tab>
+                </md-tabs>
             </md-tab>
         </md-tabs>
         
