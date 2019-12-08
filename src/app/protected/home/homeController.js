@@ -68,7 +68,8 @@ angular.module('gorillasauth.protected.home')
                 locals: {
                     customer: customer,
                     overdue: CustomerService.getIsOverdue(customer.clicodigo, self.dateFilter, 'customer'),
-                    info: CustomerService.getInfos(customer.clicodigo)
+                    info: CustomerService.getInfos(customer.clicodigo),
+                    brokes: CustomerService.getBrokes(customer.clicodigo, self.dateFilter),
                 },
                 parent: angular.element(document.body),
                 templateUrl: 'protected/customers/dialogs/customer.tpl.html',

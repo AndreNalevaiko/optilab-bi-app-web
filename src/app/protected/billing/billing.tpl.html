@@ -69,12 +69,12 @@
                     </md-tab-label>
                 </md-tab>
             </md-tabs>
+            <md-input-container>
+                <label>Data base</label>
+                <md-datepicker ng-disabled="billingCtrl.loadingBilling || billingCtrl.generating"
+                    ng-model="billingCtrl.dateFilter" ng-change="billingCtrl.search()" md-max-date="billingCtrl.maxDate"></md-datepicker>
+            </md-input-container>
             <div layout="row" layout-xs="column" layout-align="start start" flex layout-padding>
-                <md-input-container>
-                    <label>Data base</label>
-                    <md-datepicker ng-disabled="billingCtrl.loadingBilling || billingCtrl.generating"
-                        ng-model="billingCtrl.dateFilter" ng-change="billingCtrl.search()" md-max-date="billingCtrl.maxDate"></md-datepicker>
-                </md-input-container>
 
                 <div class="business" layout="column" flex>
                     <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loadingBilling" flex>
@@ -115,7 +115,69 @@
                         </div>
                     </div>
                 </div>
+                <div class="business" layout="column" flex>
+                    <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loadingTotalsYTD" flex>
+                        <md-progress-circular md-diameter="40"></md-progress-circular>
+                        <br>
+                        <span ng-if="billingCtrl.loadingTotalsYTD">Carregando</span>
+                    </div>
+                    <div ng-hide="billingCtrl.loadingTotalsYTD" layout="column" flex>
+                        <div class="alias" layout="row" layout-align="center" flex>
+                            <span ng-if="billingCtrl.walletCodeFilter == 'Global'">Totais/YTD Global</span>
+                            <span ng-if="billingCtrl.walletCodeFilter != 'Global' && ytd.wallet != null">Totais/YTD Carteira {{ytd.wallet | walletName}}</span>
+                            <span ng-if="ytd.wallet == null">Totais/YTD clientes sem carteira</span>
+                        </div>
+    
+                        <div class="info" layout="row" layout-align="center center" flex>
+                            <span flex></span>
+                            <span flex><strong>{{billingCtrl.dateFilter.getFullYear() - 1}}</strong></span>
+                            <span flex><strong>{{billingCtrl.dateFilter.getFullYear()}}</strong></span>
+                        </div>
+                        <div class="info" layout="row" layout-align="center center">
+                            <span flex>YTD</span>
+                            <span flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
+                            <span flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                        </div>
+                        <div class="info" layout="row" layout-align="center center" flex>
+                            <span flex>Totais</span>
+                            <span flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
+                            <span flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                        </div>
+    
+                    </div>
+    
+    
+                </div>
             </div>
+
+            <!-- <div class="business" layout="column" flex>
+                <div class="loading" layout="column" layout-align="center center" ng-if="billingCtrl.loadingTotalsYTD" flex>
+                    <md-progress-circular md-diameter="40"></md-progress-circular>
+                    <br>
+                    <span ng-if="billingCtrl.loadingTotalsYTD">Carregando</span>
+                </div>
+                <div ng-hide="billingCtrl.loadingTotalsYTD" layout="column" flex>
+                    <div class="alias" layout="row" layout-align="center" flex>
+                        <span ng-if="billingCtrl.walletCodeFilter == 'Global'">Totais/YTD Global</span>
+                        <span ng-if="billingCtrl.walletCodeFilter != 'Global' && ytd.wallet != null">Totais/YTD Carteira {{ytd.wallet | walletName}}</span>
+                        <span ng-if="ytd.wallet == null">Totais/YTD clientes sem carteira</span>
+                    </div>
+
+                    <div class="info" layout="row" layout-align="space-between center">
+                        <span>YTD</span>
+                        <span>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
+                        <span>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                    </div>
+                    <div class="info" layout="row" layout-align="space-between center">
+                        <span>Totais</span>
+                        <span>{{billingCtrl.totals[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
+                        <span>{{billingCtrl.totals[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                    </div>
+
+                </div>
+
+
+            </div> -->
             
             
             <md-chart ng-if="billingCtrl.billingYearWallet.length" data="billingCtrl.billingYearWallet"

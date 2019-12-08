@@ -6,17 +6,14 @@ angular.module('gorillasauth.protected.billing')
       DateFilterService, configuration) {
       var self = this;
 
-      // self.dateFilter = DateFilterService.filterDateNow();
       self.dateFilter = DateFilterService.getDateNow();
       self.maxDate = self.dateFilter;
       
-      // self.walletsAvailable = Object.keys(configuration.wallets);
       self.walletsAvailable = [];
       angular.forEach(configuration.wallets, function (w) {
         var key = Object.keys(w)[0];
         self.walletsAvailable.push(key);
       });
-      console.log(self.walletsAvailable);
 
       self.tabToWallet = {};
       self.walletsAvailable.forEach(function (value, i) {
@@ -26,26 +23,18 @@ angular.module('gorillasauth.protected.billing')
       self.tabToWallet[7] = 'Others';
 
 
-      // self.walletsAvailable = ['319', '320', '318', '322', '321', '323', 'Global', '0'];
-
-      // self.tabToWallet = {
-      //   0: '319',
-      //   1: '320',
-      //   2: '318',
-      //   3: '322',
-      //   4: '321',
-      //   5: '323',
-      //   6: 'Global',
-      //   7: 'Others'
-      // };
-
       self.walletCodeFilter = self.tabToWallet[0];
       self.selectedTab = 0;
 
       self.billing = null;
       self.billAllYear = null;
       self.billingYearWallet = [];
+
+      self.ytd = null;
+      self.totals = null;
+
       self.loadingBilling = false;
+      self.loadingTotalsYTD = false;
 
       self.insertBudget = function (ev, wallet, budget) {
         $mdDialog.show({
@@ -104,6 +93,26 @@ angular.module('gorillasauth.protected.billing')
         }, function (error) {
           NotificationService.error('Ocorreu um erro ao buscar o faturamento do ano');
         });
+      };
+
+
+      self.searchTotalsAndYTD = function () {
+        self.loadingTotalsYTD = true;
+
+        BillingService.getTotals(self.dateFilter).then(function (response) {
+          self.totals = sintetizeYTDTotals(response);
+
+          BillingService.getYTD(self.dateFilter).then(function (response) {
+            self.ytd = sintetizeYTDTotals(response);
+            self.loadingTotalsYTD = false;
+          }, function (error) {
+            NotificationService.error('Ocorreu um erro ao buscar os dados do YTD');
+          });
+
+        }, function (error) {
+          NotificationService.error('Ocorreu um erro ao buscar os totais');
+        });
+
       };
 
       self.checkLengthResult = function (type) {
@@ -187,8 +196,28 @@ angular.module('gorillasauth.protected.billing')
         }
       });
 
+      function sintetizeYTDTotals(data) {
+        var result = {};
+        var walletsAdded = [];
+        var currentYear = self.dateFilter.getFullYear();
+
+        angular.forEach(data, function (i) {
+          var wallet = i.wallet != '' && i.wallet != '0' ? i.wallet : i.wallet == '0' ? 'Global' : 'Others';
+          if (walletsAdded.indexOf(wallet) < 0) {
+            result[wallet] = {};
+            walletsAdded.push(wallet);
+          }
+
+          var year = i.year == currentYear ? 'current' : 'last';
+          result[wallet][year] = i.value;
+        });
+
+        return result;
+      }
+
       self.search = function () {
         self.searchBilling();
+        self.searchTotalsAndYTD();
       };
 
       self.search();

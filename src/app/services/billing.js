@@ -13,7 +13,7 @@ angular.module('gorillasauth.services.billing', [])
                     date: dateSelected,
                     wallets: wallets
                 };
-                return $http.post(configuration.apiUrl + '/billings/', data).then(function (response) {
+                return $http.post(configuration.apiUrl + '/billings/month', data).then(function (response) {
                     return response.data;
                 });
             };
@@ -24,6 +24,26 @@ angular.module('gorillasauth.services.billing', [])
                     wallets: wallets
                 };
                 return $http.post(configuration.apiUrl + '/billings/all_year', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.getYTD = function (dateSelected) {
+                var data = {
+                    date: dateSelected,
+                    wallets: wallets
+                };
+                return $http.post(configuration.apiUrl + '/billings/ytd', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
+            this.getTotals = function (dateSelected) {
+                var data = {
+                    date: dateSelected,
+                    wallets: wallets
+                };
+                return $http.post(configuration.apiUrl + '/billings/totals', data).then(function (response) {
                     return response.data;
                 });
             };
