@@ -32,6 +32,17 @@ angular.module('gorillasauth.services.customer', [
                 });
             };
 
+            this.searchCustomersByProduct = function (dateSelected, date_type, product_group) {
+                var data = {
+                    "date": dateSelected,
+                    "date_type": date_type,
+                    "product_group": product_group
+                };
+                return $http.post(configuration.apiUrl + '/customer/billings_by_product', data).then(function (response) {
+                    return response.data;
+                });
+            };
+
             this.searchCustomerBillsPerMonth = function (dateSelected, customer_code, period) {
                 var data = {
                     "date": dateSelected,

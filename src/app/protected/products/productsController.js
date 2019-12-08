@@ -41,12 +41,44 @@ angular.module('gorillasauth.protected.products')
         };
       };
 
+      function normalizeCustomers(billings) {
+        return billings.map(function(obj) {
+          obj.clicodigo = obj.customer_code;
+          obj.avg_month_qtd_current_year = parseNumberOrZero(obj.avg_month_qtd_current_year, true);
+          obj.avg_month_qtd_last_year = parseNumberOrZero(obj.avg_month_qtd_last_year, true);
+          obj.qtd_current_month = parseNumberOrZero(obj.qtd_current_month, true);
+          obj.avg_month_value_current_year = parseNumberOrZero(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = parseNumberOrZero(obj.avg_month_value_last_year);
+          obj.value_current_month = parseNumberOrZero(obj.value_current_month);
+
+          obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
+
+          obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
+
+
+          obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
+          obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
+            
+          obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
+
+          obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+          return obj;
+        });
+      }
+
       self.openBrandDetail = function (ev, brand) {
         $mdDialog.show({
           controller: 'BrandDetailDetailDialogController as ctrl',
           fullscreen: true,
           locals: {
-            brand: brand
+            brand: brand,
+            abstract_customers: CustomerService.searchCustomersByProduct(self.dateFilter, self.dateType, brand.product_group).then(function (response){
+              return normalizeCustomers(response);
+            }),
+            wallet: $scope.tabSeller[$scope.selectedTab],
+            minimumRate: self.dateFilter.getDate() / 30
           },
           parent: angular.element(document.body),
           templateUrl: 'protected/products/lineDetail.tpl.html',
@@ -258,12 +290,19 @@ angular.module('gorillasauth.protected.products')
     }
   ])
 
-  .controller('BrandDetailDetailDialogController', ['$mdDialog', 'brand',
-    function ($mdDialog, brand) {
+  .controller('BrandDetailDetailDialogController', ['$mdDialog', '$scope', 'brand', 'abstract_customers',
+    'wallet', 'minimumRate',
+    function ($mdDialog, $scope, brand, abstract_customers, wallet, minimumRate) {
       var self = this;
 
       self.brand = brand;
+      self.abstract_customers = abstract_customers;
+      self.wallet = wallet;
+      self.minimumRate = minimumRate;
       self.orderTableProduct = 'product';
+      self.orderTableCustomers = 'comparison_value';
+
+      $scope.pagination = {page: 0, pageSize: 10};
 
       self.confirm = function () {
         $mdDialog.hide();

@@ -90,3 +90,124 @@
     }
 
 }
+
+.product-group-detail {
+    .label {
+        padding: 5px 16px;
+        background-color: #c1c1c1;
+        color: #3c3c3c;
+
+        .title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            font-size: 14px;
+        }
+
+    }
+
+    .status-cli {
+        background-color: #31b331;
+
+        &.overdue {
+            background-color: #f44336;
+        }
+    }
+
+    .circle {
+        margin: auto;
+        border-radius: 50%;
+        width: 12px;
+        height: 12px;
+    }
+
+    .icon-warn {
+        font-size: 16px;
+        color: #FF5722;
+        min-height: 12px;
+        height: 17px;
+    }
+
+    .tab-header{
+        padding: 10px;
+        font-weight: 500;
+    }
+
+    table {
+
+        tbody > .md-row:hover {
+            background-color: #EEEEEE;
+        }
+    
+        tbody .md-row {
+            cursor: pointer !important;
+        }
+
+        tr.md-row, table.md-table tfoot.md-foot > tr.md-row {
+            height: 38px !important;
+        }
+    
+        td.md-cell:nth-child(n+2):nth-last-child(n+2), th.md-column:nth-child(n+2):nth-last-child(n+2) {
+          padding: 0 24px 0 0 !important;
+        }
+    
+        tr.md-row:focus {
+          outline: none;
+        }
+
+        .disable-clickable:hover{
+            cursor: auto !important;
+        }
+
+        .disable-hover-color:hover{
+            background-color: inherit !important;
+        }
+    }
+    
+    .status-percentage{
+        font-weight: 500;
+
+        .less{
+            color: #f44336;
+        }
+
+        .greater{
+            color: #4CAF50;
+        }
+    }
+
+    .status {
+        padding: 10px 15px;
+        background-color: #f44336;
+        color: white;
+        font-weight: 500;
+    }
+
+    .radio-group {
+        display: flex;
+        justify-content: center;
+
+        md-radio-button {
+            margin: auto 15px auto 0;
+        }
+    }
+
+    .line-selected {
+        height: 38px !important;
+        font-weight: 500;
+        background-color: #acd2ba !important;
+        cursor: pointer;
+    }
+
+    .fixed-rate {
+        position: absolute;
+        z-index: 99;
+        right: 20px;
+        top: 80px;
+        color: #4CAF50;
+        font-weight: 600;
+        font-size: 14px;
+    }
+}

@@ -1,4 +1,4 @@
-<md-dialog class="customer-detail" aria-label="Comentarios">
+<md-dialog class="product-group-detail" aria-label="Comentarios">
     <md-toolbar class="md-primary">
         <div class="md-toolbar-tools">
             <h2>Detalhes</h2>
@@ -9,68 +9,149 @@
         </div>
     </md-toolbar>
     <md-dialog-content flex>
-        <md-table-container flex>
-            <table md-table>
-                <thead md-head md-order="ctrl.orderTableProduct" md-on-reorder="ctrl.search">
-                    <tr md-row>
-                        <th md-column md-order-by="product">
-                            <span>Produto</span>
-                        </th>
-                        <th md-column md-number md-order-by="avg_month_value_current_year">
-                            <span>Média Mês Ano Atual</span>
-                        </th>
-                        <th md-column md-number md-order-by="value_current_month">
-                            <span>Mês Atual</span>
-                        </th>
-                        <th md-column md-number md-order-by="comparison_value">
-                            <span>Comparação/Dia %</span>
-                        </th>
-                    </tr>
-                    <tr class="line-selected" md-row  ng-click="ctrl.selectedTab = 0">
-                        <td md-cell>
-                            {{ctrl.brand.product_group | underscoreToSpace | limitTo: 50}}
-                        </td>
-                        <td md-cell>{{ctrl.brand.avg_month_qtd_current_year | number}} p / {{ctrl.brand.avg_month_value_current_year | currency : R$ : 2}}</td>
-                        <td md-cell>{{ctrl.brand.qtd_current_month}} p / {{ctrl.brand.value_current_month | currency : R$ : 2}}</td>
-                        <td md-cell>
-                            <span ng-if="ctrl.brand.qtd_current_month == -0.0001 || ctrl.brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
-                            <div class="status-percentage" layout="row"
-                                ng-if="ctrl.brand.qtd_current_month != -0.0001 && ctrl.brand.avg_month_qtd_current_year != -0.0001">
-                                <span ng-class="ctrl.brand.comparison_qtd < 1 ? 'less' : 'greater'">
-                                    {{ctrl.brand.comparison_qtd | percentage: 2}}
-                                </span>
-                                <span>&nbsp/&nbsp</span>
-                                <span ng-class="ctrl.brand.comparison_value < 1 ? 'less' : 'greater'">
-                                    {{ctrl.brand.comparison_value | percentage: 2}}
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody ng-if="ctrl.brand.products.length" md-body>
-                    <tr md-row ng-repeat="product in ctrl.brand.products | orderBy: ctrl.orderTableProduct" class="disable-clickable">
-                        <td md-cell>
-                            {{product.product | underscoreToSpace | limitTo: 50}}
-                        </td>
-                        <td md-cell>{{product.avg_month_qtd_current_year | number}} p / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
-                        <td md-cell>{{product.qtd_current_month}} p / {{product.value_current_month | currency : R$ : 2}}</td>
-                        <td md-cell>
-                            <span ng-if="product.qtd_current_month == -0.0001 || product.avg_month_qtd_current_year == -0.0001"> % / %</span>
-                            <div class="status-percentage" layout="row"
-                                ng-if="product.qtd_current_month != -0.0001 && product.avg_month_qtd_current_year != -0.0001">
-                                <span ng-class="product.comparison_qtd < 1 ? 'less' : 'greater'">
-                                    {{product.comparison_qtd | percentage: 2}}
-                                </span>
-                                <span>&nbsp/&nbsp</span>
-                                <span ng-class="product.comparison_value < 1 ? 'less' : 'greater'">
-                                    {{product.comparison_value | percentage: 2}}
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </md-table-container>
+        <md-tabs class="disable-invisible-tabs" md-dynamic-height md-border-bottom md-center-tabs>
+            <md-tab label="Produtos">
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head md-order="ctrl.orderTableProduct" md-on-reorder="ctrl.search">
+                            <tr md-row>
+                                <th md-column md-order-by="product">
+                                    <span>Produto</span>
+                                </th>
+                                <th md-column md-number md-order-by="avg_month_value_current_year">
+                                    <span>Média Mês Ano Atual</span>
+                                </th>
+                                <th md-column md-number md-order-by="value_current_month">
+                                    <span>Mês Atual</span>
+                                </th>
+                                <th md-column md-number md-order-by="comparison_value">
+                                    <span>Comparação/Dia %</span>
+                                </th>
+                            </tr>
+                            <tr class="line-selected" md-row  ng-click="ctrl.selectedTab = 0">
+                                <td md-cell>
+                                    {{ctrl.brand.product_group | underscoreToSpace | limitTo: 50}}
+                                </td>
+                                <td md-cell>{{ctrl.brand.avg_month_qtd_current_year | number}} p / {{ctrl.brand.avg_month_value_current_year | currency : R$ : 2}}</td>
+                                <td md-cell>{{ctrl.brand.qtd_current_month}} p / {{ctrl.brand.value_current_month | currency : R$ : 2}}</td>
+                                <td md-cell>
+                                    <span ng-if="ctrl.brand.qtd_current_month == -0.0001 || ctrl.brand.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                                    <div class="status-percentage" layout="row"
+                                        ng-if="ctrl.brand.qtd_current_month != -0.0001 && ctrl.brand.avg_month_qtd_current_year != -0.0001">
+                                        <span ng-class="ctrl.brand.comparison_qtd < 1 ? 'less' : 'greater'">
+                                            {{ctrl.brand.comparison_qtd | percentage: 2}}
+                                        </span>
+                                        <span>&nbsp/&nbsp</span>
+                                        <span ng-class="ctrl.brand.comparison_value < 1 ? 'less' : 'greater'">
+                                            {{ctrl.brand.comparison_value | percentage: 2}}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody ng-if="ctrl.brand.products.length" md-body>
+                            <tr md-row ng-repeat="product in ctrl.brand.products | orderBy: ctrl.orderTableProduct" class="disable-clickable">
+                                <td md-cell>
+                                    {{product.product | underscoreToSpace | limitTo: 50}}
+                                </td>
+                                <td md-cell>{{product.avg_month_qtd_current_year | number}} p / {{product.avg_month_value_current_year | currency : R$ : 2}}</td>
+                                <td md-cell>{{product.qtd_current_month}} p / {{product.value_current_month | currency : R$ : 2}}</td>
+                                <td md-cell>
+                                    <span ng-if="product.qtd_current_month == -0.0001 || product.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                                    <div class="status-percentage" layout="row"
+                                        ng-if="product.qtd_current_month != -0.0001 && product.avg_month_qtd_current_year != -0.0001">
+                                        <span ng-class="product.comparison_qtd < 1 ? 'less' : 'greater'">
+                                            {{product.comparison_qtd | percentage: 2}}
+                                        </span>
+                                        <span>&nbsp/&nbsp</span>
+                                        <span ng-class="product.comparison_value < 1 ? 'less' : 'greater'">
+                                            {{product.comparison_value | percentage: 2}}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </md-tab>
+
+            <md-tab label="Clientes">
+                <md-table-container ng-if="ctrl.abstract_customers.length" flex>
+                    <table md-table>
+                        <thead md-head md-order="ctrl.orderTableCustomers">
+                            <tr md-row>
+                                <th md-column md-order-by="customer_code">
+                                    <span>Cliente</span>
+                                </th>
+                                <th md-column md-number md-order-by="avg_month_value_last_year">
+                                    <span>Média Mês Ano Anterior</span>
+                                </th>
+                                <th md-column md-number md-order-by="avg_month_value_current_year">
+                                    <span>Média Mês Ano Atual</span>
+                                </th>
+                                <th md-column md-number md-order-by="value_current_month">
+                                    <span>Mês Atual</span>
+                                </th>
+                                <th md-column md-number md-order-by="comparison_value">
+                                    <span>
+                                        Tendência
+                                        <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;">
+                                            help_outline
+                                            <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual  = </md-tooltip>
+                                        </md-icon>
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row ng-repeat="customer in ctrl.abstract_customers | 
+                            filter: {wallet: ctrl.wallet} | orderBy: ctrl.orderTableCustomers | 
+                            limitTo: pagination.pageSize : pagination.page*pagination.pageSize">
+                                <td md-cell ng-click="ctrl.openCustomer($event, customer)">
+                                    {{customer.customer_code}}
+                                    <span>&nbsp-&nbsp</span>
+                                    {{customer.customer_name | limitTo: 50}}
+                                </td>
+                                <td md-cell ng-click="ctrl.openCustomerPeriodDetail($event, customer, 'last_year')">
+                                    {{customer.avg_month_qtd_last_year | number}} p / {{customer.avg_month_value_last_year | currency : R$ : 2}}
+                                </td>
+                                <td md-cell ng-click="ctrl.openCustomerPeriodDetail($event, customer, 'current_period')">
+                                    {{customer.avg_month_qtd_current_year | number}} p / {{customer.avg_month_value_current_year | currency : R$ : 2}}
+                                </td>
+                                <td md-cell ng-click="ctrl.openCustomerDetail($event, customer)">
+                                    {{customer.qtd_current_month}} p / {{customer.value_current_month | currency : R$ : 2}}
+                                </td>
+                                <td md-cell ng-click="ctrl.openCustomerDetail($event, customer)">
+                                    <span ng-if="customer.qtd_current_month == -0.0001 || customer.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                                    <div class="status-percentage" layout="row"
+                                        ng-if="customer.qtd_current_month != -0.0001 && customer.avg_month_qtd_current_year != -0.0001">
+                                        <span ng-class="customer.comparison_qtd < ctrl.minimumRate ? 'less' : 'greater'">
+                                            {{customer.comparison_qtd | percentage: 2}}
+                                        </span>
+                                        <span>&nbsp/&nbsp</span>
+                                        <span ng-class="customer.comparison_value < ctrl.minimumRate ? 'less' : 'greater'">
+                                            {{customer.comparison_value | percentage: 2}}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+                <div class="paginator" layout="row" layout-align="end center" flex>
+                    <md-button class="md-icon-button" ng-click="pagination.page = pagination.page - 1" 
+                    ng-disabled="pagination.page == 0">
+                        <md-icon>navigate_before</md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="pagination.page = pagination.page + 1">
+                        <md-icon>navigate_next</md-icon>
+                    </md-button>
+                </div>
+            </md-tab>
+        </md-tabs>
+
+        <span class="fixed-rate">{{ctrl.minimumRate | percentage: 2}}</span>
+        
     </md-dialog-content>
     <md-dialog-actions >
         <div layout="row" layout-align="end end">
