@@ -144,20 +144,20 @@ angular.module('gorillasauth.protected.customer')
         });
       };
 
-      self.openGroupCustomerPeriodDetail = function (ev, customer, period) {
+      self.openGroupCustomerPeriodDetail = function (ev, group, period) {
         $mdDialog.show({
-          controller: 'CustomerPeriodDetailDialogController as ctrl',
+          controller: 'GroupCustomerPeriodDetailDialogController as ctrl',
           fullscreen: true,
           locals: {
             date: self.dateFilter,
-            customer: customer,
-            periods: GroupCustomerService.searchGroupCustomerBillsPerMonth(self.dateFilter, customer.customer, period, self.dateType),
-            currentPeriod: GroupCustomerService.searchGroupProducts(self.dateFilter, customer.customer),
+            group: group,
+            periods: GroupCustomerService.searchGroupCustomerBillsPerMonth(self.dateFilter, group.customer, period, self.dateType),
+            // currentPeriod: GroupCustomerService.searchGroupProducts(self.dateFilter, customer.customer),
             period: period,
-            type: 'group',
+            dateType: self.dateType,
           },
           parent: angular.element(document.body),
-          templateUrl: 'protected/customers/dialogs/customerPeriodDetail.tpl.html',
+          templateUrl: 'protected/customers/dialogs/groupCustomerPeriodDetail.tpl.html',
           targetEvent: ev,
           clickOutsideToClose: true
         }).then(function (result) {
@@ -604,6 +604,153 @@ angular.module('gorillasauth.protected.customer')
       self.cancel = function () {
         $mdDialog.cancel();
       };
+    }
+])
+
+.controller('GroupCustomerPeriodDetailDialogController', ['$mdDialog', 'CustomerService', 'GroupCustomerService',
+  'date', 'group', 'periods', 'period', 'dateType',
+    function ($mdDialog, CustomerService, GroupCustomerService, date, group, periods, period, dateType) {
+      var self = this;
+
+      self.orderTableCustomers = 'customer';
+      self.orderTableLine = 'product_group';
+      self.orderTableProduct = 'product';
+
+      self.date = date;
+      self.group = group;
+      self.periods = periods;
+      self.period = period;
+      self.periodSelected = null;
+      self.currentLines = null;
+      self.group_customers = null;
+      self.lineSelected = null;
+      self.selectedTab = 0;
+
+      self.qtd_ytd = self.periods.map(function (i){ return Number(i.month_qtd); }).reduce(function(acc, val) { return acc + val; }, 0);
+      self.value_ytd = self.periods.map(function (i){ return Number(i.month_value); }).reduce(function(acc, val) { return acc + val; }, 0);
+
+      self.selectPeriod = function (period) {
+        self.periodSelected = period;
+        self.dateSelected = new Date('' + period.year + '-' + period.month + '-' + period.last_day_month);
+
+        GroupCustomerService.searchCustomersBillings(self.dateSelected, self.group.customer, dateType).then(function (response){
+          self.group_customers = normalizeBillings(response);
+          self.selectedTab = 1;
+        }, function (error) {
+          console.log(error);
+        });
+      };
+      
+      self.selectCustomer = function (customer, is_group) {
+        self.customerSelected = customer;
+
+        if (is_group) {
+          GroupCustomerService.searchGroupProducts(self.dateSelected, self.periodSelected.customer).then(function (response) {
+            self.customerSelected.lines = normalizeProductsAndLines(response);
+            self.selectedTab = 2;
+          });
+        } else {
+          CustomerService.searchCustomerProducts(self.dateSelected, customer.customer_code, dateType).then(function (response) {
+            self.customerSelected.lines = normalizeProductsAndLines(response);
+            self.selectedTab = 2;
+          }, function (error) {
+            console.log(error);
+          });
+        }
+      };
+      
+      self.selectLine = function (line) {
+        self.lineSelected = line;
+        self.selectedTab = 3;
+      };
+
+      self.confirm = function () {
+        $mdDialog.hide();
+      };
+
+      self.cancel = function () {
+        $mdDialog.cancel();
+      };
+
+      function normalizeProductsAndLines(response) {
+        var products = response.map(function(obj) {
+          obj.product = obj.product.replace('_', ' ').toUpperCase();
+          obj.product_group = obj.product_group.replace('_', ' ').toUpperCase();
+  
+          obj.avg_month_qtd_current_year = parseInt(obj.avg_month_qtd_current_year);
+          obj.avg_month_qtd_last_year = parseInt(obj.avg_month_qtd_last_year);
+          obj.qtd_current_month = parseInt(obj.qtd_current_month);
+          obj.avg_month_value_current_year = Number(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = Number(obj.avg_month_value_last_year);
+          obj.value_current_month = Number(obj.value_current_month);
+  
+          obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
+  
+          obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
+  
+          obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
+          obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
+            
+          obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
+  
+          obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+          return obj;
+        });
+  
+        lines = products.filter(function (item) {
+          return item.product == '';
+        });
+
+        angular.forEach(lines, function (line) {
+          line.products = products.filter(function (product) {
+            return product.product != ''&& product.product_group == line.product_group;
+          });
+        });
+
+        return lines;
+      }
+
+      function normalizeBillings(billings) {
+        return billings.map(function(obj) {
+          obj.clicodigo = obj.customer_code;
+          obj.avg_month_qtd_current_year = parseNumberOrZero(obj.avg_month_qtd_current_year, true);
+          obj.avg_month_qtd_last_year = parseNumberOrZero(obj.avg_month_qtd_last_year, true);
+          obj.qtd_current_month = parseNumberOrZero(obj.qtd_current_month, true);
+          obj.avg_month_value_current_year = parseNumberOrZero(obj.avg_month_value_current_year);
+          obj.avg_month_value_last_year = parseNumberOrZero(obj.avg_month_value_last_year);
+          obj.value_current_month = parseNumberOrZero(obj.value_current_month);
+
+          obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
+
+          obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
+
+
+          obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
+          obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
+            
+          obj.comparison_qtd = obj.qtd_current_month == 0 && obj.avg_month_qtd_current_year != 0 ? -1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month == 0 && obj.avg_month_value_current_year != 0 ? -1 : obj.comparison_value;
+
+          obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
+          obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+          return obj;
+        });
+      }
+
+      function parseNumberOrZero(value, round) {
+        function roundNumber(value) {
+          var step = 0.5; 
+          var inv = 1.0 / step;
+          return Math.round(value * inv) / inv;
+        }
+
+        if (round) {
+          return value ? roundNumber(Number(value)) : 0;
+        }
+        return value ? Number(value) : 0;
+      }
     }
 ])
 
