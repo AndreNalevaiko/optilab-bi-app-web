@@ -152,7 +152,6 @@ angular.module('gorillasauth.protected.customer')
             date: self.dateFilter,
             group: group,
             periods: GroupCustomerService.searchGroupCustomerBillsPerMonth(self.dateFilter, group.customer, period, self.dateType),
-            // currentPeriod: GroupCustomerService.searchGroupProducts(self.dateFilter, customer.customer),
             period: period,
             dateType: self.dateType,
           },
