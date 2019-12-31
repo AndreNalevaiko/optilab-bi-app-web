@@ -25,10 +25,11 @@ angular.module('gorillasauth.services.group-customer', [])
                 });
             };
 
-            this.searchGroupBillings = function (dateSelected, searchFilters, date_type) {
+            this.searchGroupBillings = function (dateSelected, searchFilters, date_type, view_type) {
                 var data = {
                     "date": dateSelected,
                     "date_type": date_type,
+                    "view_type": view_type,
                     "searchFilters": searchFilters
                 };
                 return $http.post(configuration.apiUrl + '/group_customer/billings', data).then(function (response) {

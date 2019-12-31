@@ -41,7 +41,12 @@ angular.module('gorillasauth.protected.customer')
       self.dateFilter = DateFilterService.getDateNow();
       self.maxDate = self.dateFilter;
       self.minimumRate = self.dateFilter.getDate() / 30;
+
+      var start = new Date(self.dateFilter.getFullYear(), 0, 0);
+      self.minimumRateYTD = Math.floor((self.dateFilter - start) / (1000 * 60 * 60 * 24)) / 365;
+
       self.dateType = 'billed';
+      self.viewType = 'average';
 
       $scope.selectedTab = 0;
 
@@ -219,10 +224,14 @@ angular.module('gorillasauth.protected.customer')
           obj.avg_month_value_last_year = parseNumberOrZero(obj.avg_month_value_last_year);
           obj.value_current_month = parseNumberOrZero(obj.value_current_month);
 
+          obj.ytd_qtd_last_year = parseNumberOrZero(obj.ytd_qtd_last_year, true);
+          obj.ytd_value_last_year = parseNumberOrZero(obj.ytd_value_last_year);
+          obj.ytd_qtd_current_year = parseNumberOrZero(obj.ytd_qtd_current_year, true);
+          obj.ytd_value_current_year = parseNumberOrZero(obj.ytd_value_current_year);
+
+          // AVG
           obj.comparison_qtd = obj.qtd_current_month / obj.avg_month_qtd_current_year;
-
           obj.comparison_value = obj.value_current_month / obj.avg_month_value_current_year;
-
 
           obj.comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.comparison_qtd) ? -0.0001 : obj.comparison_qtd;
           obj.comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.comparison_value) ? -0.0001 : obj.comparison_value;
@@ -232,17 +241,33 @@ angular.module('gorillasauth.protected.customer')
 
           obj.comparison_qtd = obj.qtd_current_month != 0 && obj.avg_month_qtd_current_year == 0 ? 1 : obj.comparison_qtd;
           obj.comparison_value = obj.value_current_month != 0 && obj.avg_month_value_current_year == 0 ? 1 : obj.comparison_value;
+
+          // YTD
+          obj.ytd_comparison_qtd = obj.ytd_qtd_current_year / obj.ytd_qtd_last_year;
+          obj.ytd_comparison_value = obj.ytd_value_current_year / obj.ytd_value_last_year;
+
+          obj.ytd_comparison_qtd = obj.comparison_qtd == 0  || Number.isNaN(obj.ytd_comparison_qtd) ? -0.0001 : obj.ytd_comparison_qtd;
+          obj.ytd_comparison_value = obj.comparison_value == 0 || Number.isNaN(obj.ytd_comparison_value) ? -0.0001 : obj.ytd_comparison_value;
+
+          obj.ytd_comparison_qtd = obj.ytd_qtd_current_year == 0 && obj.ytd_qtd_current_year != 0 ? -1 : obj.ytd_comparison_qtd;
+          obj.ytd_comparison_value = obj.ytd_value_current_year == 0 && obj.ytd_value_last_year != 0 ? -1 : obj.ytd_comparison_value;
+
+          obj.ytd_comparison_qtd = obj.ytd_qtd_current_year != 0 && obj.ytd_qtd_current_year == 0 ? 1 : obj.ytd_comparison_qtd;
+          obj.ytd_comparison_value = obj.ytd_value_current_year != 0 && obj.ytd_value_last_year == 0 ? 1 : obj.ytd_comparison_value;
           return obj;
         });
       }
 
       function searchCustomerBilling() {
-        CustomerService.searchCustomerBillings(self.dateFilter, null, self.dateType, self.searchFilters).then(function (response){
+        self.abstract_customers = null;
+        self.abstract_groups = null;
+
+        CustomerService.searchCustomerBillings(self.dateFilter, null, self.dateType, self.searchFilters, self.viewType).then(function (response){
             self.abstract_customers = normalizeBillings(response);
 
             getTotals(self.abstract_customers);
 
-            GroupCustomerService.searchGroupBillings(self.dateFilter, self.searchFilters, self.dateType).then(function (response) {
+            GroupCustomerService.searchGroupBillings(self.dateFilter, self.searchFilters, self.dateType, self.viewType).then(function (response) {
               self.abstract_groups = normalizeBillings(response);
             }, function (error) {
               console.log('Ocorreu um erro ao buscar os billings dos grupos', error);
@@ -298,6 +323,9 @@ angular.module('gorillasauth.protected.customer')
         return self.dateFilter;
       }, function (newVal, oldVal) {
         self.minimumRate = newVal.getDate() / 30;
+
+        var start = new Date(newVal.getFullYear(), 0, 0);
+        self.minimumRateYTD = Math.floor((newVal - start) / (1000 * 60 * 60 * 24)) / 365;
       });
 
       $scope.$watch(function () {

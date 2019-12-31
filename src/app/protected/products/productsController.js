@@ -68,6 +68,26 @@ angular.module('gorillasauth.protected.products')
         });
       }
 
+      self.insertBudgetCustActives = function (ev, wallet, budget) {
+        $mdDialog.show({
+          controller: 'EditCustActivesBudgetController as ctrl',
+          fullscreen: $mdMedia('xs'),
+          locals: {
+            wallet: wallet,
+            dateToSave: self.dateFilter,
+            budget: budget
+          },
+          parent: angular.element(document.body),
+          templateUrl: 'protected/products/edit-budget-active-customers-dialog.tpl.html',
+          targetEvent: ev,
+          clickOutsideToClose: true
+        }).then(function (result) {
+          searchActive();
+        }, function (){
+          console.log('Canceled Operation');
+        });
+      };
+
       self.openBrandDetail = function (ev, brand) {
         $mdDialog.show({
           controller: 'BrandDetailDetailDialogController as ctrl',
@@ -142,22 +162,44 @@ angular.module('gorillasauth.protected.products')
       };
 
       function searchActive() {
-        var filterActiveCustomers = createFilterSearchActiveCustomers();
-        CustomerService.searchNumberActiveCustomers(filterActiveCustomers).then(function (response){
-          var active_customers = {};
-          if (response.objects.length) {
-            angular.forEach(response.objects, function (obj) {
-              var seller = obj.seller;
-              if (obj.seller == 0) {
-                seller = '0';
-              }
-              active_customers[seller] = obj;
-            });
-          } else {
-            generateReports();
-          }
-          self.amounts_customers = active_customers;
+        var params = {
+          q: {
+            filters: [
+              {name: 'month', op: 'eq', val: self.dateFilter.getMonth() > 10 ? 1 : self.dateFilter.getMonth() + 1},
+              {name: 'year', op: 'eq', val: self.dateFilter.getFullYear()},
+              {name: 'type_ref', op: 'eq', val: 'CUSTOMERS_ACTIVES'},
+            ]
+          },  
+          results_per_page: 999
+        };
+        BudgetService.search(params).then(function (respBdg) {
+          var budgets = respBdg.objects;
+          var filterActiveCustomers = createFilterSearchActiveCustomers();
+          CustomerService.searchNumberActiveCustomers(filterActiveCustomers).then(function (response){
+            var active_customers = {};
+            if (response.objects.length) {
+              angular.forEach(response.objects, function (obj) {
+                var seller = obj.seller;
+                if (obj.seller == 0) {
+                  seller = '0';
+                }
+
+                var budget = budgets.filter(function (bdg) {
+                  return bdg.ref == seller;
+                });
+
+                active_customers[seller] = obj;
+                active_customers[seller].budget = budget.length ? budget[0] : null;
+              });
+            } else {
+              generateReports();
+            }
+            self.amounts_customers = active_customers;
+          });
+        }, function (error) {
+          NotificationService.error('Ocorreu um erro ao buscar os budgets');
         });
+
       }
 
       function createFilterSearchActiveCustomers() {
@@ -290,6 +332,47 @@ angular.module('gorillasauth.protected.products')
     }
   ])
 
+  .controller('EditCustActivesBudgetController', ['BudgetService', '$mdDialog', 'NotificationService', 
+    'wallet', 'dateToSave', 'budget',
+    function (BudgetService, $mdDialog, NotificationService, wallet, dateToSave, budget) {
+      var self = this;
+
+      self.title = budget ? 'Editar meta' : 'Inserir meta';
+      self.dateToSave = dateToSave;
+      self.wallet = wallet;
+
+      console.log(self.dateToSave);
+
+      if (budget){
+        self.budget = angular.copy(budget);
+      } else{
+        self.budget = {
+          ref: self.wallet,
+          value: null,
+          month: self.dateToSave.getMonth() > 10 ? 1 : self.dateToSave.getMonth() + 1,
+          year: self.dateToSave.getFullYear(),
+          type_ref: 'CUSTOMERS_ACTIVES'
+        };
+      }
+      
+      self.save = save;
+      self.close = close;
+
+      function save() {
+        BudgetService.save(self.budget).then(function (response){
+          NotificationService.success('Salvo com sucesso!');
+          $mdDialog.hide(response);
+        }, function (error) {
+          NotificationService.error('Ocorreu um erro ao salvar o budget!');
+        });
+      }
+
+      function close() {
+        $mdDialog.cancel();
+      }
+    }
+  ])
+
   .controller('BrandDetailDetailDialogController', ['$mdDialog', '$scope', 'brand', 'abstract_customers',
     'wallet', 'minimumRate',
     function ($mdDialog, $scope, brand, abstract_customers, wallet, minimumRate) {
@@ -325,6 +408,11 @@ angular.module('gorillasauth.protected.products')
       self.dateToSave = dateToSave;
       self.product = product;
       self.ref = ref;
+
+      self.budget = {
+        month: self.dateToSave.getMonth() > 10 ? 1 : self.dateToSave.getMonth() + 1,
+        year: self.dateToSave.getFullYear()
+      };
       
       if (budget_amount && budget_value){
         self.budget_amount = angular.copy(budget_amount);

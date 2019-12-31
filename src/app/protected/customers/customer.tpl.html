@@ -32,6 +32,13 @@
                 </md-radio-group>
 
                 <span flex></span>
+
+                <md-radio-group class="md-primary" ng-model="customerCtrl.viewType" ng-change="customerCtrl.search()">
+                    <md-radio-button ng-value="'average'">Média</md-radio-button>
+                    <md-radio-button ng-value="'ytd'">YTD</md-radio-button>
+                </md-radio-group>
+
+                <span flex></span>
             </div>
 
 

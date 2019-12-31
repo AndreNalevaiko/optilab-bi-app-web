@@ -8,7 +8,8 @@
         <div layout="row" layout-align="end">
             <div layout="column" layout-align="center center">
                 <span class="total-fat">{{customerCtrl.totalFat[tabSeller[selectedTab]] | currency : R$ : 2}} </span>
-                <span class="minimum-rate">{{customerCtrl.minimumRate | percentage:2}}</span>
+                <span class="minimum-rate" ng-if="customerCtrl.viewType == 'average'">{{customerCtrl.minimumRate | percentage:2}}</span>
+                <span class="minimum-rate" ng-if="customerCtrl.viewType == 'ytd'">{{customerCtrl.minimumRateYTD | percentage:2}}</span>
             </div>
         </div>
     </div>
@@ -19,22 +20,35 @@
                     <th md-column md-order-by="customer_code">
                         <span>Cliente</span>
                     </th>
-                    <th md-column md-number md-order-by="avg_month_value_last_year">
+                    <!-- AVG -->
+                    <th md-column md-number md-order-by="avg_month_value_last_year" ng-if="customerCtrl.viewType == 'average'">
                         <span>Média Mês Ano Anterior</span>
                     </th>
-                    <th md-column md-number md-order-by="avg_month_value_current_year">
+                    <th md-column md-number md-order-by="avg_month_value_current_year" ng-if="customerCtrl.viewType == 'average'">
                         <span>Média Mês Ano Atual</span>
                     </th>
-                    <th md-column md-number md-order-by="value_current_month">
+                    <th md-column md-number md-order-by="value_current_month" ng-if="customerCtrl.viewType == 'average'">
                         <span>Mês Atual</span>
                     </th>
-                    <th md-column md-number md-order-by="comparison_value">
+                    <th md-column md-number md-order-by="comparison_value" ng-if="customerCtrl.viewType == 'average'">
                         <span>
                             Tendência
                             <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
                                 help_outline
                                 <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
                             </md-icon>
+                        </span>
+                    </th>
+                    <!-- YTD -->
+                    <th md-column md-number md-order-by="ytd_value_last_year" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span>YTD Ano Anterior</span>
+                    </th>
+                    <th md-column md-number md-order-by="ytd_value_current_year" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span>YTD Ano Atual</span>
+                    </th>
+                    <th md-column md-number md-order-by="ytd_comparison_value" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span>
+                            % Alcançada
                         </span>
                     </th>
                 </tr>
@@ -49,24 +63,38 @@
                         {{customer.customer_name | limitTo: 50}}
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerPeriodDetail($event, customer, 'last_year')">
-                        {{customer.avg_month_qtd_last_year | number}} p / {{customer.avg_month_value_last_year | currency : R$ : 2}}
+                        <span ng-if="customerCtrl.viewType == 'average'">{{customer.avg_month_qtd_last_year | number}} p / {{customer.avg_month_value_last_year | currency : R$ : 2}}</span>
+                        <span ng-if="customerCtrl.viewType == 'ytd'">{{customer.ytd_qtd_last_year | number}} p / {{customer.ytd_value_last_year | currency : R$ : 2}}</span>
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerPeriodDetail($event, customer, 'current_period')">
-                        {{customer.avg_month_qtd_current_year | number}} p / {{customer.avg_month_value_current_year | currency : R$ : 2}}
+                        <span ng-if="customerCtrl.viewType == 'average'">{{customer.avg_month_qtd_current_year | number}} p / {{customer.avg_month_value_current_year | currency : R$ : 2}}</span>
+                        <span ng-if="customerCtrl.viewType == 'ytd'">{{customer.ytd_qtd_current_year | number}} p / {{customer.ytd_value_current_year | currency : R$ : 2}}</span>
                     </td>
-                    <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)">
+                    <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)" ng-if="customerCtrl.viewType == 'average'">
                         {{customer.qtd_current_month}} p / {{customer.value_current_month | currency : R$ : 2}}
                     </td>
                     <td md-cell ng-click="customerCtrl.openCustomerDetail($event, customer)">
-                        <span ng-if="customer.qtd_current_month == -0.0001 || customer.avg_month_qtd_current_year == -0.0001"> % / %</span>
+                        <span ng-if="customerCtrl.viewType == 'average' && (customer.qtd_current_month == -0.0001 || customer.avg_month_qtd_current_year == -0.0001)"> % / %</span>
                         <div class="status-percentage" layout="row"
-                            ng-if="customer.qtd_current_month != -0.0001 && customer.avg_month_qtd_current_year != -0.0001">
+                            ng-if="customerCtrl.viewType == 'average' && customer.qtd_current_month != -0.0001 && customer.avg_month_qtd_current_year != -0.0001">
                             <span ng-class="customer.comparison_qtd < customerCtrl.minimumRate ? 'less' : 'greater'">
                                 {{customer.comparison_qtd | percentage: 2}}
                             </span>
                             <span>&nbsp/&nbsp</span>
                             <span ng-class="customer.comparison_value < customerCtrl.minimumRate ? 'less' : 'greater'">
                                 {{customer.comparison_value | percentage: 2}}
+                            </span>
+                        </div>
+
+                        <span ng-if="customerCtrl.viewType == 'ytd' && (customer.ytd_qtd_last_year == -0.0001 || customer.ytd_qtd_current_year == -0.0001)"> % / %</span>
+                        <div class="status-percentage" layout="row"
+                            ng-if="customerCtrl.viewType == 'ytd' && customer.ytd_qtd_last_year != -0.0001 && customer.ytd_qtd_current_year != -0.0001">
+                            <span ng-class="customer.ytd_comparison_qtd < customerCtrl.minimumRateYTD ? 'less' : 'greater'">
+                                {{customer.ytd_comparison_qtd | percentage: 2}}
+                            </span>
+                            <span>&nbsp/&nbsp</span>
+                            <span ng-class="customer.ytd_comparison_value < customerCtrl.minimumRateYTD ? 'less' : 'greater'">
+                                {{customer.ytd_comparison_value | percentage: 2}}
                             </span>
                         </div>
                     </td>

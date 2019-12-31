@@ -20,12 +20,13 @@ angular.module('gorillasauth.services.customer', [
                 });
             };
 
-            this.searchCustomerBillings = function (dateSelected, customer_code, date_type, searchFilters) {
+            this.searchCustomerBillings = function (dateSelected, customer_code, date_type, searchFilters, view_type) {
                 var data = {
                     "date": dateSelected,
                     "customer_code": customer_code,
                     "date_type": date_type,
-                    "searchFilters": searchFilters
+                    "view_type": view_type,
+                    "searchFilters": searchFilters,
                 };
                 return $http.post(configuration.apiUrl + '/customer/billings', data).then(function (response) {
                     return response.data;

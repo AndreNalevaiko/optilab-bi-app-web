@@ -59,6 +59,20 @@
                         <span class="header">Dia Atual</span>
                         <span>{{productsCtrl.amounts_customers[tabSeller[selectedTab]].number_current_day}}</span>
                     </div>
+                    <div class="type-active" layout="column" layout-align="start center" flex>
+                        <span class="header">Meta</span>
+                        <span ng-if="productsCtrl.amounts_customers[tabSeller[selectedTab]].budget">
+                            {{productsCtrl.amounts_customers[tabSeller[selectedTab]].budget.value}}
+                            <md-icon class="btn-budget-icon" ng-click="productsCtrl.insertBudgetCustActives($event, tabSeller[selectedTab], productsCtrl.amounts_customers[tabSeller[selectedTab]].budget)">
+                                edit
+                                <md-tooltip>Editar</md-tooltip>
+                            </md-icon>
+                        </span>
+                        <md-button class="md-primary btn-budget" ng-if="!productsCtrl.amounts_customers[tabSeller[selectedTab]].budget"
+                            ng-click="productsCtrl.insertBudgetCustActives($event, tabSeller[selectedTab])">
+                            Inserir
+                        </md-button>
+                    </div>
                 </div>
                 <div class="loading" layout="column" layout-align="center center" ng-if="!productsCtrl.amounts_customers">
                         <md-progress-linear md-mode="indeterminate"></md-progress-linear>

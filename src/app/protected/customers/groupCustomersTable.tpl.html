@@ -13,22 +13,36 @@
                     <th md-column md-order-by="customer">
                         <span>Grupo</span>
                     </th>
-                    <th md-column md-number md-order-by="avg_month_value_last_year">
+                    <!-- AVG -->
+                    <th md-column md-number md-order-by="avg_month_value_last_year" ng-if="customerCtrl.viewType == 'average'">
                         <span>Média Mês Ano Anterior</span>
                     </th>
-                    <th md-column md-number md-order-by="avg_month_value_current_year">
+                    <th md-column md-number md-order-by="avg_month_value_current_year" ng-if="customerCtrl.viewType == 'average'">
                         <span>Média Mês Ano Atual</span>
                     </th>
-                    <th md-column md-number md-order-by="value_current_month">
+                    <th md-column md-number md-order-by="value_current_month" ng-if="customerCtrl.viewType == 'average'">
                         <span>Mês Atual</span>
                     </th>
-                    <th md-column md-number md-order-by="comparison_value">
+                    <th md-column md-number md-order-by="comparison_value" ng-if="customerCtrl.viewType == 'average'">
                         <span>
                             Tendência
                             <md-icon style="font-size: 23px !important;margin-top: 6px; outline: none;" ng-click="$event.stopPropagation()">
                                 help_outline
                                 <md-tooltip>Cálculo: Média/dia Ano Atual ÷ Média/dia mês atual </md-tooltip>
                             </md-icon>
+                        </span>
+                    </th>
+
+                    <!-- YTD -->
+                    <th md-column md-number md-order-by="avg_month_qtd_last_year" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span>YTD Ano Anterior</span>
+                    </th>
+                    <th md-column md-number md-order-by="avg_month_qtd_current_year" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span>YTD Ano Atual</span>
+                    </th>
+                    <th md-column md-number md-order-by="ytd_comparison_value" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span>
+                            % Alcançada
                         </span>
                     </th>
                 </tr>
@@ -40,16 +54,17 @@
                     <td md-cell>
                         {{group.customer | limitTo: 50}}
                     </td>
-                    <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'last_year')">
+                    <!-- AVG -->
+                    <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'last_year')" ng-if="customerCtrl.viewType == 'average'">
                         {{group.avg_month_qtd_last_year | number}} p / {{group.avg_month_value_last_year | currency : R$ : 2}}
                     </td>
-                    <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'current_year')">
+                    <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'current_year')" ng-if="customerCtrl.viewType == 'average'">
                         {{group.avg_month_qtd_current_year | number}} p / {{group.avg_month_value_current_year | currency : R$ : 2}}
                     </td>
-                    <td md-cell ng-click="customerCtrl.openGroupDetail($event, group)">
+                    <td md-cell ng-click="customerCtrl.openGroupDetail($event, group)" ng-if="customerCtrl.viewType == 'average'">
                         {{group.qtd_current_month}} p / {{group.value_current_month | currency : R$ : 2}}
                     </td>
-                    <td md-cell ng-click="customerCtrl.openGroupDetail($event, group)">
+                    <td md-cell ng-click="customerCtrl.openGroupDetail($event, group)" ng-if="customerCtrl.viewType == 'average'">
                         <span ng-if="group.qtd_current_month == -0.0001 || group.avg_month_qtd_current_year == -0.0001"> % / %</span>
                         <div class="status-percentage" layout="row"
                             ng-if="group.qtd_current_month != -0.0001 && group.avg_month_qtd_current_year != -0.0001">
@@ -59,6 +74,26 @@
                             <span>&nbsp/&nbsp</span>
                             <span ng-class="group.comparison_value < customerCtrl.minimumRate ? 'less' : 'greater'">
                                 {{group.comparison_value | percentage: 2}}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'last_year')" ng-if="customerCtrl.viewType == 'ytd'">
+                        {{group.ytd_qtd_last_year | number}} p / {{group.ytd_value_last_year | currency : R$ : 2}}
+                    </td>
+                    <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'current_year')" ng-if="customerCtrl.viewType == 'ytd'">
+                        {{group.ytd_qtd_current_year | number}} p / {{group.ytd_value_current_year | currency : R$ : 2}}
+                    </td>
+                    <td md-cell ng-click="customerCtrl.openGroupDetail($event, group)" ng-if="customerCtrl.viewType == 'ytd'">
+                        <span ng-if="group.ytd_qtd_last_year == -0.0001 || group.ytd_qtd_current_year == -0.0001"> % / %</span>
+                        <div class="status-percentage" layout="row"
+                            ng-if="group.ytd_qtd_last_year != -0.0001 && group.ytd_qtd_current_year != -0.0001">
+                            <span ng-class="group.ytd_comparison_qtd < customerCtrl.minimumRateYTD ? 'less' : 'greater'">
+                                {{group.ytd_comparison_qtd | percentage: 2}}
+                            </span>
+                            <span>&nbsp/&nbsp</span>
+                            <span ng-class="group.ytd_comparison_value < customerCtrl.minimumRateYTD ? 'less' : 'greater'">
+                                {{group.ytd_comparison_value | percentage: 2}}
                             </span>
                         </div>
                     </td>
