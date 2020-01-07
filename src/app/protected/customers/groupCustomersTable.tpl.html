@@ -34,10 +34,10 @@
                     </th>
 
                     <!-- YTD -->
-                    <th md-column md-number md-order-by="avg_month_qtd_last_year" ng-if="customerCtrl.viewType == 'ytd'">
+                    <th md-column md-number md-order-by="ytd_value_last_year" ng-if="customerCtrl.viewType == 'ytd'">
                         <span>YTD Ano Anterior</span>
                     </th>
-                    <th md-column md-number md-order-by="avg_month_qtd_current_year" ng-if="customerCtrl.viewType == 'ytd'">
+                    <th md-column md-number md-order-by="ytd_value_current_year" ng-if="customerCtrl.viewType == 'ytd'">
                         <span>YTD Ano Atual</span>
                     </th>
                     <th md-column md-number md-order-by="ytd_comparison_value" ng-if="customerCtrl.viewType == 'ytd'">
@@ -78,6 +78,7 @@
                         </div>
                     </td>
 
+                    <!-- YTD -->
                     <td md-cell ng-click="customerCtrl.openGroupCustomerPeriodDetail($event, group, 'last_year')" ng-if="customerCtrl.viewType == 'ytd'">
                         {{group.ytd_qtd_last_year | number}} p / {{group.ytd_value_last_year | currency : R$ : 2}}
                     </td>
