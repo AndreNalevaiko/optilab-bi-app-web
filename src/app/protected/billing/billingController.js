@@ -211,6 +211,12 @@ angular.module('gorillasauth.protected.billing')
           var year = i.year == currentYear ? 'current' : 'last';
           result[wallet][year] = i.value;
         });
+        
+        angular.forEach(walletsAdded, function (wallet) {
+          if (result[wallet].current && result[wallet].last) {
+            result[wallet].comparison = result[wallet].current / result[wallet].last;
+          }
+        });
 
         return result;
       }

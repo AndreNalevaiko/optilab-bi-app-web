@@ -126,20 +126,23 @@
                             <span>Totais/YTD</span>
                         </div>
     
-                        <div class="info" layout="row" layout-align="center center" flex>
-                            <span flex></span>
-                            <span flex><strong>{{billingCtrl.dateFilter.getFullYear() - 1}}</strong></span>
-                            <span flex><strong>{{billingCtrl.dateFilter.getFullYear()}}</strong></span>
-                        </div>
-                        <div class="info" layout="row" layout-align="center center">
-                            <span flex>YTD</span>
-                            <span flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
-                            <span flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                        <div class="info" layout="row" flex>
+                            <span class="label" flex></span>
+                            <span class="value" flex><strong>{{billingCtrl.dateFilter.getFullYear() - 1}}</strong></span>
+                            <span class="value" flex><strong>{{billingCtrl.dateFilter.getFullYear()}}</strong></span>
+                            <span class="comparison" flex><b>%</b></span>
                         </div>
                         <div class="info" layout="row" layout-align="center center" flex>
-                            <span flex>Totais</span>
-                            <span flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
-                            <span flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                            <span class="label" flex>YTD</span>
+                            <span class="value" flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
+                            <span class="value" flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                            <span class="comparison" flex>{{billingCtrl.ytd[billingCtrl.walletCodeFilter].comparison | percentage:2}}</span>
+                        </div>
+                        <div class="info" layout="row" layout-align="center center" flex>
+                            <span class="label" flex>Totais</span>
+                            <span class="value" flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].last | currency : R$ : 2}}</span>
+                            <span class="value" flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].current | currency : R$ : 2}}</span>
+                            <span class="comparison" flex>{{billingCtrl.totals[billingCtrl.walletCodeFilter].comparison | percentage:2}}</span>
                         </div>
     
                     </div>
