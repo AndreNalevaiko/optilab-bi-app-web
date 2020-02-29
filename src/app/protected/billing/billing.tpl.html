@@ -115,7 +115,7 @@
                         </div>
                         <div class="info" layout="row" layout-align="space-between center">
                             <span>Porcentagem alcançada mês</span>
-                            <span class="rate" ng-class="{{bil.value / bil.budget.value}} < billingCtrl.minimumRate ? 'less' : 'greater'">
+                            <span class="rate" ng-class="(bil.value / bil.budget.value) < billingCtrl.minimumRate ? 'less' : 'greater'">
                                 {{(bil.value / bil.budget.value) | percentage:2}}
                             </span>
                         </div>

@@ -7,9 +7,14 @@ angular.module('gorillasauth.protected.billing')
       var self = this;
 
       self.dateFilter = DateFilterService.getDateNow();
-      self.minimumRate = self.dateFilter.getDate() / 30;
       self.maxDate = self.dateFilter;
-      
+
+      var date = angular.copy(self.dateFilter);
+      date.setMonth(self.dateFilter.getMonth() +1);
+      date.setDate(0);
+      self.daysMonth = date.getDate();
+      self.minimumRate = self.dateFilter.getDate() / self.daysMonth;
+
       self.walletsAvailable = [];
       angular.forEach(configuration.wallets, function (w) {
         var key = Object.keys(w)[0];
@@ -234,7 +239,11 @@ angular.module('gorillasauth.protected.billing')
       $scope.$watch(function () {
         return self.dateFilter;
       }, function (newVal, oldVal) {
-        self.minimumRate = newVal.getDate() / 30;
+        var date = angular.copy(newVal);
+        date.setMonth(self.dateFilter.getMonth() +1);
+        date.setDate(0);
+        self.daysMonth = date.getDate();
+        self.minimumRate = newVal.getDate() / self.daysMonth;
       });
 
       function sintetizeYTDTotals(data) {
