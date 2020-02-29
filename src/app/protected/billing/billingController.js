@@ -7,6 +7,7 @@ angular.module('gorillasauth.protected.billing')
       var self = this;
 
       self.dateFilter = DateFilterService.getDateNow();
+      self.minimumRate = self.dateFilter.getDate() / 30;
       self.maxDate = self.dateFilter;
       
       self.walletsAvailable = [];
@@ -127,6 +128,25 @@ angular.module('gorillasauth.protected.billing')
         }).length > 0;
       };
 
+      self.getDailyBudget = function (value, currentDate) {
+        var days = null;
+
+        if (currentDate) {
+          days = getBusinessDays(
+            self.dateFilter.getFullYear(),
+            self.dateFilter.getMonth(),
+            self.dateFilter.getDate()
+          );
+        } else {
+          days = getBusinessDays(
+            self.dateFilter.getFullYear(),
+            self.dateFilter.getMonth(),
+            0
+          );
+        }
+        return value / days;
+      };
+
       self.filterBilling = function () {
         return function (item) {
           if (self.walletCodeFilter == 'Global') {
@@ -154,6 +174,21 @@ angular.module('gorillasauth.protected.billing')
         }
         return billing.value / billingGlobal.value;
       };
+
+      function getBusinessDays(year, month, day) {
+        var date = new Date(year, day ? month : month + 1, day);
+        var getTot = day ? day : date.getDate();
+
+        var countBDays = 0;
+        for(var i=1; i<=getTot; i++) {
+          var newDate = new Date(date.getFullYear(), date.getMonth(), i);
+          if(newDate.getDay() != 0 && newDate.getDay() != 6){   //if Sunday
+            countBDays++;
+          }
+        }
+
+        return countBDays ? countBDays : 1;
+      }
 
       function setEmpBudget (){
         angular.forEach(self.billing, function (bil){
@@ -194,6 +229,12 @@ angular.module('gorillasauth.protected.billing')
             }
           });
         }
+      });
+
+      $scope.$watch(function () {
+        return self.dateFilter;
+      }, function (newVal, oldVal) {
+        self.minimumRate = newVal.getDate() / 30;
       });
 
       function sintetizeYTDTotals(data) {
